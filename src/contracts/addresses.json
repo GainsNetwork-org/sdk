@@ -1,8 +1,8 @@
 {
   "137": {
-    "gfarmTradingStorageV5": "",
-    "gnsPairsStorageV6": "",
-    "gnsPairInfosV6_1": ""
+    "gfarmTradingStorageV5": "0xaee4d11a16B2bc65EDD6416Fb626EB404a6D65BD",
+    "gnsPairsStorageV6": "0x6e5326e944F528c243B9Ca5d14fe5C9269a8c922",
+    "gnsPairInfosV6_1": "0xEe7442aCcC1C27f2C69423576d3b1D25b563E977"
   },
   "42161": {
     "gfarmTradingStorageV5": "",
@@ -10,8 +10,8 @@
     "gnsPairInfosV6_1": ""
   },
   "80001": {
-    "gfarmTradingStorageV5": "",
-    "gnsPairsStorageV6": "",
-    "gnsPairInfosV6_1": ""
+    "gfarmTradingStorageV5": "0x4d2dF485c608aa55A23d8d98dD2B4FA24Ba0f2Cf",
+    "gnsPairsStorageV6": "0xF7F324bc1D659f01A9a8d00C40d65568b25b4007",
+    "gnsPairInfosV6_1": "0xe780bBf94b0257fEDccF4EAEcBC70722E6F5F574"
   }
 }
