@@ -117,3 +117,6 @@ dist
 
 # Compiled code
 lib/
+
+# TypeChain
+/src/contracts/types/*
