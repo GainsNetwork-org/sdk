@@ -1,6 +1,6 @@
 {
-  "name": "@gains-network/sdk",
-  "version": "0.0.1",
+  "name": "@gainsnetwork/sdk",
+  "version": "0.0.2-rc.1",
   "description": "Gains Network SDK",
   "main": "./lib/index.js",
   "files": [
@@ -16,8 +16,7 @@
     "test:watch": "jest --watch",
     "test": "jest --coverage",
     "typecheck": "tsc --noEmit",
-    "generate-types": "typechain --target=ethers-v5 --out-dir ./src/contracts/types ./abi/*.json",
-    "postinstall": "npm run generate-types"
+    "generate-types": "typechain --target=ethers-v5 --out-dir ./src/contracts/types/generated ./abi/*.json"
   },
   "repository": {
     "type": "git",

@@ -119,4 +119,4 @@ dist
 lib/
 
 # TypeChain
-/src/contracts/types/*
+/src/contracts/types/generated/*
