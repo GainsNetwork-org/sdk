@@ -11,7 +11,7 @@ export const getClosingFee = (
   leverage: number,
   pairIndex: number,
   pairFee: Fee | undefined
-) => {
+): number => {
   if (
     posDai === undefined ||
     leverage === undefined ||
@@ -39,7 +39,7 @@ export const getFundingFee = (
   buy: boolean,
   openedAfterUpdate: boolean,
   context: GetFundingFeeContext
-) => {
+): number => {
   const { pairParams, pairFundingFees, openInterest, currentBlock } = context;
 
   if (
@@ -77,7 +77,7 @@ export const getRolloverFee = (
   initialAccRolloverFees: number,
   openedAfterUpdate: boolean,
   context: GetRolloverFeeContext
-) => {
+): number => {
   const { pairParams, pairRolloverFees, currentBlock } = context;
 
   if (

@@ -5,11 +5,10 @@ import {
   getRolloverFee,
   GetRolloverFeeContext,
 } from "./fees";
-import { Fee, Pair, Trade, TradeInfo, TradeInitialAccFees } from "./types";
+import { Fee, Trade, TradeInfo, TradeInitialAccFees } from "./types";
 
 export type GetPnlContext = {
   fee: Fee | undefined;
-  pair: Pair | undefined;
   maxGainP: number | undefined;
 } & GetRolloverFeeContext &
   GetFundingFeeContext;
@@ -21,7 +20,7 @@ export const getPnl = (
   initialAccFees: TradeInitialAccFees,
   useFees: boolean,
   context: GetPnlContext
-) => {
+): number[] | undefined => {
   if (!price) {
     return;
   }
@@ -35,7 +34,6 @@ export const getPnl = (
     pairFundingFees,
     openInterest,
     fee,
-    pair,
   } = context;
   const maxGain = maxGainP === undefined ? Infinity : (maxGainP / 100) * posDai;
 
