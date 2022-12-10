@@ -1,7 +1,7 @@
 import { ContractAddresses } from "./types";
 import addresses from "./addresses.json";
 
-export const getContractAddressesForChainOrThrow = (
+export const getContractAddressesForChain = (
   chainId: number
 ): ContractAddresses => {
   const _addresses: Record<string, ContractAddresses> = addresses;

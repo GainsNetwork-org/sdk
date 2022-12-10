@@ -6,7 +6,7 @@ import {
   GFarmTradingStorageV5,
   GNSPairInfosV6_1,
   GNSPairsStorageV6,
-} from "../types";
+} from "../types/generated";
 
 export type FetchTradesTradingContracts = {
   storage: GFarmTradingStorageV5;

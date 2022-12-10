@@ -1,6 +1,6 @@
 import type { Signer } from "ethers";
 import type { Provider } from "@ethersproject/providers";
-import { getContractAddressesForChainOrThrow } from "./addresses";
+import { getContractAddressesForChain } from "./addresses";
 import {
   GFarmTradingStorageV5__factory,
   GNSPairInfosV6_1__factory,
@@ -8,11 +8,11 @@ import {
 } from "./types/generated/factories";
 import { Contracts } from "./types";
 
-export const getContractsForChainOrThrow = (
+export const getContractsForChain = (
   chainId: number,
   signerOrProvider?: Signer | Provider
 ): Contracts => {
-  const addresses = getContractAddressesForChainOrThrow(chainId);
+  const addresses = getContractAddressesForChain(chainId);
 
   return {
     gfarmTradingStorageV5: GFarmTradingStorageV5__factory.connect(
@@ -31,3 +31,4 @@ export const getContractsForChainOrThrow = (
 };
 
 export * from "./utils";
+export * from "./addresses";
