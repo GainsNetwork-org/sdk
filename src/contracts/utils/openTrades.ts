@@ -8,21 +8,17 @@ import {
   GNSPairsStorageV6,
 } from "../types/generated";
 
-export type FetchTradesTradingContracts = {
-  storage: GFarmTradingStorageV5;
-  pairInfos: GNSPairInfosV6_1;
-  pairsStorage: GNSPairsStorageV6;
-};
+import { Contracts } from "@/contracts/types";
 
 export const fetchOpenPairTrades = async (
-  contracts: FetchTradesTradingContracts,
+  contracts: Contracts,
   pairBatchSize = 10
 ): Promise<TradeContainer[]> => {
   if (!contracts) {
     return [];
   }
 
-  const { pairsStorage: pairsStorageContract } = contracts;
+  const { gnsPairsStorageV6: pairsStorageContract } = contracts;
 
   try {
     const totalPairIndexes =
@@ -62,11 +58,11 @@ export const fetchOpenPairTrades = async (
 };
 
 const fetchOpenPairTradesBatch = async (
-  contracts: FetchTradesTradingContracts,
+  contracts: Contracts,
   startPairIndex: number,
   endPairIndex: number
 ): Promise<TradeContainer[]> => {
-  const { storage: storageContract, pairInfos: pairInfosContract } = contracts;
+  const { gfarmTradingStorageV5: storageContract, gnsPairInfosV6_1: pairInfosContract } = contracts;
 
   const maxTradesPerPair = (
     await storageContract.maxTradesPerPair()
