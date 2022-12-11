@@ -22,6 +22,8 @@ export const fetchOpenPairTrades = async (
     return [];
   }
 
+  console.log(contracts);
+
   const { pairsStorage: pairsStorageContract } = contracts;
 
   try {
