@@ -41,7 +41,11 @@ export const getPnl = (
     ? ((price - openPrice) / openPrice) * leverage * posDai
     : ((openPrice - price) / openPrice) * leverage * posDai;
 
+  console.log(pnlDai);
+
   pnlDai = pnlDai > maxGain ? maxGain : pnlDai;
+
+  console.log(pnlDai);
 
   if (useFees) {
     pnlDai -= getRolloverFee(
@@ -54,6 +58,9 @@ export const getPnl = (
         pairRolloverFees,
       }
     );
+
+    console.log(pnlDai);
+
     pnlDai -= getFundingFee(
       posDai * trade.leverage,
       initialAccFees.funding,
@@ -66,6 +73,8 @@ export const getPnl = (
         openInterest,
       }
     );
+
+    console.log(pnlDai);
   }
 
   let pnlPercentage = (pnlDai / posDai) * 100;
@@ -78,9 +87,13 @@ export const getPnl = (
     pnlPercentage = (pnlDai / posDai) * 100;
   }
 
+  console.log(pnlDai);
+
   pnlPercentage = pnlPercentage < -100 ? -100 : pnlPercentage;
 
   pnlDai = (posDai * pnlPercentage) / 100;
+
+  console.log(pnlDai);
 
   return [pnlDai, pnlPercentage];
 };
