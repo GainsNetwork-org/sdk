@@ -35,7 +35,7 @@ export const fetchPairs = async (
         feeIndex: parseInt(pair.feeIndex.toString()),
         groupIndex: parseInt(pair.groupIndex.toString()),
         pairIndex: pairIxs[index],
-        spreadP: parseFloat(pair.spreadP.toString()) / 1e10,
+        spreadP: parseFloat(pair.spreadP.toString()) / 1e12,
       } as Pair;
     });
 
@@ -67,8 +67,8 @@ export const fetchPairsParams = async (
       return {
         onePercentDepthAbove: parseFloat(pair.onePercentDepthAbove.toString()),
         onePercentDepthBelow: parseFloat(pair.onePercentDepthBelow.toString()),
-        rolloverFeePerBlockP: parseFloat(pair.rolloverFeePerBlockP.toString()) / 1e10,
-        fundingFeePerBlockP: parseFloat(pair.fundingFeePerBlockP.toString()) / 1e10,
+        rolloverFeePerBlockP: parseFloat(pair.rolloverFeePerBlockP.toString()) / 1e12,
+        fundingFeePerBlockP: parseFloat(pair.fundingFeePerBlockP.toString()) / 1e12,
       } as PairParams;
     });
 
@@ -129,11 +129,11 @@ export const fetchFees = async (
 
     return fees.map((fee) => {
       return {
-        closeFeeP: parseFloat(fee.closeFeeP.toString()) / 1e10,
-        minLevPosDai: parseFloat(fee.minLevPosDai.toString()) / 1e10,
-        nftLimitOrderFeeP: parseFloat(fee.nftLimitOrderFeeP.toString()) / 1e10,
-        openFeeP: parseFloat(fee.openFeeP.toString()) / 1e10,
-        referralFeeP: parseFloat(fee.referralFeeP.toString()) / 1e10,
+        closeFeeP: parseFloat(fee.closeFeeP.toString()) / 1e12,
+        minLevPosDai: parseFloat(fee.minLevPosDai.toString()) / 1e12,
+        nftLimitOrderFeeP: parseFloat(fee.nftLimitOrderFeeP.toString()) / 1e12,
+        openFeeP: parseFloat(fee.openFeeP.toString()) / 1e12,
+        referralFeeP: parseFloat(fee.referralFeeP.toString()) / 1e12,
       } as Fee;
     });
 
