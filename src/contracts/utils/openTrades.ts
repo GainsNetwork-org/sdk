@@ -197,17 +197,17 @@ const fetchOpenPairTradesBatch = async (
             finalOpenTradesForTrader[tradeIndex] = {
               trade: {
                 trader: trade.trader,
-                pairIndex: trade.pairIndex,
-                index: trade.index,
+                pairIndex: parseInt(trade.pairIndex.toString()),
+                index: parseInt(trade.index.toString()),
                 initialPosToken: parseFloat(trade.initialPosToken.toString()) / 1e18,
                 openPrice: parseFloat(trade.openPrice.toString()) / 1e10,
-                buy: trade.buy,
-                leverage: trade.leverage,
+                buy: trade.buy.toString() === "true",
+                leverage: parseInt(trade.leverage.toString()),
                 tp: parseFloat(trade.tp.toString()) / 1e10,
                 sl: parseFloat(trade.sl.toString()) / 1e10,
               },
               tradeInfo: {
-                beingMarketClosed: tradeInfo.beingMarketClosed,
+                beingMarketClosed: tradeInfo.beingMarketClosed.toString() === "true",
                 tokenPriceDai: parseFloat(tradeInfo.tokenPriceDai.toString()) / 1e10,
                 openInterestDai: parseFloat(tradeInfo.openInterestDai.toString()) / 1e18,
                 tpLastUpdated: tradeInfo.tpLastUpdated,
@@ -216,7 +216,7 @@ const fetchOpenPairTradesBatch = async (
               initialAccFees: {
                 rollover: parseFloat(tradeInitialAccFees.rollover.toString()) / 1e18,
                 funding: parseFloat(tradeInitialAccFees.funding.toString()) / 1e18,
-                openedAfterUpdate: tradeInitialAccFees.openedAfterUpdate,
+                openedAfterUpdate: tradeInitialAccFees.openedAfterUpdate.toString() === "true",
               },
             };
           }
