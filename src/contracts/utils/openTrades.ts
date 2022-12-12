@@ -117,9 +117,9 @@ const fetchOpenPairTradesBatch = async (
             );
           }
 
-          console.debug(
+          /*console.debug(
             `Waiting on ${openTradesCalls.length} StorageContract::openTrades calls for trader ${pairTraderAddress}...`
-          );
+          );*/
 
           const openTradesForTraderAddress = await Promise.all(openTradesCalls);
 
@@ -134,9 +134,9 @@ const fetchOpenPairTradesBatch = async (
             openTrade => openTrade.trader === pairTraderAddress
           );
 
-          console.debug(
+          /*console.debug(
             `Filtered down to ${actualOpenTradesForTrader.length} actual open trades for trader ${pairTraderAddress} and pair ${pairIndex}; fetching corresponding trade info and initial fees...`
-          );
+          );*/
 
           const [actualOpenTradesTradeInfos, actualOpenTradesInitialAccFees] =
             await Promise.all([
@@ -221,9 +221,9 @@ const fetchOpenPairTradesBatch = async (
             };
           }
 
-          console.debug(
+          /*console.debug(
             `Trade info and initial fees fetched for ${finalOpenTradesForTrader.length} trades for trader ${pairTraderAddress} and pair ${pairIndex}; done!`
-          );
+          );*/
 
           return finalOpenTradesForTrader;
         })
