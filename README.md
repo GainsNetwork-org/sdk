@@ -3,7 +3,7 @@
 ## Install
 
 ```bash
-npm install @gains-network/sdk
+npm install @gainsnetwork/sdk
 ```
 
 ## Usage
