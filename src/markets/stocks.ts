@@ -50,3 +50,7 @@ export const isStocksOpen = (dateToCheck: Date): boolean => {
 
   return !isClosed;
 };
+
+export const getUSMarketsNow = () => {
+  return DateTime.now().setZone(STOCKS_MARKETS_TIME_ZONE_IANA);
+};
