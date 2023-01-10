@@ -11,15 +11,15 @@ export const isForexOpen = (dateToCheck: Date): boolean => {
   );
   const weekday = now.weekday;
   const hour = now.hour;
-  const dateOfMonth = now.day;
+  const dayOfMonth = now.day;
   const month = now.month;
   const isInDST = now.isInDST;
 
   const isClosed =
     // Christmas 2023
-    (month === 12 && dateOfMonth >= 25 && dateOfMonth <= 27) ||
+    (month === 12 && dayOfMonth >= 25 && dayOfMonth <= 27) ||
     // New Year's Eve 2023
-    (month === 1 && dateOfMonth >= 1 && dateOfMonth <= 2) ||
+    (month === 1 && dayOfMonth >= 1 && dayOfMonth <= 2) ||
     // Friday after 4PM (DST) and 5PM (non-DST)
     (weekday === 5 && ((isInDST && hour >= 16) || hour >= 17)) ||
     // Saturday
