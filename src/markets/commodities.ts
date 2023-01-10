@@ -31,7 +31,3 @@ export const isCommoditiesOpen = (dateToCheck: Date): boolean => {
 
   return !isClosed;
 };
-
-export const getUSMarketsNow = () => {
-  return DateTime.now().setZone(COMMODITIES_MARKETS_TIME_ZONE_IANA);
-};
