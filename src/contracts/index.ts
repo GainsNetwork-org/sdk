@@ -5,6 +5,7 @@ import {
   GFarmTradingStorageV5__factory,
   GNSPairInfosV6_1__factory,
   GNSPairsStorageV6__factory,
+  GTokenOpenPnlFeed__factory,
 } from "./types/generated/factories";
 import { Contracts } from "./types";
 
@@ -25,6 +26,10 @@ export const getContractsForChain = (
     ),
     gnsPairsStorageV6: GNSPairsStorageV6__factory.connect(
       addresses.gnsPairsStorageV6,
+      signerOrProvider as Signer | Provider
+    ),
+    gTokenOpenPnlFeed: GTokenOpenPnlFeed__factory.connect(
+      addresses.gTokenOpenPnlFeed,
       signerOrProvider as Signer | Provider
     ),
   };
