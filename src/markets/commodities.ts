@@ -27,7 +27,7 @@ export const isCommoditiesOpen = (dateToCheck: Date): boolean => {
     // Saturday Opening
     (weekday === 7 && hour <= 18) ||
     // Daily Closing
-    (hour >= 17 && hour <= 18);
+    hour === 17;
 
   return !isClosed;
 };
