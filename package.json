@@ -97,6 +97,7 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
+    "ethcall": "^4.8.13",
     "ethers": "^5.7.2",
     "ethers-multicall": "^0.2.3",
     "luxon": "^3.2.0"
