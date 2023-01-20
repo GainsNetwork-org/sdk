@@ -1,6 +1,6 @@
 {
   "name": "@gainsnetwork/sdk",
-  "version": "0.0.13",
+  "version": "0.0.16",
   "description": "Gains Network SDK",
   "main": "./lib/index.js",
   "files": [
@@ -97,6 +97,7 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
+    "ethcall": "^4.8.13",
     "ethers": "^5.7.2",
     "luxon": "^3.2.0"
   }

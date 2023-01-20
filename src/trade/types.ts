@@ -1,3 +1,6 @@
+import { GFarmTradingStorageV5 } from "@/contracts/types/generated";
+import { BigNumber } from "ethers";
+
 export type PairIndexes = {
   [key: string]: number;
 };
@@ -53,6 +56,10 @@ export type LimitOrder = {
   spreadReductionP: number;
   tp: number;
   trader: string;
+  type: number;
+};
+
+export type LimitOrderRaw = GFarmTradingStorageV5.OpenLimitOrderStructOutput & {
   type: number;
 };
 
@@ -160,3 +167,13 @@ export enum PositionType {
   LONG = "LONG",
   SHORT = "SHORT",
 }
+
+export type TradeContainerRaw = {
+  trade: GFarmTradingStorageV5.TradeStruct;
+  tradeInfo: GFarmTradingStorageV5.TradeInfoStruct;
+  initialAccFees: {
+    rollover: BigNumber;
+    funding: BigNumber;
+    openedAfterUpdate: boolean;
+  };
+};
