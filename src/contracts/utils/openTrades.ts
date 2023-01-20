@@ -5,20 +5,26 @@ import { Contract, Provider } from "ethers-multicall";
 import { TradeContainer } from "@/trade/types";
 import { Contracts } from "@/contracts/types";
 
+export type FetchOpenPairTradesOverrides = {
+  pairBatchSize?: number;
+  useMulticall?: boolean;
+  blockTag?: number | string;
+}
 export const fetchOpenPairTrades = async (
   contracts: Contracts,
-  pairBatchSize = 50,
-  useMulticall = false
+  overrides: FetchOpenPairTradesOverrides = {}
 ): Promise<TradeContainer[]> => {
   if (!contracts) {
     return [];
   }
 
+  const { pairBatchSize = 10, useMulticall = false, blockTag = "latest" } = overrides;
+
   const { gnsPairsStorageV6: pairsStorageContract } = contracts;
 
   try {
     const totalPairIndexes =
-      (await pairsStorageContract.pairsCount()).toNumber() - 1;
+      (await pairsStorageContract.pairsCount({ blockTag })).toNumber() - 1;
     let allOpenPairTrades: TradeContainer[] = [];
 
     for (
@@ -35,7 +41,8 @@ export const fetchOpenPairTrades = async (
         ? await fetchOpenPairTradesBatchMulticall(
             contracts,
             batchStartPairIndex,
-            batchEndPairIndex
+            batchEndPairIndex,
+            blockTag
           )
         : await fetchOpenPairTradesBatch(
             contracts,
@@ -251,7 +258,8 @@ const fetchOpenPairTradesBatch = async (
 const fetchOpenPairTradesBatchMulticall = async (
   contracts: Contracts,
   startPairIndex: number,
-  endPairIndex: number
+  endPairIndex: number,
+  blockTag: number | string = "latest"
 ): Promise<TradeContainer[]> => {
   const {
     gfarmTradingStorageV5: storageContract,
@@ -279,7 +287,7 @@ const fetchOpenPairTradesBatchMulticall = async (
 
   const mcPairTraderAddresses = await multicallProvider.all(
     pairIndexesToFetch.map(pairIndex =>
-      storageContractMulticall.pairTradersArray(pairIndex)
+      storageContractMulticall.pairTradersArray(pairIndex, { blockTag })
     )
   );
 
@@ -298,7 +306,8 @@ const fetchOpenPairTradesBatchMulticall = async (
                 storageContractMulticall.openTrades(
                   pairTraderAddress,
                   _ix + startPairIndex,
-                  pairTradeIndex
+                  pairTradeIndex,
+                  { blockTag }
                 );
             }
             return openTradesCalls;
@@ -318,7 +327,8 @@ const fetchOpenPairTradesBatchMulticall = async (
         storageContractMulticall.openTradesInfo(
           openTrade.trader,
           openTrade.pairIndex,
-          openTrade.index
+          openTrade.index,
+          { blockTag }
         )
       )
     ),
@@ -327,7 +337,8 @@ const fetchOpenPairTradesBatchMulticall = async (
         pairInfosContractMulticall.tradeInitialAccFees(
           openTrade.trader,
           openTrade.pairIndex,
-          openTrade.index
+          openTrade.index,
+          { blockTag }
         )
       )
     ),
