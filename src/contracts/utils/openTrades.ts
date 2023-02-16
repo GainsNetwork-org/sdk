@@ -71,10 +71,6 @@ export const fetchOpenPairTradesRaw = async (
       allOpenPairTrades = allOpenPairTrades.concat(openPairTradesBatch);
     }
 
-    console.info(
-      `Fetched ${allOpenPairTrades.length} total open pair trade(s).`
-    );
-
     return allOpenPairTrades;
   } catch (error) {
     console.error(`Unexpected error while fetching open pair trades!`);
@@ -104,36 +100,18 @@ const fetchOpenPairTradesBatch = async (
 
   const rawTrades = await Promise.all(
     pairIndexesToFetch.map(async pairIndex => {
-      console.debug(`Fetching pair traders for pairIndex ${pairIndex}...`);
-
-      const pairTradersCallStartTime = performance.now();
 
       const pairTraderAddresses = await storageContract.pairTradersArray(
         pairIndex
       );
 
       if (pairTraderAddresses.length === 0) {
-        console.debug(
-          `No pair traders found for pairIndex ${pairIndex}; no processing left to do!`
-        );
-
         return [];
       }
-
-      console.debug(
-        `Fetched ${
-          pairTraderAddresses.length
-        } pair traders for pairIndex ${pairIndex} in ${
-          performance.now() - pairTradersCallStartTime
-        }ms; now fetching all open trades...`
-      );
 
       const openTradesForPairTraders = await Promise.all(
         pairTraderAddresses.map(async pairTraderAddress => {
           const openTradesCalls = new Array(maxTradesPerPair);
-
-          const traderOpenTradesCallsStartTime = performance.now();
-
           for (
             let pairTradeIndex = 0;
             pairTradeIndex < maxTradesPerPair;
@@ -146,26 +124,12 @@ const fetchOpenPairTradesBatch = async (
             );
           }
 
-          /*console.debug(
-            `Waiting on ${openTradesCalls.length} StorageContract::openTrades calls for trader ${pairTraderAddress}...`
-          );*/
-
           const openTradesForTraderAddress = await Promise.all(openTradesCalls);
-
-          console.debug(
-            `Received all trades for trader ${pairTraderAddress} and pair ${pairIndex} in ${
-              performance.now() - traderOpenTradesCallsStartTime
-            }ms.`
-          );
 
           // Filter out any of the trades that aren't *really* open (NOTE: these will have an empty trader address, so just test against that)
           const actualOpenTradesForTrader = openTradesForTraderAddress.filter(
             openTrade => openTrade.trader === pairTraderAddress
           );
-
-          /*console.debug(
-            `Filtered down to ${actualOpenTradesForTrader.length} actual open trades for trader ${pairTraderAddress} and pair ${pairIndex}; fetching corresponding trade info and initial fees...`
-          );*/
 
           const [actualOpenTradesTradeInfos, actualOpenTradesInitialAccFees] =
             await Promise.all([
@@ -201,11 +165,6 @@ const fetchOpenPairTradesBatch = async (
             const tradeInfo = actualOpenTradesTradeInfos[tradeIndex];
 
             if (tradeInfo === undefined) {
-              //   console.error(
-              //     "No trade info found for open trade while fetching open trades!",
-              //     { trade: actualOpenTradesForTrader[tradeIndex] }
-              //   );
-
               continue;
             }
 
@@ -213,11 +172,6 @@ const fetchOpenPairTradesBatch = async (
               actualOpenTradesInitialAccFees[tradeIndex];
 
             if (tradeInitialAccFees === undefined) {
-              //   console.error(
-              //     "No initial fees found for open trade while fetching open trades!",
-              //     { trade: actualOpenTradesForTrader[tradeIndex] }
-              //   );
-
               continue;
             }
 
@@ -229,10 +183,6 @@ const fetchOpenPairTradesBatch = async (
               initialAccFees: tradeInitialAccFees,
             };
           }
-
-          /*console.debug(
-            `Trade info and initial fees fetched for ${finalOpenTradesForTrader.length} trades for trader ${pairTraderAddress} and pair ${pairIndex}; done!`
-          );*/
 
           return finalOpenTradesForTrader;
         })

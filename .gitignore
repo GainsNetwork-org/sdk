@@ -120,3 +120,5 @@ lib/
 
 # TypeChain
 /src/contracts/types/generated/*
+
+test/local-test.ts
