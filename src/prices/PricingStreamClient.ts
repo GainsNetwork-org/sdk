@@ -3,48 +3,72 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import WebSocket from "ws";
 
+export type PriceMessage = WebSocket.MessageEvent;
+
 export class PricingStreamClient {
   private endpoints: string[];
-  private activeSocket: WebSocket | null;
+  private _activeSocket: WebSocket | null;
   private fallbackIndex: number;
   private reconnectTimeoutMs: number;
+  private _onPriceMessage: (message: PriceMessage) => void | null;
 
-  constructor(endpoints: string[], reconnectTimeoutMs = 1000) {
+  constructor(
+    endpoints: string[],
+    onPriceMessage: (message: PriceMessage) => void,
+    reconnectTimeoutMs = 1000
+  ) {
     this.endpoints = endpoints;
-    this.activeSocket = null;
+    this._activeSocket = null;
     this.fallbackIndex = 0;
     this.reconnectTimeoutMs = reconnectTimeoutMs;
-    void this.connectToClosestEndpoint();
+    this._onPriceMessage = onPriceMessage;
   }
 
-  private async connectToClosestEndpoint(): Promise<void> {
+  public async connect(): Promise<void> {
+    if (this._activeSocket) {
+      return;
+    }
+
     const latencies = await Promise.all(
       this.endpoints.map(endpoint => this.measureLatency(endpoint))
     );
-    const minIndex = latencies.indexOf(Math.min(...latencies));
-    this.connect(this.endpoints[minIndex]);
+    // Sort endpoints by latency
+    this.endpoints.sort((a, b) => {
+      const aLatency = latencies[this.endpoints.indexOf(a)];
+      const bLatency = latencies[this.endpoints.indexOf(b)];
+      return aLatency - bLatency;
+    });
+    this._connect(this.endpoints[0]);
   }
 
-  private connect(endpoint: string): void {
-    this.activeSocket = new WebSocket(endpoint);
+  private _connect(endpoint: string): void {
+    this._activeSocket = new WebSocket(endpoint);
 
-    this.activeSocket.onclose = () => {
+    this._activeSocket.onmessage = message => {
+      // Ignore return pong messages
+      if (message.data === "pong") {
+        return;
+      }
+      this._onPriceMessage?.(message);
+    };
+
+    this._activeSocket.onclose = () => {
       setTimeout(
         () => void this.fallbackToNextEndpoint(),
         this.reconnectTimeoutMs
       );
     };
 
-    this.activeSocket.onerror = error => {
+    this._activeSocket.onerror = error => {
       console.error(`WebSocket error: ${error.message}`);
-      this.activeSocket?.close();
+      this._activeSocket?.close();
     };
   }
 
   private fallbackToNextEndpoint(): void {
     this.fallbackIndex = (this.fallbackIndex + 1) % this.endpoints.length;
     const fallbackEndpoint = this.endpoints[this.fallbackIndex];
-    this.connect(fallbackEndpoint);
+    this._connect(fallbackEndpoint);
   }
 
   private async measureLatency(endpoint: string): Promise<number> {
@@ -64,15 +88,24 @@ export class PricingStreamClient {
         }
       };
 
-      socket.on("error", () => {
+      socket.on("error", e => {
         resolve(Number.MAX_VALUE);
       });
 
       // Backstop so we don't wait forever
       setTimeout(() => {
         socket.close();
-        resolve(2000 * 1000);
+        resolve(2000);
       }, 2000);
     });
+  }
+
+  get activeSocket(): WebSocket | null {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this._activeSocket;
+  }
+
+  set onPriceMessage(callback: (message: WebSocket.MessageEvent) => void) {
+    this._onPriceMessage = callback;
   }
 }
