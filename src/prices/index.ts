@@ -1,1 +1,1 @@
-export * from "./PricingStreamClient";
+export * from "./PricingNetworkClient";
