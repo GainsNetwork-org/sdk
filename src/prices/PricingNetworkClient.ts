@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import WebSocket from "ws";
+import { pairs } from "..";
 
 export class PricingNetworkClient {
   private endpoints: string[];
@@ -15,6 +16,7 @@ export class PricingNetworkClient {
   private priceBuffer: Map<number, number[]>;
   private priceBufferLastFlush: Map<number, number>;
   private stagedPrices: number[];
+  private pairsToIndex: Map<string, number>;
 
   constructor(
     endpoints: string[],
@@ -34,6 +36,11 @@ export class PricingNetworkClient {
     this.priceBuffer = new Map();
     this.priceBufferLastFlush = new Map();
     this.stagedPrices = [];
+
+    this.pairsToIndex = new Map();
+    Object.keys(pairs).forEach((pair, index) => {
+      this.pairsToIndex.set(pair, index);
+    });
   }
 
   public async connect(): Promise<void> {
@@ -46,6 +53,9 @@ export class PricingNetworkClient {
     );
     this.endpoints.forEach((endpoint, index) =>
       this.latencyMap.set(endpoint, latencies[index])
+    );
+    this.latencyMap.forEach((latency, endpoint) =>
+      console.log(`Latency to ${endpoint}: ${latency}ms`)
     );
     // Sort endpoints by latency
     const sortedEndpoints = [...this.endpoints].sort((a, b) => {
@@ -147,15 +157,21 @@ export class PricingNetworkClient {
 
   private processMessage(message: WebSocket.MessageEvent): void {
     try {
-      const priceUpdates: number[] = JSON.parse(message.data.toString());
-      if (!priceUpdates || priceUpdates?.length < 2) {
+      const priceUpdates = JSON.parse(message.data.toString());
+      if (!priceUpdates) {
+        console.log("Invalid price update message received", priceUpdates);
         return;
       }
 
       const finalMessage: number[] = [];
-      for (let i = 0; i < priceUpdates.length; i += 2) {
-        const pair = priceUpdates[i];
-        const price = priceUpdates[i + 1];
+      for (let i = 0; i < priceUpdates.length; i += 1) {
+        const pairAndPrice = priceUpdates[i];
+        const pair = this.pairsToIndex.get(pairAndPrice[0]);
+        if (pair === undefined) {
+          console.log("Invalid pair received", pairAndPrice[0]);
+          continue;
+        }
+        const price = pairAndPrice[1];
         if (!this.priceBuffer.has(pair)) {
           this.priceBuffer.set(pair, []);
           this.priceBufferLastFlush.set(pair, 0);
