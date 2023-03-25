@@ -108,6 +108,7 @@ export const pairs = {
 	"IOTA/USD": "crypto",
 	"TON/USD": "crypto",
 	"RPL/USD": "crypto",
+	"ARB/USD": "crypto",
 };
 
 export const tickerChanges = {
