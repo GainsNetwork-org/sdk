@@ -1,6 +1,6 @@
 {
   "name": "@gainsnetwork/sdk",
-  "version": "0.0.21",
+  "version": "0.0.23",
   "description": "Gains Network SDK",
   "main": "./lib/index.js",
   "files": [
@@ -42,7 +42,7 @@
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
     "semantic-release": "^19.0.2",
-    "ts-jest": "^27.0.5",
+    "ts-jest": "^27.1.5",
     "ts-node": "^10.2.1",
     "typechain": "^8.1.1",
     "typescript": "^4.2.4"
