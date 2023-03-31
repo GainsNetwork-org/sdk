@@ -2,10 +2,10 @@ import { pack64To256, unpack256To64 } from "./packing";
 
 describe("pack64To256 and unpack256To64", () => {
   test("should correctly pack and unpack 4 values", () => {
-    const x = BigInt(1000000000);
-    const y = BigInt(2000000000);
-    const z = BigInt(3000000000);
-    const w = BigInt(4000000000);
+    const x = BigInt(200000000000000);
+    const y = BigInt(300000000000);
+    const z = BigInt(400000000);
+    const w = BigInt(5);
 
     const packed = pack64To256(x, y, z, w);
     const unpacked = unpack256To64(packed);
