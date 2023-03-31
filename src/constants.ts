@@ -108,6 +108,27 @@ export const pairs = {
   "IOTA/USD": "crypto",
   "TON/USD": "crypto",
   "RPL/USD": "crypto",
+  "ARB/USD": "crypto",
+};
+
+export const getAssetClassFromGroupIndex = (groupIndex: number) => {
+  switch (groupIndex) {
+    case 0:
+      return "crypto";
+    case 1:
+    case 8:
+    case 9:
+      return "forex";
+    case 2:
+    case 3:
+    case 4:
+      return "stocks";
+    case 5:
+      return "indices";
+    case 6:
+    case 7:
+      return "commodities";
+  }
 };
 
 export const tickerChanges = {
