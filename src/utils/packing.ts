@@ -1,23 +1,44 @@
-export const pack64To256 = (
-  x: bigint,
-  y: bigint,
-  z: bigint,
-  w: bigint
-): bigint => {
+export const pack = (values: bigint[], bitLengths: bigint[]): bigint => {
+  if (values.length !== bitLengths.length) {
+    throw new Error("Mismatch in the lengths of values and bitLengths arrays");
+  }
+
   let packed = BigInt(0);
-  packed |= x;
-  packed |= y << BigInt(64);
-  packed |= z << BigInt(128);
-  packed |= w << BigInt(192);
+  let currentShift = BigInt(0);
+
+  for (let i = 0; i < values.length; i++) {
+    if (currentShift + bitLengths[i] > BigInt(256)) {
+      throw new Error("Packed value exceeds 256 bits");
+    }
+
+    const maxValue = (BigInt(1) << bitLengths[i]) - BigInt(1);
+    if (values[i] > maxValue) {
+      throw new Error("Value too large for specified bit length");
+    }
+
+    const maskedValue = values[i] & maxValue;
+    packed |= maskedValue << currentShift;
+    currentShift += bitLengths[i];
+  }
+
   return packed;
 };
 
-export const unpack256To64 = (
-  packed: bigint
-): [bigint, bigint, bigint, bigint] => {
-  const x = packed & BigInt("0xFFFFFFFFFFFFFFFF");
-  const y = (packed >> BigInt(64)) & BigInt("0xFFFFFFFFFFFFFFFF");
-  const z = (packed >> BigInt(128)) & BigInt("0xFFFFFFFFFFFFFFFF");
-  const w = (packed >> BigInt(192)) & BigInt("0xFFFFFFFFFFFFFFFF");
-  return [x, y, z, w];
+export const unpack = (packed: bigint, bitLengths: bigint[]): bigint[] => {
+  const values: bigint[] = [];
+
+  let currentShift = BigInt(0);
+  for (let i = 0; i < bitLengths.length; i++) {
+    if (currentShift + bitLengths[i] > BigInt(256)) {
+      throw new Error("Unpacked value exceeds 256 bits");
+    }
+
+    const maxValue = (BigInt(1) << bitLengths[i]) - BigInt(1);
+    const mask = maxValue << currentShift;
+    values[i] = (packed & mask) >> currentShift;
+
+    currentShift += bitLengths[i];
+  }
+
+  return values;
 };
