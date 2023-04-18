@@ -141,3 +141,5 @@ export const stockSplits = {
   "GME_1/USD": { date: "7/22/2022", split: 4 },
   "TSLA_1/USD": { date: "8/25/2022", split: 3 },
 };
+
+export const defaultSpreadReductionsP100 = [15, 20, 25, 30, 35];

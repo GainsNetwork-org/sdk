@@ -177,3 +177,9 @@ export type TradeContainerRaw = {
     openedAfterUpdate: boolean;
   };
 };
+
+export enum OpenLimitOrderType {
+  LEGACY = 0,
+  REVERSAL = 1,
+  MOMENTUM = 2,
+}
