@@ -67,7 +67,6 @@ export const getPnl = (
         openInterest,
       }
     );
-
   }
 
   let pnlPercentage = (pnlDai / posDai) * 100;

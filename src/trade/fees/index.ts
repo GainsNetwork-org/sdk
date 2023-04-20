@@ -1,10 +1,13 @@
 import {
   Fee,
+  GroupBorrowingFees,
+  InitialAccBorrowingFees,
   OpenInterest,
+  PairBorrowingFees,
   PairFundingFees,
   PairParams,
   PairRolloverFees,
-} from "./types";
+} from "../types";
 
 export const getClosingFee = (
   posDai: number,
