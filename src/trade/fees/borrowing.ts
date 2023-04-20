@@ -219,3 +219,12 @@ const getPendingAccFees = (
 
   return { accFeeLong: newAccFeeLong, accFeeShort: newAccFeeShort, delta };
 };
+
+export const borrowingFeeUtils = {
+  getPairGroupAccFeesDeltas,
+  getPairPendingAccFees,
+  getPairPendingAccFee,
+  getGroupPendingAccFees,
+  getGroupPendingAccFee,
+  getPendingAccFees,
+};
