@@ -178,9 +178,9 @@ export type TradeContainerRaw = {
     funding: BigNumber;
     openedAfterUpdate: boolean;
     borrowing: {
-      accPairFee: BigNumber;
-      accGroupFee: BigNumber;
-      block: BigNumber;
+      accPairFee: number;
+      accGroupFee: number;
+      block: number;
     };
   };
 };
