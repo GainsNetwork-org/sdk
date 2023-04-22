@@ -103,6 +103,11 @@ export type PairFundingFees = {
   lastUpdateBlock: number;
 };
 
+export type PairBorrowingFees = {
+  pairs: BorrowingFee.Pair[];
+  groups: BorrowingFee.Group[];
+};
+
 export type Pair = {
   name: string;
   from: string;
