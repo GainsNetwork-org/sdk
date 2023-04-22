@@ -1,48 +1,15 @@
-import { OpenInterest } from "../types";
-
-export type PairGroup = {
-  groupIndex: number;
-  initialAccFeeLong: number;
-  initialAccFeeShort: number;
-  prevGroupAccFeeLong: number;
-  prevGroupAccFeeShort: number;
-  pairAccFeeLong: number;
-  pairAccFeeShort: number;
-  block: number;
-};
-
-export type Pair = {
-  groups: PairGroup[];
-  feePerBlock: number;
-  accFeeLong: number;
-  accFeeShort: number;
-  accLastUpdatedBlock: number;
-};
-
-export type Group = {
-  oiLong: number;
-  oiShort: number;
-  feePerBlock: number;
-  accFeeLong: number;
-  accFeeShort: number;
-  accLastUpdatedBlock: number;
-};
-
-export type InitialAccBorrowingFees = {
-  accPairFee: number;
-  accGroupFee: number;
-  block: number;
-};
+import { OpenInterest } from "../../types";
+import * as BorrowingFee from "./types";
 
 export type GetBorrowingFeeContext = {
-  pairGroups: PairGroup[];
+  pairGroups: BorrowingFee.PairGroup[];
 } & GetPairGroupAccFeesDeltasContext;
 
 export const getBorrowingFee = (
   posDai: number,
   pairIndex: number,
   long: boolean,
-  initialAccFees: InitialAccBorrowingFees,
+  initialAccFees: BorrowingFee.InitialAccFees,
   context: GetBorrowingFeeContext
 ): number => {
   const { pairGroups } = context;
@@ -73,7 +40,7 @@ const getPairPendingAccFees = (
   pairIndex: number,
   currentBlock: number,
   vaultTvl: number,
-  context: { pairs: Pair[]; openInterest: OpenInterest }
+  context: { pairs: BorrowingFee.Pair[]; openInterest: OpenInterest }
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
   const {
     pairs,
@@ -99,7 +66,7 @@ const getPairPendingAccFee = (
   currentBlock: number,
   vaultTvl: number,
   long: boolean,
-  context: { pairs: Pair[]; openInterest: OpenInterest }
+  context: { pairs: BorrowingFee.Pair[]; openInterest: OpenInterest }
 ): number => {
   const { accFeeLong, accFeeShort } = getPairPendingAccFees(
     pairIndex,
@@ -114,7 +81,7 @@ const getGroupPendingAccFees = (
   groupIndex: number,
   currentBlock: number,
   vaultTvl: number,
-  context: { groups: Group[] }
+  context: { groups: BorrowingFee.Group[] }
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
   const { groups } = context;
   const group = groups[groupIndex];
@@ -135,7 +102,7 @@ const getGroupPendingAccFee = (
   currentBlock: number,
   vaultTvl: number,
   long: boolean,
-  context: { groups: Group[] }
+  context: { groups: BorrowingFee.Group[] }
 ): number => {
   const { accFeeLong, accFeeShort } = getGroupPendingAccFees(
     groupIndex,
@@ -149,14 +116,14 @@ const getGroupPendingAccFee = (
 type GetPairGroupAccFeesDeltasContext = {
   currentBlock: number;
   vaultTvl: number;
-  groups: Group[];
-  pairs: Pair[];
+  groups: BorrowingFee.Group[];
+  pairs: BorrowingFee.Pair[];
   pairOpenInterest: OpenInterest;
 };
 const getPairGroupAccFeesDeltas = (
   i: number,
-  pairGroups: PairGroup[],
-  initialFees: InitialAccBorrowingFees,
+  pairGroups: BorrowingFee.PairGroup[],
+  initialFees: BorrowingFee.InitialAccFees,
   pairIndex: number,
   long: boolean,
   context: GetPairGroupAccFeesDeltasContext
@@ -228,3 +195,5 @@ export const borrowingFeeUtils = {
   getGroupPendingAccFee,
   getPendingAccFees,
 };
+
+export * as BorrowingFee from "./types";

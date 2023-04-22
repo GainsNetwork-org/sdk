@@ -1,6 +1,6 @@
 import { GFarmTradingStorageV5 } from "@/contracts/types/generated";
 import { BigNumber } from "ethers";
-import { InitialAccBorrowingFees } from "./fees/borrowing";
+import { BorrowingFee } from "./fees/borrowing";
 
 export type PairIndexes = {
   [key: string]: number;
@@ -35,7 +35,7 @@ export type TradeInitialAccFees = {
   rollover: number;
   funding: number;
   openedAfterUpdate: boolean;
-  borrowing: InitialAccBorrowingFees;
+  borrowing: BorrowingFee.InitialAccFees;
 };
 
 export type TradingGroup = {

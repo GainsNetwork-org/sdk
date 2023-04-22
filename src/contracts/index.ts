@@ -34,7 +34,7 @@ export const getContractsForChain = (
       addresses.gTokenOpenPnlFeed,
       signerOrProvider as Signer | Provider
     ),
-    gnsNftRewardsV6: GNSNftRewardsV6_3_1__factory.connect(
+    gnsNftRewards: GNSNftRewardsV6_3_1__factory.connect(
       addresses.gnsNftRewardsV6_3_1,
       signerOrProvider as Signer | Provider
     ),
