@@ -10,6 +10,7 @@ export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
   initialAccFees: TradeInitialAccFees;
+  receivedAt?: number;
 };
 
 export type Trade = {
