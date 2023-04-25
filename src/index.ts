@@ -3,4 +3,5 @@ export * from "./contracts";
 export * from "./markets";
 export * from "./constants";
 export * from "./utils";
-export * as BorrowingFee from "./trade/fees/borrowing/types";
+// Not sure why this is needed, but it is. Barrel imports are not working.
+export * from "./trade/fees/borrowing/index";

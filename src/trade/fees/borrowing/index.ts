@@ -2,8 +2,12 @@ import { OpenInterest } from "../../types";
 import * as BorrowingFee from "./types";
 
 export type GetBorrowingFeeContext = {
-  pairGroups: BorrowingFee.PairGroup[];
-} & GetPairGroupAccFeesDeltasContext;
+  currentBlock: number;
+  vaultTvl: number;
+  groups: BorrowingFee.Group[];
+  pairs: BorrowingFee.Pair[];
+  openInterest: OpenInterest;
+};
 
 export const getBorrowingFee = (
   posDai: number,
@@ -12,8 +16,13 @@ export const getBorrowingFee = (
   initialAccFees: BorrowingFee.InitialAccFees,
   context: GetBorrowingFeeContext
 ): number => {
-  const { pairGroups } = context;
+  // TODO: What to return if missing dependencies?
+  if (!context.groups || !context.pairs || !context.openInterest) {
+    return 0;
+  }
 
+  const { pairs } = context;
+  const pairGroups = pairs[pairIndex].groups;
   let fee = 0;
   for (let i = pairGroups.length; i > 0; i--) {
     const { deltaGroup, deltaPair, beforeTradeOpen } =
@@ -113,27 +122,20 @@ const getGroupPendingAccFee = (
   return long ? accFeeLong : accFeeShort;
 };
 
-type GetPairGroupAccFeesDeltasContext = {
-  currentBlock: number;
-  vaultTvl: number;
-  groups: BorrowingFee.Group[];
-  pairs: BorrowingFee.Pair[];
-  pairOpenInterest: OpenInterest;
-};
 const getPairGroupAccFeesDeltas = (
   i: number,
   pairGroups: BorrowingFee.PairGroup[],
   initialFees: BorrowingFee.InitialAccFees,
   pairIndex: number,
   long: boolean,
-  context: GetPairGroupAccFeesDeltasContext
+  context: GetBorrowingFeeContext
 ): { deltaGroup: number; deltaPair: number; beforeTradeOpen: boolean } => {
   const group = pairGroups[i];
   const beforeTradeOpen = group.block <= initialFees.block;
 
   let deltaGroup, deltaPair;
   if (i == pairGroups.length - 1) {
-    const { currentBlock, vaultTvl, groups, pairs, pairOpenInterest } = context;
+    const { currentBlock, vaultTvl, groups, pairs, openInterest } = context;
     deltaGroup = getGroupPendingAccFee(
       group.groupIndex,
       currentBlock,
@@ -143,7 +145,7 @@ const getPairGroupAccFeesDeltas = (
     );
     deltaPair = getPairPendingAccFee(pairIndex, currentBlock, vaultTvl, long, {
       pairs,
-      openInterest: pairOpenInterest,
+      openInterest: openInterest,
     });
   } else {
     const nextGroup = pairGroups[i + 1];

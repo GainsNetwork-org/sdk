@@ -1,4 +1,6 @@
 import {
+  getBorrowingFee,
+  GetBorrowingFeeContext,
   getClosingFee,
   getFundingFee,
   GetFundingFeeContext,
@@ -11,7 +13,8 @@ export type GetPnlContext = {
   fee: Fee | undefined;
   maxGainP: number | undefined;
 } & GetRolloverFeeContext &
-  GetFundingFeeContext;
+  GetFundingFeeContext &
+  GetBorrowingFeeContext;
 
 export const getPnl = (
   price: number | undefined,
@@ -66,6 +69,14 @@ export const getPnl = (
         pairFundingFees,
         openInterest,
       }
+    );
+
+    pnlDai -= getBorrowingFee(
+      posDai,
+      trade.pairIndex,
+      trade.buy,
+      initialAccFees.borrowing,
+      context as GetBorrowingFeeContext
     );
   }
 
