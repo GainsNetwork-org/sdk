@@ -3,7 +3,7 @@ import * as BorrowingFee from "./types";
 
 export type GetBorrowingFeeContext = {
   currentBlock: number;
-  vaultTvl: number;
+  accBlockPerVaultMarketCap: number;
   groups: BorrowingFee.Group[];
   pairs: BorrowingFee.Pair[];
   openInterest: OpenInterest;
@@ -48,7 +48,7 @@ export const getBorrowingFee = (
 const getPairPendingAccFees = (
   pairIndex: number,
   currentBlock: number,
-  vaultTvl: number,
+  accBlockPerVaultMarketCap: number,
   context: { pairs: BorrowingFee.Pair[]; openInterest: OpenInterest }
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
   const {
@@ -57,7 +57,11 @@ const getPairPendingAccFees = (
   } = context;
 
   const pair = pairs[pairIndex];
-
+  const vaultTvl = getAverageVaultTvl(
+    accBlockPerVaultMarketCap,
+    pair.lastAccBlockPerVaultMarketCap,
+    currentBlock - pair.accLastUpdatedBlock
+  );
   return getPendingAccFees(
     pair.accFeeLong,
     pair.accFeeShort,
@@ -73,14 +77,14 @@ const getPairPendingAccFees = (
 const getPairPendingAccFee = (
   pairIndex: number,
   currentBlock: number,
-  vaultTvl: number,
+  accBlockPerVaultMarketCap: number,
   long: boolean,
   context: { pairs: BorrowingFee.Pair[]; openInterest: OpenInterest }
 ): number => {
   const { accFeeLong, accFeeShort } = getPairPendingAccFees(
     pairIndex,
     currentBlock,
-    vaultTvl,
+    accBlockPerVaultMarketCap,
     context
   );
   return long ? accFeeLong : accFeeShort;
@@ -89,11 +93,16 @@ const getPairPendingAccFee = (
 const getGroupPendingAccFees = (
   groupIndex: number,
   currentBlock: number,
-  vaultTvl: number,
+  accBlockPerVaultMarketCap: number,
   context: { groups: BorrowingFee.Group[] }
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
   const { groups } = context;
   const group = groups[groupIndex];
+  const vaultTvl = getAverageVaultTvl(
+    accBlockPerVaultMarketCap,
+    group.lastAccBlockPerVaultMarketCap,
+    currentBlock - group.accLastUpdatedBlock
+  );
   return getPendingAccFees(
     group.accFeeLong,
     group.accFeeShort,
@@ -109,14 +118,14 @@ const getGroupPendingAccFees = (
 const getGroupPendingAccFee = (
   groupIndex: number,
   currentBlock: number,
-  vaultTvl: number,
+  accBlockPerVaultMarketCap: number,
   long: boolean,
   context: { groups: BorrowingFee.Group[] }
 ): number => {
   const { accFeeLong, accFeeShort } = getGroupPendingAccFees(
     groupIndex,
     currentBlock,
-    vaultTvl,
+    accBlockPerVaultMarketCap,
     context
   );
   return long ? accFeeLong : accFeeShort;
@@ -135,18 +144,30 @@ const getPairGroupAccFeesDeltas = (
 
   let deltaGroup, deltaPair;
   if (i == pairGroups.length - 1) {
-    const { currentBlock, vaultTvl, groups, pairs, openInterest } = context;
+    const {
+      currentBlock,
+      accBlockPerVaultMarketCap,
+      groups,
+      pairs,
+      openInterest,
+    } = context;
     deltaGroup = getGroupPendingAccFee(
       group.groupIndex,
       currentBlock,
-      vaultTvl,
+      accBlockPerVaultMarketCap,
       long,
       { groups }
     );
-    deltaPair = getPairPendingAccFee(pairIndex, currentBlock, vaultTvl, long, {
-      pairs,
-      openInterest: openInterest,
-    });
+    deltaPair = getPairPendingAccFee(
+      pairIndex,
+      currentBlock,
+      accBlockPerVaultMarketCap,
+      long,
+      {
+        pairs,
+        openInterest: openInterest,
+      }
+    );
   } else {
     const nextGroup = pairGroups[i + 1];
     if (beforeTradeOpen && nextGroup.block <= initialFees.block) {
@@ -187,6 +208,16 @@ const getPendingAccFees = (
   const newAccFeeShort = delta < 0 ? accFeeShort - delta : accFeeShort;
 
   return { accFeeLong: newAccFeeLong, accFeeShort: newAccFeeShort, delta };
+};
+
+const getAverageVaultTvl = (
+  accBlockPerVaultMarketCap: number,
+  lastAccBlockPerVaultMarketCap: number,
+  blockDelta: number
+): number => {
+  return accBlockPerVaultMarketCap > lastAccBlockPerVaultMarketCap
+    ? blockDelta / (accBlockPerVaultMarketCap - lastAccBlockPerVaultMarketCap)
+    : 1;
 };
 
 export const borrowingFeeUtils = {
