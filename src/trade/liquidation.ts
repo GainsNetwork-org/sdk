@@ -10,7 +10,7 @@ import { Trade, TradeInfo, TradeInitialAccFees } from "./types";
 
 export type GetLiqPriceContext = GetFundingFeeContext &
   GetRolloverFeeContext &
-  GetBorrowingFeeContext;
+  GetBorrowingFeeContext & { currentBlock: number; currentL1Block: number };
 
 export const getLiquidationPrice = (
   trade: Trade,
@@ -27,14 +27,20 @@ export const getLiquidationPrice = (
           posDai,
           initialAccFees.rollover,
           initialAccFees.openedAfterUpdate,
-          context as GetRolloverFeeContext
+          {
+            ...context,
+            currentBlock: context.currentL1Block,
+          } as GetRolloverFeeContext
         ) -
         -getBorrowingFee(
           posDai,
           trade.pairIndex,
           trade.buy,
           initialAccFees.borrowing,
-          context as GetBorrowingFeeContext
+          {
+            ...context,
+            currentBlock: context.currentL1Block,
+          } as GetBorrowingFeeContext
         ),
       getFundingFee(
         posDai * trade.leverage,
