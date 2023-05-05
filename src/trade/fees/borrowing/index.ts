@@ -23,7 +23,23 @@ export const getBorrowingFee = (
 
   const { pairs } = context;
   const pairGroups = pairs[pairIndex].groups;
+  const firstPairGroup = pairGroups?.length > 0 ? pairGroups[0] : undefined;
+
   let fee = 0;
+  if (!firstPairGroup || firstPairGroup.block > initialAccFees.block) {
+    fee = !firstPairGroup
+      ? getPairPendingAccFee(
+          pairIndex,
+          context.currentBlock,
+          context.accBlockPerVaultMarketCap,
+          long,
+          context
+        )
+      : long
+      ? firstPairGroup.pairAccFeeLong
+      : firstPairGroup.pairAccFeeShort;
+  }
+
   for (let i = pairGroups.length; i > 0; i--) {
     const { deltaGroup, deltaPair, beforeTradeOpen } =
       getPairGroupAccFeesDeltas(
@@ -140,7 +156,7 @@ const getPairGroupAccFeesDeltas = (
   context: GetBorrowingFeeContext
 ): { deltaGroup: number; deltaPair: number; beforeTradeOpen: boolean } => {
   const group = pairGroups[i];
-  const beforeTradeOpen = group.block <= initialFees.block;
+  const beforeTradeOpen = group.block < initialFees.block;
 
   let deltaGroup, deltaPair;
   if (i == pairGroups.length - 1) {
@@ -170,7 +186,7 @@ const getPairGroupAccFeesDeltas = (
     );
   } else {
     const nextGroup = pairGroups[i + 1];
-    if (beforeTradeOpen && nextGroup.block <= initialFees.block) {
+    if (beforeTradeOpen && nextGroup.block < initialFees.block) {
       return { deltaGroup: 0, deltaPair: 0, beforeTradeOpen };
     }
     deltaGroup = long
