@@ -28,13 +28,7 @@ export const getBorrowingFee = (
   let fee = 0;
   if (!firstPairGroup || firstPairGroup.block > initialAccFees.block) {
     fee = !firstPairGroup
-      ? getPairPendingAccFee(
-          pairIndex,
-          context.currentBlock,
-          context.accBlockPerVaultMarketCap,
-          long,
-          context
-        )
+      ? getPairPendingAccFee(pairIndex, context.currentBlock, long, context)
       : long
       ? firstPairGroup.pairAccFeeLong
       : firstPairGroup.pairAccFeeShort;

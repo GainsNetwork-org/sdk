@@ -3,13 +3,16 @@ type GetPendingAccBlockPerMarketCap = {
   accBlockPerMarketCap: number;
   accBlockPerMarketCapLastStored: number;
 };
-export const getPendingAccBlockPerMarketCap = (
+const MIN_BLOCK_PER_MARKET_CAP = 1 / 1e18;
+export const getPendingAccBlockWeightedMarketCap = (
   currentBlock: number,
   context: GetPendingAccBlockPerMarketCap
 ): number => {
   const { marketCap, accBlockPerMarketCap, accBlockPerMarketCapLastStored } =
     context;
-  return accBlockPerMarketCap + marketCap > 0
-    ? (currentBlock - accBlockPerMarketCapLastStored) / marketCap
-    : 0;
+  return (
+    accBlockPerMarketCap +
+    (currentBlock - accBlockPerMarketCapLastStored) /
+      Math.max(marketCap, 1 / MIN_BLOCK_PER_MARKET_CAP)
+  );
 };
