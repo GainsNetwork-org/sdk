@@ -64,16 +64,20 @@ export const getBorrowingFee = (
 const getPairPendingAccFees = (
   pairIndex: number,
   currentBlock: number,
-  accBlockPerVaultMarketCap: number,
-  context: { pairs: BorrowingFee.Pair[]; openInterest: OpenInterest }
+  context: {
+    pairs: BorrowingFee.Pair[];
+    openInterest: OpenInterest;
+    accBlockPerVaultMarketCap: number;
+  }
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
   const {
     pairs,
     openInterest: { long, short },
+    accBlockPerVaultMarketCap,
   } = context;
 
   const pair = pairs[pairIndex];
-  const vaultTvl = getAverageVaultTvl(
+  const vaultMarketCap = getWeightedVaultMarketCap(
     accBlockPerVaultMarketCap,
     pair.lastAccBlockPerVaultMarketCap,
     currentBlock - pair.accLastUpdatedBlock
@@ -86,21 +90,23 @@ const getPairPendingAccFees = (
     pair.feePerBlock,
     currentBlock,
     pair.accLastUpdatedBlock,
-    vaultTvl
+    vaultMarketCap
   );
 };
 
 const getPairPendingAccFee = (
   pairIndex: number,
   currentBlock: number,
-  accBlockPerVaultMarketCap: number,
   long: boolean,
-  context: { pairs: BorrowingFee.Pair[]; openInterest: OpenInterest }
+  context: {
+    pairs: BorrowingFee.Pair[];
+    openInterest: OpenInterest;
+    accBlockPerVaultMarketCap: number;
+  }
 ): number => {
   const { accFeeLong, accFeeShort } = getPairPendingAccFees(
     pairIndex,
     currentBlock,
-    accBlockPerVaultMarketCap,
     context
   );
   return long ? accFeeLong : accFeeShort;
@@ -109,12 +115,11 @@ const getPairPendingAccFee = (
 const getGroupPendingAccFees = (
   groupIndex: number,
   currentBlock: number,
-  accBlockPerVaultMarketCap: number,
-  context: { groups: BorrowingFee.Group[] }
+  context: { groups: BorrowingFee.Group[]; accBlockPerVaultMarketCap: number }
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
-  const { groups } = context;
+  const { groups, accBlockPerVaultMarketCap } = context;
   const group = groups[groupIndex];
-  const vaultTvl = getAverageVaultTvl(
+  const vaultMarketCap = getWeightedVaultMarketCap(
     accBlockPerVaultMarketCap,
     group.lastAccBlockPerVaultMarketCap,
     currentBlock - group.accLastUpdatedBlock
@@ -127,21 +132,19 @@ const getGroupPendingAccFees = (
     group.feePerBlock,
     currentBlock,
     group.accLastUpdatedBlock,
-    vaultTvl
+    vaultMarketCap
   );
 };
 
 const getGroupPendingAccFee = (
   groupIndex: number,
   currentBlock: number,
-  accBlockPerVaultMarketCap: number,
   long: boolean,
-  context: { groups: BorrowingFee.Group[] }
+  context: { groups: BorrowingFee.Group[]; accBlockPerVaultMarketCap: number }
 ): number => {
   const { accFeeLong, accFeeShort } = getGroupPendingAccFees(
     groupIndex,
     currentBlock,
-    accBlockPerVaultMarketCap,
     context
   );
   return long ? accFeeLong : accFeeShort;
@@ -167,23 +170,15 @@ const getPairGroupAccFeesDeltas = (
       pairs,
       openInterest,
     } = context;
-    deltaGroup = getGroupPendingAccFee(
-      group.groupIndex,
-      currentBlock,
+    deltaGroup = getGroupPendingAccFee(group.groupIndex, currentBlock, long, {
+      groups,
       accBlockPerVaultMarketCap,
-      long,
-      { groups }
-    );
-    deltaPair = getPairPendingAccFee(
-      pairIndex,
-      currentBlock,
+    });
+    deltaPair = getPairPendingAccFee(pairIndex, currentBlock, long, {
+      pairs,
+      openInterest: openInterest,
       accBlockPerVaultMarketCap,
-      long,
-      {
-        pairs,
-        openInterest: openInterest,
-      }
-    );
+    });
   } else {
     const nextGroup = pairGroups[i + 1];
     if (beforeTradeOpen && nextGroup.block < initialFees.block) {
@@ -214,11 +209,11 @@ const getPendingAccFees = (
   feePerBlock: number,
   currentBlock: number,
   accLastUpdatedBlock: number,
-  vaultTvl: number
+  vaultMarketCap: number
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
   const delta =
     ((oiLong - oiShort) * feePerBlock * (currentBlock - accLastUpdatedBlock)) /
-    vaultTvl;
+    vaultMarketCap;
 
   const newAccFeeLong = delta > 0 ? accFeeLong + delta : accFeeLong;
   const newAccFeeShort = delta < 0 ? accFeeShort - delta : accFeeShort;
@@ -226,12 +221,12 @@ const getPendingAccFees = (
   return { accFeeLong: newAccFeeLong, accFeeShort: newAccFeeShort, delta };
 };
 
-const getAverageVaultTvl = (
+const getWeightedVaultMarketCap = (
   accBlockPerVaultMarketCap: number,
   lastAccBlockPerVaultMarketCap: number,
   blockDelta: number
 ): number => {
-  return accBlockPerVaultMarketCap > lastAccBlockPerVaultMarketCap
+  return blockDelta > 0
     ? blockDelta / (accBlockPerVaultMarketCap - lastAccBlockPerVaultMarketCap)
     : 1;
 };
