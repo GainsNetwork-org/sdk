@@ -16,8 +16,12 @@ export const getBorrowingFee = (
   initialAccFees: BorrowingFee.InitialAccFees,
   context: GetBorrowingFeeContext
 ): number => {
-  // TODO: What to return if missing dependencies?
-  if (!context.groups || !context.pairs || !context.openInterest) {
+  if (
+    !context.groups ||
+    !context.pairs ||
+    !context.openInterest ||
+    !context.pairs[pairIndex]
+  ) {
     return 0;
   }
 
