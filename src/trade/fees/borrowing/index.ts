@@ -225,8 +225,76 @@ const getWeightedVaultMarketCap = (
   blockDelta: number
 ): number => {
   return blockDelta > 0
-    ? blockDelta / (accBlockWeightedMarketCap - lastAccBlockWeightedMarketCap)
+    ? blockDelta /
+        (accBlockWeightedMarketCap - lastAccBlockWeightedMarketCap) /
+        1e18
     : 1;
+};
+
+const getActivePairFeePerBlock = (
+  pair: BorrowingFee.Pair,
+  openInterest: OpenInterest,
+  accBlockWeightedMarketCap: number,
+  currentBlock: number
+): number => {
+  const { long, short } = openInterest;
+  const vaultMarketCap = getWeightedVaultMarketCap(
+    accBlockWeightedMarketCap,
+    pair.lastAccBlockWeightedMarketCap,
+    currentBlock - pair.accLastUpdatedBlock
+  );
+  console.log(
+    "feetest - getActivePairFeePerBlock",
+    accBlockWeightedMarketCap,
+    pair.lastAccBlockWeightedMarketCap,
+    currentBlock - pair.accLastUpdatedBlock,
+    long,
+    short,
+    pair.feePerBlock,
+    vaultMarketCap
+  );
+  return (Math.abs(long - short) * pair.feePerBlock) / vaultMarketCap;
+};
+
+const getActiveGroupFeePerBlock = (
+  group: BorrowingFee.Group,
+  accBlockWeightedMarketCap: number,
+  currentBlock: number
+): number => {
+  const { oiLong, oiShort } = group;
+  const vaultMarketCap = getWeightedVaultMarketCap(
+    accBlockWeightedMarketCap,
+    group.lastAccBlockWeightedMarketCap,
+    currentBlock - group.accLastUpdatedBlock
+  );
+  return (Math.abs(oiLong - oiShort) * group.feePerBlock) / vaultMarketCap;
+};
+
+const getActiveFeePerBlock = (
+  pair: BorrowingFee.Pair,
+  group: BorrowingFee.Group | undefined,
+  pairOpenInterest: OpenInterest,
+  accBlockWeightedMarketCap: number,
+  currentBlock: number
+): number => {
+  const pairFeePerBlock = getActivePairFeePerBlock(
+    pair,
+    pairOpenInterest,
+    accBlockWeightedMarketCap,
+    currentBlock
+  );
+
+  if (!group) {
+    return pairFeePerBlock;
+  }
+
+  const groupFeePerBlock = getActiveGroupFeePerBlock(
+    group,
+    accBlockWeightedMarketCap,
+    currentBlock
+  );
+
+  return Math.max(pairFeePerBlock + groupFeePerBlock);
 };
 
 export const borrowingFeeUtils = {
@@ -236,6 +304,10 @@ export const borrowingFeeUtils = {
   getGroupPendingAccFees,
   getGroupPendingAccFee,
   getPendingAccFees,
+  getActivePairFeePerBlock,
+  getActiveGroupFeePerBlock,
+  getActiveFeePerBlock,
+  getWeightedVaultMarketCap,
 };
 
 export * as BorrowingFee from "./types";

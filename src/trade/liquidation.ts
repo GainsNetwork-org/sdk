@@ -32,7 +32,7 @@ export const getLiquidationPrice = (
             currentBlock: context.currentL1Block,
           } as GetRolloverFeeContext
         ) -
-        -getBorrowingFee(
+        getBorrowingFee(
           posDai,
           trade.pairIndex,
           trade.buy,
@@ -41,14 +41,14 @@ export const getLiquidationPrice = (
             ...context,
             currentBlock: context.currentL1Block,
           } as GetBorrowingFeeContext
-        ),
-      getFundingFee(
-        posDai * trade.leverage,
-        initialAccFees.funding,
-        trade.buy,
-        initialAccFees.openedAfterUpdate,
-        context as GetFundingFeeContext
-      ))) /
+        ) -
+        getFundingFee(
+          posDai * trade.leverage,
+          initialAccFees.funding,
+          trade.buy,
+          initialAccFees.openedAfterUpdate,
+          context as GetFundingFeeContext
+        ))) /
     posDai /
     trade.leverage;
 
