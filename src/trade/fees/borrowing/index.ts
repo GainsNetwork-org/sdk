@@ -49,14 +49,14 @@ export const getBorrowingFee = (
         context
       );
 
-    fee += (posDai * Math.max(deltaGroup, deltaPair)) / 100;
+    fee += Math.max(deltaGroup, deltaPair);
 
     if (beforeTradeOpen) {
       break;
     }
   }
 
-  return fee;
+  return (posDai * fee) / 100;
 };
 
 const getPairPendingAccFees = (

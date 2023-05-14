@@ -33,7 +33,7 @@ export const getLiquidationPrice = (
           } as GetRolloverFeeContext
         ) -
         getBorrowingFee(
-          posDai,
+          posDai * trade.leverage,
           trade.pairIndex,
           trade.buy,
           initialAccFees.borrowing,
@@ -53,6 +53,6 @@ export const getLiquidationPrice = (
     trade.leverage;
 
   return trade.buy
-    ? trade.openPrice - liqPriceDistance
-    : trade.openPrice + liqPriceDistance;
+    ? Math.max(trade.openPrice - liqPriceDistance, 0)
+    : Math.max(trade.openPrice + liqPriceDistance, 0);
 };
