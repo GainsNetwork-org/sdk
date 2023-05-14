@@ -243,16 +243,6 @@ const getActivePairFeePerBlock = (
     pair.lastAccBlockWeightedMarketCap,
     currentBlock - pair.accLastUpdatedBlock
   );
-  console.log(
-    "feetest - getActivePairFeePerBlock",
-    accBlockWeightedMarketCap,
-    pair.lastAccBlockWeightedMarketCap,
-    currentBlock - pair.accLastUpdatedBlock,
-    long,
-    short,
-    pair.feePerBlock,
-    vaultMarketCap
-  );
   return (Math.abs(long - short) * pair.feePerBlock) / vaultMarketCap;
 };
 
