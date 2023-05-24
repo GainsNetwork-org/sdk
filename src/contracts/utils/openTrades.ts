@@ -365,9 +365,9 @@ const _prepareTradeContainer = (
       tradeInitialAccFees.openedAfterUpdate.toString() === "true",
     borrowing: {
       accPairFee:
-        parseFloat(tradeInitialAccFees.borrowing.accPairFee.toString()) / 1e4,
+        parseFloat(tradeInitialAccFees.borrowing.accPairFee.toString()) / 1e10,
       accGroupFee:
-        parseFloat(tradeInitialAccFees.borrowing.accGroupFee.toString()) / 1e4,
+        parseFloat(tradeInitialAccFees.borrowing.accGroupFee.toString()) / 1e10,
       block: parseFloat(tradeInitialAccFees.borrowing.block.toString()),
     },
   },
