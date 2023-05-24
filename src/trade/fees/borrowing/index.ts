@@ -286,7 +286,7 @@ const getActiveFeePerBlock = (
     currentBlock
   );
 
-  return Math.max(pairFeePerBlock + groupFeePerBlock);
+  return Math.max(pairFeePerBlock, groupFeePerBlock);
 };
 
 export const borrowingFeeUtils = {
