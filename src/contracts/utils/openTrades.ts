@@ -86,7 +86,7 @@ const fetchOpenPairTradesBatch = async (
 ): Promise<TradeContainerRaw[]> => {
   const {
     gfarmTradingStorageV5: storageContract,
-    gnsPairInfosV6_1: pairInfosContract,
+    gnsBorrowingFees: borrowingFeesContract,
   } = contracts;
 
   const maxTradesPerPair = (
@@ -100,7 +100,6 @@ const fetchOpenPairTradesBatch = async (
 
   const rawTrades = await Promise.all(
     pairIndexesToFetch.map(async pairIndex => {
-
       const pairTraderAddresses = await storageContract.pairTradersArray(
         pairIndex
       );
@@ -144,7 +143,7 @@ const fetchOpenPairTradesBatch = async (
               ),
               Promise.all(
                 actualOpenTradesForTrader.map(aot =>
-                  pairInfosContract.tradeInitialAccFees(
+                  borrowingFeesContract.getTradeInitialAccFees(
                     aot.trader,
                     aot.pairIndex,
                     aot.index
@@ -168,12 +167,15 @@ const fetchOpenPairTradesBatch = async (
               continue;
             }
 
-            const tradeInitialAccFees =
-              actualOpenTradesInitialAccFees[tradeIndex];
-
-            if (tradeInitialAccFees === undefined) {
+            if (actualOpenTradesInitialAccFees[tradeIndex] === undefined) {
               continue;
             }
+
+            const tradeInitialAccFees = {
+              ...actualOpenTradesInitialAccFees[tradeIndex].otherFees,
+              borrowing:
+                actualOpenTradesInitialAccFees[tradeIndex].borrowingFees,
+            };
 
             const trade = actualOpenTradesForTrader[tradeIndex];
 
@@ -204,7 +206,7 @@ const fetchOpenPairTradesBatchMulticall = async (
 ): Promise<TradeContainerRaw[]> => {
   const {
     gfarmTradingStorageV5: storageContract,
-    gnsPairInfosV6_1: pairInfosContract,
+    gnsBorrowingFees: borrowingFeesContract,
   } = contracts;
 
   // Convert to Multicall for efficient RPC usage
@@ -213,9 +215,10 @@ const fetchOpenPairTradesBatchMulticall = async (
   const storageContractMulticall = new Contract(storageContract.address, [
     ...storageContract.interface.fragments,
   ]);
-  const pairInfosContractMulticall = new Contract(pairInfosContract.address, [
-    ...pairInfosContract.interface.fragments,
-  ]);
+  const borrowingFeesContractMulticall = new Contract(
+    borrowingFeesContract.address,
+    [...borrowingFeesContract.interface.fragments]
+  );
 
   const maxTradesPerPair = (
     await storageContract.maxTradesPerPair()
@@ -274,9 +277,11 @@ const fetchOpenPairTradesBatchMulticall = async (
       ),
       blockTag
     ),
-    multicallProvider.all(
+    multicallProvider.all<
+      Awaited<ReturnType<typeof borrowingFeesContract.getTradeInitialAccFees>>
+    >(
       openTrades.map(openTrade =>
-        pairInfosContractMulticall.tradeInitialAccFees(
+        borrowingFeesContractMulticall.getTradeInitialAccFees(
           openTrade.trader,
           openTrade.pairIndex,
           openTrade.index
@@ -304,9 +309,7 @@ const fetchOpenPairTradesBatchMulticall = async (
       continue;
     }
 
-    const tradeInitialAccFees = openTradesInitialAccFees[tradeIndex];
-
-    if (tradeInitialAccFees === undefined) {
+    if (openTradesInitialAccFees[tradeIndex] === undefined) {
       console.error(
         "No initial fees found for open trade while fetching open trades!",
         { trade: openTrades[tradeIndex] }
@@ -314,6 +317,11 @@ const fetchOpenPairTradesBatchMulticall = async (
 
       continue;
     }
+
+    const tradeInitialAccFees = {
+      ...openTradesInitialAccFees[tradeIndex].otherFees,
+      borrowing: openTradesInitialAccFees[tradeIndex].borrowingFees,
+    };
 
     const trade = openTrades[tradeIndex];
 
@@ -355,5 +363,12 @@ const _prepareTradeContainer = (
     funding: parseFloat(tradeInitialAccFees.funding.toString()) / 1e18,
     openedAfterUpdate:
       tradeInitialAccFees.openedAfterUpdate.toString() === "true",
+    borrowing: {
+      accPairFee:
+        parseFloat(tradeInitialAccFees.borrowing.accPairFee.toString()) / 1e10,
+      accGroupFee:
+        parseFloat(tradeInitialAccFees.borrowing.accGroupFee.toString()) / 1e10,
+      block: parseFloat(tradeInitialAccFees.borrowing.block.toString()),
+    },
   },
 });

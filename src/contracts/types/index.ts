@@ -3,7 +3,9 @@ import {
   GNSPairInfosV6_1,
   GNSPairsStorageV6,
   GTokenOpenPnlFeed,
-  GNSNftRewardsV6,
+  GNSNftRewardsV6_3_1,
+  GNSBorrowingFeesV6_3_2,
+  GNSTradingCallbacksV6_3_2,
 } from "./generated";
 
 export type Contracts = {
@@ -11,7 +13,9 @@ export type Contracts = {
   gnsPairInfosV6_1: GNSPairInfosV6_1;
   gnsPairsStorageV6: GNSPairsStorageV6;
   gTokenOpenPnlFeed: GTokenOpenPnlFeed;
-  gnsNftRewardsV6: GNSNftRewardsV6;
+  gnsNftRewards: GNSNftRewardsV6_3_1;
+  gnsBorrowingFees: GNSBorrowingFeesV6_3_2;
+  gnsTradingCallbacks: GNSTradingCallbacksV6_3_2;
 };
 
 export type ContractAddresses = {
@@ -20,6 +24,9 @@ export type ContractAddresses = {
   gnsPairsStorageV6: string;
   gTokenOpenPnlFeed: string;
   gnsNftRewardsV6: string;
+  gnsNftRewardsV6_3_1: string;
+  gnsBorrowingFeesV6_3_2: string;
+  gnsTradingCallbacksV6_3_2: string;
 };
 
 export type BlockTag = number | "latest" | "pending";

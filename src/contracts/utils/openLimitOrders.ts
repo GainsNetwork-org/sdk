@@ -46,10 +46,8 @@ export const fetchOpenLimitOrdersRaw = async (
   console.time("fetchOpenLimitOrdersRaw");
   const { useMulticall = false, blockTag = "latest" } = overrides;
 
-  const {
-    gfarmTradingStorageV5: storageContract,
-    gnsNftRewardsV6: nftRewards,
-  } = contracts;
+  const { gfarmTradingStorageV5: storageContract, gnsNftRewards: nftRewards } =
+    contracts;
 
   const openLimitOrders = await storageContract.getOpenLimitOrders({
     blockTag,

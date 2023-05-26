@@ -4,7 +4,7 @@ import {
   PairFundingFees,
   PairParams,
   PairRolloverFees,
-} from "./types";
+} from "../types";
 
 export const getClosingFee = (
   posDai: number,
@@ -96,3 +96,5 @@ export const getRolloverFee = (
 
   return posDai * (pendingAccRolloverFees - initialAccRolloverFees);
 };
+
+export * from "./borrowing";

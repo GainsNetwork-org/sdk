@@ -1,5 +1,6 @@
 import { GFarmTradingStorageV5 } from "@/contracts/types/generated";
 import { BigNumber } from "ethers";
+import { BorrowingFee } from "./fees/borrowing";
 
 export type PairIndexes = {
   [key: string]: number;
@@ -9,6 +10,7 @@ export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
   initialAccFees: TradeInitialAccFees;
+  receivedAt?: number;
 };
 
 export type Trade = {
@@ -34,6 +36,7 @@ export type TradeInitialAccFees = {
   rollover: number;
   funding: number;
   openedAfterUpdate: boolean;
+  borrowing: BorrowingFee.InitialAccFees;
 };
 
 export type TradingGroup = {
@@ -98,6 +101,11 @@ export type PairFundingFees = {
   accPerOiLong: number;
   accPerOiShort: number;
   lastUpdateBlock: number;
+};
+
+export type PairParamsBorrowingFees = {
+  pairs: BorrowingFee.Pair[];
+  groups: BorrowingFee.Group[];
 };
 
 export type Pair = {
@@ -175,6 +183,11 @@ export type TradeContainerRaw = {
     rollover: BigNumber;
     funding: BigNumber;
     openedAfterUpdate: boolean;
+    borrowing: {
+      accPairFee: number;
+      accGroupFee: number;
+      block: number;
+    };
   };
 };
 
