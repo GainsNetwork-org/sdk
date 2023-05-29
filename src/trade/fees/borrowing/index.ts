@@ -60,6 +60,36 @@ export const getBorrowingFee = (
   return (posDai * fee) / 100;
 };
 
+export const withinMaxGroupOi = (
+  pairIndex: number,
+  long: boolean,
+  positionSizeDai: number,
+  context: { groups: BorrowingFee.Group[]; pairs: BorrowingFee.Pair[] }
+): boolean => {
+  const { groups, pairs } = context;
+  if (!groups || !pairs) {
+    return false;
+  }
+
+  const g = groups[getPairGroupIndex(pairIndex, { pairs })];
+  return (
+    g.maxOi == 0 || (long ? g.oiLong : g.oiShort) + positionSizeDai <= g.maxOi
+  );
+};
+
+const getPairGroupIndex = (
+  pairIndex: number,
+  context: { pairs: BorrowingFee.Pair[] }
+): number => {
+  const { pairs } = context;
+  if (!pairs[pairIndex]) {
+    return 0;
+  }
+
+  const pairGroups = pairs[pairIndex].groups;
+  return pairGroups.length == 0 ? 0 : pairGroups[0].groupIndex;
+};
+
 const getPairPendingAccFees = (
   pairIndex: number,
   currentBlock: number,
@@ -300,6 +330,7 @@ export const borrowingFeeUtils = {
   getActiveGroupFeePerBlock,
   getActiveFeePerBlock,
   getWeightedVaultMarketCap,
+  getPairGroupIndex,
 };
 
 export * as BorrowingFee from "./types";
