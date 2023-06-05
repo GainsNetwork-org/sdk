@@ -25,6 +25,7 @@ export type Group = {
   accFeeLong: number;
   accFeeShort: number;
   accLastUpdatedBlock: number;
+  maxOi: number;
   lastAccBlockWeightedMarketCap: number;
 };
 
