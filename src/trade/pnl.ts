@@ -74,7 +74,7 @@ export const getPnl = (
     );
 
     pnlDai -= getBorrowingFee(
-      posDai,
+      posDai * trade.leverage,
       trade.pairIndex,
       trade.buy,
       initialAccFees.borrowing,
