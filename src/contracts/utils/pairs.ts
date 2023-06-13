@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Pair, PairParams, PairRolloverFees, Fee } from "@/trade/types";
+import {
+  Pair,
+  PairParams,
+  PairRolloverFees,
+  Fee,
+  OpenInterest,
+} from "@/trade/types";
 import {
   GFarmTradingStorageV5,
   GNSPairInfosV6_1,
@@ -22,9 +28,7 @@ export const fetchPairs = async (
 
   try {
     const pairs = await Promise.all(
-      pairIxs.map(
-        (pairIndex) => pairsStorageContract.pairs(pairIndex)
-      )
+      pairIxs.map(pairIndex => pairsStorageContract.pairs(pairIndex))
     );
 
     return pairs.map((pair, index) => {
@@ -38,7 +42,6 @@ export const fetchPairs = async (
         spreadP: parseFloat(pair.spreadP.toString()) / 1e12,
       } as Pair;
     });
-
   } catch (error) {
     console.error(`Unexpected error while fetching pairs!`);
 
@@ -58,20 +61,19 @@ export const fetchPairsParams = async (
 
   try {
     const pairParams = await Promise.all(
-      pairIxs.map(
-        (pairIndex) => pairInfosContract.pairParams(pairIndex)
-      )
+      pairIxs.map(pairIndex => pairInfosContract.pairParams(pairIndex))
     );
 
-    return pairParams.map((pair) => {
+    return pairParams.map(pair => {
       return {
         onePercentDepthAbove: parseFloat(pair.onePercentDepthAbove.toString()),
         onePercentDepthBelow: parseFloat(pair.onePercentDepthBelow.toString()),
-        rolloverFeePerBlockP: parseFloat(pair.rolloverFeePerBlockP.toString()) / 1e12,
-        fundingFeePerBlockP: parseFloat(pair.fundingFeePerBlockP.toString()) / 1e12,
+        rolloverFeePerBlockP:
+          parseFloat(pair.rolloverFeePerBlockP.toString()) / 1e12,
+        fundingFeePerBlockP:
+          parseFloat(pair.fundingFeePerBlockP.toString()) / 1e12,
       } as PairParams;
     });
-
   } catch (error) {
     console.error(`Unexpected error while fetching pairs!`);
 
@@ -91,18 +93,16 @@ export const fetchPairsRolloverFees = async (
 
   try {
     const pairsRolloverFees = await Promise.all(
-      pairIxs.map(
-        (pairIndex) => pairInfosContract.pairRolloverFees(pairIndex)
-      )
+      pairIxs.map(pairIndex => pairInfosContract.pairRolloverFees(pairIndex))
     );
 
-    return pairsRolloverFees.map((pairData) => {
+    return pairsRolloverFees.map(pairData => {
       return {
-        accPerCollateral: parseFloat(pairData.accPerCollateral.toString()) / 1e18,
+        accPerCollateral:
+          parseFloat(pairData.accPerCollateral.toString()) / 1e18,
         lastUpdateBlock: parseInt(pairData.lastUpdateBlock.toString()),
       } as PairRolloverFees;
     });
-
   } catch (error) {
     console.error(`Unexpected error while fetching pairs!`);
 
@@ -122,12 +122,10 @@ export const fetchFees = async (
 
   try {
     const fees = await Promise.all(
-      feeIxs.map(
-        (pairIndex) => pairsStorageContract.fees(pairIndex)
-      )
+      feeIxs.map(pairIndex => pairsStorageContract.fees(pairIndex))
     );
 
-    return fees.map((fee) => {
+    return fees.map(fee => {
       return {
         closeFeeP: parseFloat(fee.closeFeeP.toString()) / 1e12,
         minLevPosDai: parseFloat(fee.minLevPosDai.toString()) / 1e12,
@@ -136,10 +134,29 @@ export const fetchFees = async (
         referralFeeP: parseFloat(fee.referralFeeP.toString()) / 1e12,
       } as Fee;
     });
-
   } catch (error) {
     console.error(`Unexpected error while fetching pairs!`);
-
     throw error;
   }
+};
+
+export const fetchOpenInterest = async (
+  contracts: Contracts,
+  pairIxs: number[]
+): Promise<OpenInterest[]> => {
+  const openInterests = await Promise.all(
+    pairIxs.map(pairIndex =>
+      Promise.all([
+        contracts.gfarmTradingStorageV5.openInterestDai(pairIndex, 0),
+        contracts.gfarmTradingStorageV5.openInterestDai(pairIndex, 1),
+        contracts.gfarmTradingStorageV5.openInterestDai(pairIndex, 2),
+      ])
+    )
+  );
+
+  return openInterests.map(openInterest => ({
+    long: openInterest[0].toNumber() / 1e18,
+    short: openInterest[1].toNumber() / 1e18,
+    max: openInterest[2].toNumber() / 1e18,
+  }));
 };
