@@ -7,7 +7,8 @@
     "gnsNftRewardsV6": "0x3470756E5B490a974Bc25FeEeEb24c11102f5268",
     "gnsNftRewardsV6_3_1": "0x8103C0665A544201BBF606d90845d1B2D8005F1c",
     "gnsBorrowingFeesV6_3_2": "0x83AE6fADB88872D77299550Dc746b95D0196FE15",
-    "gnsTradingCallbacksV6_3_2": "0x82e59334da8c667797009bbe82473b55c7a6b311"
+    "gnsTradingCallbacksV6_3_2": "0x82e59334da8c667797009bbe82473b55c7a6b311",
+    "gDai": "0x91993f2101cc758D0dEB7279d41e880F7dEFe827"
   },
   "42161": {
     "gfarmTradingStorageV5": "0xcFa6ebD475d89dB04cAd5A756fff1cb2BC5bE33c",
@@ -17,7 +18,8 @@
     "gnsNftRewardsV6": "0xc2d107e870927E3fb1127E6c1a33De5C863505b8",
     "gnsNftRewardsV6_3_1": "0xde5750071CacA8db173FC6543D23d0BCACACFEC3",
     "gnsBorrowingFeesV6_3_2": "0xA03e32a42C75FDdDc9a39973ddd082F147393154",
-    "gnsTradingCallbacksV6_3_2": "0x298a695906e16aea0a184a2815a76ead1a0b7522"
+    "gnsTradingCallbacksV6_3_2": "0x298a695906e16aea0a184a2815a76ead1a0b7522",
+    "gDai": "0xd85E038593d7A098614721EaE955EC2022B9B91B"
   },
   "80001": {
     "gfarmTradingStorageV5": "0x4d2dF485c608aa55A23d8d98dD2B4FA24Ba0f2Cf",
@@ -27,6 +29,7 @@
     "gnsNftRewardsV6": "0x3982E3de77DAd60373C0c2c539fCb93Bd288D2f5",
     "gnsNftRewardsV6_3_1": "0xf7Ac400b45Bdd2E098FaCA3642bE4d01071BC73B",
     "gnsBorrowingFeesV6_3_2": "0x8Ba9c919Df0EEF35cf45FFA153C8C5A3F8Bb4117",
-    "gnsTradingCallbacksV6_3_2": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE"
+    "gnsTradingCallbacksV6_3_2": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
+    "gDai": "0x5215C8B3e76D493c8bcb9A7352F7afe18A6bb091"
   }
 }
