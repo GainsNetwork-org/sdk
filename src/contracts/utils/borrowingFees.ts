@@ -3,7 +3,7 @@ import {
   BorrowingFee,
   convertGroupBorrowingFees,
   convertPairBorrowingFees,
-} from "@/trade";
+} from "../../trade";
 
 export const fetchAllPairBorrowingFees = async (
   contract: GNSBorrowingFeesV6_3_2

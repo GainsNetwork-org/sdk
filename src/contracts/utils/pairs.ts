@@ -8,12 +8,6 @@ import {
   Fee,
   OpenInterest,
 } from "@/trade/types";
-import {
-  GFarmTradingStorageV5,
-  GNSPairInfosV6_1,
-  GNSPairsStorageV6,
-} from "../types/generated";
-
 import { Contracts } from "@/contracts/types";
 
 export const fetchPairs = async (
@@ -155,8 +149,8 @@ export const fetchOpenInterest = async (
   );
 
   return openInterests.map(openInterest => ({
-    long: openInterest[0].toNumber() / 1e18,
-    short: openInterest[1].toNumber() / 1e18,
-    max: openInterest[2].toNumber() / 1e18,
+    long: parseFloat(openInterest[0].toString()) / 1e18,
+    short: parseFloat(openInterest[1].toString()) / 1e18,
+    max: parseFloat(openInterest[2].toString()) / 1e18,
   }));
 };
