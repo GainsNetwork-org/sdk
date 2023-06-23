@@ -47,8 +47,11 @@ export const fetchOpenLimitOrdersRaw = async (
   console.time("fetchOpenLimitOrdersRaw");
   const { useMulticall = false, blockTag = "latest" } = overrides;
 
-  const { gfarmTradingStorageV5: storageContract, gnsNftRewards: nftRewards, gnsTradingCallbacks: callbacks } =
-    contracts;
+  const {
+    gfarmTradingStorageV5: storageContract,
+    gnsNftRewards: nftRewards,
+    gnsTradingCallbacks: callbacks,
+  } = contracts;
 
   const openLimitOrders = await storageContract.getOpenLimitOrders({
     blockTag,
@@ -99,13 +102,9 @@ export const fetchOpenLimitOrdersRaw = async (
     );
     openLimitOrderTradeData = await Promise.all(
       openLimitOrders.map(order =>
-        callbacks.tradeData(
-          order.trader,
-          order.pairIndex,
-          order.index,
-          1,
-          { blockTag }
-        )
+        callbacks.tradeData(order.trader, order.pairIndex, order.index, 1, {
+          blockTag,
+        })
       )
     );
   }
