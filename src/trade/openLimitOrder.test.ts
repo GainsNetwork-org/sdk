@@ -23,6 +23,7 @@ describe("getFulfillmentPrice", () => {
     sl: 0,
     tp: 0,
     trader: "",
+    maxSlippageP: 1,
   };
   const pair: Pair = {
     feeIndex: 0,
