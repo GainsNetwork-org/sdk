@@ -60,10 +60,12 @@ export type LimitOrder = {
   tp: number;
   trader: string;
   type: number;
+  maxSlippageP: number;
 };
 
 export type LimitOrderRaw = GFarmTradingStorageV5.OpenLimitOrderStructOutput & {
   type: number;
+  maxSlippageP: BigNumber;
 };
 
 export type Fee = {
