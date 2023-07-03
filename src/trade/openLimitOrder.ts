@@ -38,6 +38,6 @@ export const getFulfillmentPrice = (
       : order.minPrice;
 
   return order.buy
-    ? askingPrice * (1 - spreadWithPriceImpactP)
-    : askingPrice * (1 + spreadWithPriceImpactP);
+    ? askingPrice * (1 + spreadWithPriceImpactP)
+    : askingPrice * (1 - spreadWithPriceImpactP);
 };
