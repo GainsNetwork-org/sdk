@@ -15,6 +15,7 @@ export type Pair = {
   accFeeLong: number;
   accFeeShort: number;
   accLastUpdatedBlock: number;
+  maxOi: number;
   lastAccBlockWeightedMarketCap: number;
   feeExponent: number;
 };
