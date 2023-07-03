@@ -3,7 +3,6 @@ import * as BorrowingFee from "./types";
 
 export type GetBorrowingFeeContext = {
   currentBlock: number;
-  accBlockWeightedMarketCap: number;
   groups: BorrowingFee.Group[];
   pairs: BorrowingFee.Pair[];
   openInterest: OpenInterest;
@@ -96,21 +95,15 @@ const getPairPendingAccFees = (
   context: {
     pairs: BorrowingFee.Pair[];
     openInterest: OpenInterest;
-    accBlockWeightedMarketCap: number;
   }
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
   const {
     pairs,
     openInterest: { long, short },
-    accBlockWeightedMarketCap,
   } = context;
 
   const pair = pairs[pairIndex];
-  const vaultMarketCap = getWeightedVaultMarketCap(
-    accBlockWeightedMarketCap,
-    pair.lastAccBlockWeightedMarketCap,
-    currentBlock - pair.accLastUpdatedBlock
-  );
+
   return getPendingAccFees(
     pair.accFeeLong,
     pair.accFeeShort,
@@ -119,7 +112,8 @@ const getPairPendingAccFees = (
     pair.feePerBlock,
     currentBlock,
     pair.accLastUpdatedBlock,
-    vaultMarketCap
+    pair.maxOi,
+    pair.feeExponent
   );
 };
 
@@ -130,7 +124,6 @@ const getPairPendingAccFee = (
   context: {
     pairs: BorrowingFee.Pair[];
     openInterest: OpenInterest;
-    accBlockWeightedMarketCap: number;
   }
 ): number => {
   const { accFeeLong, accFeeShort } = getPairPendingAccFees(
@@ -144,15 +137,10 @@ const getPairPendingAccFee = (
 const getGroupPendingAccFees = (
   groupIndex: number,
   currentBlock: number,
-  context: { groups: BorrowingFee.Group[]; accBlockWeightedMarketCap: number }
+  context: { groups: BorrowingFee.Group[] }
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
-  const { groups, accBlockWeightedMarketCap } = context;
+  const { groups } = context;
   const group = groups[groupIndex];
-  const vaultMarketCap = getWeightedVaultMarketCap(
-    accBlockWeightedMarketCap,
-    group.lastAccBlockWeightedMarketCap,
-    currentBlock - group.accLastUpdatedBlock
-  );
   return getPendingAccFees(
     group.accFeeLong,
     group.accFeeShort,
@@ -161,7 +149,8 @@ const getGroupPendingAccFees = (
     group.feePerBlock,
     currentBlock,
     group.accLastUpdatedBlock,
-    vaultMarketCap
+    group.maxOi,
+    group.feeExponent
   );
 };
 
@@ -169,7 +158,7 @@ const getGroupPendingAccFee = (
   groupIndex: number,
   currentBlock: number,
   long: boolean,
-  context: { groups: BorrowingFee.Group[]; accBlockWeightedMarketCap: number }
+  context: { groups: BorrowingFee.Group[] }
 ): number => {
   const { accFeeLong, accFeeShort } = getGroupPendingAccFees(
     groupIndex,
@@ -192,21 +181,13 @@ const getPairGroupAccFeesDeltas = (
 
   let deltaGroup, deltaPair;
   if (i == pairGroups.length - 1) {
-    const {
-      currentBlock,
-      accBlockWeightedMarketCap,
-      groups,
-      pairs,
-      openInterest,
-    } = context;
+    const { currentBlock, groups, pairs, openInterest } = context;
     deltaGroup = getGroupPendingAccFee(group.groupIndex, currentBlock, long, {
       groups,
-      accBlockWeightedMarketCap,
     });
     deltaPair = getPairPendingAccFee(pairIndex, currentBlock, long, {
       pairs,
       openInterest: openInterest,
-      accBlockWeightedMarketCap,
     });
   } else {
     const nextGroup = pairGroups[i + 1];
@@ -239,82 +220,53 @@ const getPendingAccFees = (
   feePerBlock: number,
   currentBlock: number,
   accLastUpdatedBlock: number,
-  vaultMarketCap: number
+  maxOi: number,
+  feeExponent: number
 ): { accFeeLong: number; accFeeShort: number; delta: number } => {
+  const moreShorts = oiLong < oiShort;
+  const netOi = Math.abs(oiLong - oiShort);
   const delta =
-    ((oiLong - oiShort) * feePerBlock * (currentBlock - accLastUpdatedBlock)) /
-    vaultMarketCap;
+    maxOi > 0 && feeExponent > 0
+      ? feePerBlock *
+        (currentBlock - accLastUpdatedBlock) *
+        (netOi / maxOi) ** feeExponent
+      : 0;
 
-  const newAccFeeLong = delta > 0 ? accFeeLong + delta : accFeeLong;
-  const newAccFeeShort = delta < 0 ? accFeeShort - delta : accFeeShort;
+  const newAccFeeLong = moreShorts ? accFeeLong : accFeeLong + delta;
+  const newAccFeeShort = moreShorts ? accFeeShort + delta : accFeeShort;
 
   return { accFeeLong: newAccFeeLong, accFeeShort: newAccFeeShort, delta };
 };
 
-const getWeightedVaultMarketCap = (
-  accBlockWeightedMarketCap: number,
-  lastAccBlockWeightedMarketCap: number,
-  blockDelta: number
-): number => {
-  return blockDelta > 0
-    ? blockDelta /
-        (accBlockWeightedMarketCap - lastAccBlockWeightedMarketCap) /
-        1e18
-    : 1;
-};
-
 const getActivePairFeePerBlock = (
   pair: BorrowingFee.Pair,
-  openInterest: OpenInterest,
-  accBlockWeightedMarketCap: number,
-  currentBlock: number
+  openInterest: OpenInterest
 ): number => {
   const { long, short } = openInterest;
-  const vaultMarketCap = getWeightedVaultMarketCap(
-    accBlockWeightedMarketCap,
-    pair.lastAccBlockWeightedMarketCap,
-    currentBlock - pair.accLastUpdatedBlock
-  );
-  return (Math.abs(long - short) * pair.feePerBlock) / vaultMarketCap;
+  const netOi = Math.abs(long - short);
+
+  return pair.feePerBlock * (netOi / pair.maxOi) ** pair.feeExponent;
 };
 
-const getActiveGroupFeePerBlock = (
-  group: BorrowingFee.Group,
-  accBlockWeightedMarketCap: number,
-  currentBlock: number
-): number => {
+const getActiveGroupFeePerBlock = (group: BorrowingFee.Group): number => {
   const { oiLong, oiShort } = group;
-  const vaultMarketCap = getWeightedVaultMarketCap(
-    accBlockWeightedMarketCap,
-    group.lastAccBlockWeightedMarketCap,
-    currentBlock - group.accLastUpdatedBlock
-  );
-  return (Math.abs(oiLong - oiShort) * group.feePerBlock) / vaultMarketCap;
+  const netOi = Math.abs(oiLong - oiShort);
+
+  return group.feePerBlock * (netOi / group.maxOi) ** group.feeExponent;
 };
 
 const getActiveFeePerBlock = (
   pair: BorrowingFee.Pair,
   group: BorrowingFee.Group | undefined,
-  pairOpenInterest: OpenInterest,
-  accBlockWeightedMarketCap: number,
-  currentBlock: number
+  pairOpenInterest: OpenInterest
 ): number => {
-  const pairFeePerBlock = getActivePairFeePerBlock(
-    pair,
-    pairOpenInterest,
-    accBlockWeightedMarketCap,
-    currentBlock
-  );
+  const pairFeePerBlock = getActivePairFeePerBlock(pair, pairOpenInterest);
 
   if (!group) {
     return pairFeePerBlock;
   }
 
-  const groupFeePerBlock = getActiveGroupFeePerBlock(
-    group,
-    accBlockWeightedMarketCap,
-    currentBlock
-  );
+  const groupFeePerBlock = getActiveGroupFeePerBlock(group);
 
   return Math.max(pairFeePerBlock, groupFeePerBlock);
 };
@@ -329,7 +281,6 @@ export const borrowingFeeUtils = {
   getActivePairFeePerBlock,
   getActiveGroupFeePerBlock,
   getActiveFeePerBlock,
-  getWeightedVaultMarketCap,
   getPairGroupIndex,
 };
 
