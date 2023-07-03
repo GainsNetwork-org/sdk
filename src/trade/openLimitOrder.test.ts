@@ -68,7 +68,7 @@ describe("getFulfillmentPrice", () => {
       openInterest
     );
     const askingPrice = order.maxPrice;
-    const expected = askingPrice * (1 - spreadWithPriceImpactP);
+    const expected = askingPrice * (1 + spreadWithPriceImpactP);
 
     const result = getFulfillmentPrice(order, pair, pairParams, openInterest);
     expect(result).toBe(expected);
@@ -89,7 +89,7 @@ describe("getFulfillmentPrice", () => {
       openInterest
     );
     const askingPrice = sellOrder.minPrice;
-    const expected = askingPrice * (1 + spreadWithPriceImpactP);
+    const expected = askingPrice * (1 - spreadWithPriceImpactP);
 
     const result = getFulfillmentPrice(
       sellOrder,
