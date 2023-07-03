@@ -16,6 +16,7 @@ export type Pair = {
   accFeeShort: number;
   accLastUpdatedBlock: number;
   lastAccBlockWeightedMarketCap: number;
+  feeExponent: number;
 };
 
 export type Group = {
@@ -27,6 +28,7 @@ export type Group = {
   accLastUpdatedBlock: number;
   maxOi: number;
   lastAccBlockWeightedMarketCap: number;
+  feeExponent: number;
 };
 
 export type InitialAccFees = {
