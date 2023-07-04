@@ -1,4 +1,4 @@
-import { GNSBorrowingFeesV6_3_2 } from "../types/generated";
+import { GNSBorrowingFeesV6_4 } from "../types/generated";
 import {
   BorrowingFee,
   convertGroupBorrowingFees,
@@ -6,18 +6,18 @@ import {
 } from "../../trade";
 
 export const fetchAllPairBorrowingFees = async (
-  contract: GNSBorrowingFeesV6_3_2
+  contract: GNSBorrowingFeesV6_4
 ): Promise<BorrowingFee.Pair[]> =>
   convertPairBorrowingFees(await contract.getAllPairs());
 
 export const fetchGroupBorrowingFees = async (
-  contract: GNSBorrowingFeesV6_3_2,
+  contract: GNSBorrowingFeesV6_4,
   groupIxs: number[]
 ): Promise<BorrowingFee.Group[]> =>
   convertGroupBorrowingFees(await contract.getGroups(groupIxs));
 
 export const fetchAllPairAndGroupBorrowingFees = async (
-  contract: GNSBorrowingFeesV6_3_2
+  contract: GNSBorrowingFeesV6_4
 ): Promise<{
   pairs: BorrowingFee.Pair[];
   groups: BorrowingFee.Group[];

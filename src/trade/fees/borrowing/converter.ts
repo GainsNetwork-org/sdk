@@ -1,8 +1,8 @@
-import { GNSBorrowingFeesInterfaceV6_3_2 } from "@/contracts/types/generated/GNSBorrowingFeesV6_3_2";
+import { GNSBorrowingFeesInterfaceV6_4 } from "@/contracts/types/generated/GNSBorrowingFeesV6_4";
 import { BorrowingFee } from ".";
 
 export const convertPairGroupBorrowingFee = (
-  pairGroup: GNSBorrowingFeesInterfaceV6_3_2.PairGroupStructOutput
+  pairGroup: GNSBorrowingFeesInterfaceV6_4.PairGroupStructOutput
 ): BorrowingFee.PairGroup => ({
   groupIndex: pairGroup.groupIndex,
   initialAccFeeLong: parseFloat(pairGroup.initialAccFeeLong.toString()) / 1e10,
@@ -18,7 +18,8 @@ export const convertPairGroupBorrowingFee = (
 });
 
 export const convertPairBorrowingFee = (
-  pair: GNSBorrowingFeesInterfaceV6_3_2.PairStructOutput
+  pair: GNSBorrowingFeesInterfaceV6_4.PairStructOutput,
+  pairOi: GNSBorrowingFeesInterfaceV6_4.PairOiStructOutput
 ): BorrowingFee.Pair => ({
   feePerBlock: pair.feePerBlock / 1e10,
   accFeeLong: parseFloat(pair.accFeeLong.toString()) / 1e10,
@@ -27,13 +28,18 @@ export const convertPairBorrowingFee = (
   lastAccBlockWeightedMarketCap:
     parseFloat(pair.lastAccBlockWeightedMarketCap.toString()) / 1e40,
   groups: pair.groups.map(value => convertPairGroupBorrowingFee(value)),
+  feeExponent: pair.feeExponent,
+  maxOi: parseFloat(pairOi.max.toString()) / 1e10,
 });
-export const convertPairBorrowingFees = (
-  pairs: GNSBorrowingFeesInterfaceV6_3_2.PairStructOutput[]
-): BorrowingFee.Pair[] => pairs.map(value => convertPairBorrowingFee(value));
+export const convertPairBorrowingFees = ([pairs, pairOi]: [
+  GNSBorrowingFeesInterfaceV6_4.PairStructOutput[],
+  GNSBorrowingFeesInterfaceV6_4.PairOiStructOutput[]
+]): BorrowingFee.Pair[] =>
+  pairs.map((value, ix) => convertPairBorrowingFee(value, pairOi[ix]));
 
 export const convertGroupBorrowingFee = (
-  group: GNSBorrowingFeesInterfaceV6_3_2.GroupStructOutput
+  group: GNSBorrowingFeesInterfaceV6_4.GroupStructOutput,
+  groupFeeExponent: number
 ): BorrowingFee.Group => ({
   oiLong: parseFloat(group.oiLong.toString()) / 1e10,
   oiShort: parseFloat(group.oiShort.toString()) / 1e10,
@@ -44,7 +50,12 @@ export const convertGroupBorrowingFee = (
   lastAccBlockWeightedMarketCap:
     parseFloat(group.lastAccBlockWeightedMarketCap.toString()) / 1e40,
   maxOi: parseFloat(group.maxOi.toString()) / 1e10,
+  feeExponent: groupFeeExponent,
 });
-export const convertGroupBorrowingFees = (
-  groups: GNSBorrowingFeesInterfaceV6_3_2.GroupStructOutput[]
-): BorrowingFee.Group[] => groups.map(value => convertGroupBorrowingFee(value));
+export const convertGroupBorrowingFees = ([groups, groupFeeExponents]: [
+  GNSBorrowingFeesInterfaceV6_4.GroupStructOutput[],
+  number[]
+]): BorrowingFee.Group[] =>
+  groups.map((value, ix) =>
+    convertGroupBorrowingFee(value, groupFeeExponents[ix])
+  );
