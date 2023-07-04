@@ -334,3 +334,4 @@ export const borrowingFeeUtils = {
 };
 
 export * as BorrowingFee from "./types";
+export * from "./converter";

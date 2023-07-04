@@ -6,6 +6,7 @@ import {
   GNSNftRewardsV6_3_1,
   GNSBorrowingFeesV6_3_2,
   GNSTradingCallbacksV6_3_2,
+  GTokenV6_3_2,
 } from "./generated";
 
 export type Contracts = {
@@ -16,6 +17,7 @@ export type Contracts = {
   gnsNftRewards: GNSNftRewardsV6_3_1;
   gnsBorrowingFees: GNSBorrowingFeesV6_3_2;
   gnsTradingCallbacks: GNSTradingCallbacksV6_3_2;
+  gDai: GTokenV6_3_2;
 };
 
 export type ContractAddresses = {
@@ -27,6 +29,7 @@ export type ContractAddresses = {
   gnsNftRewardsV6_3_1: string;
   gnsBorrowingFeesV6_3_2: string;
   gnsTradingCallbacksV6_3_2: string;
+  gDai: string;
 };
 
 export type BlockTag = number | "latest" | "pending";
