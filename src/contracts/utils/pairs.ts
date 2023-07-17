@@ -143,7 +143,7 @@ export const fetchOpenInterest = async (
       Promise.all([
         contracts.gfarmTradingStorageV5.openInterestDai(pairIndex, 0),
         contracts.gfarmTradingStorageV5.openInterestDai(pairIndex, 1),
-        contracts.gfarmTradingStorageV5.openInterestDai(pairIndex, 2),
+        contracts.gnsBorrowingFees.getPairMaxOi(pairIndex),
       ])
     )
   );
@@ -151,6 +151,6 @@ export const fetchOpenInterest = async (
   return openInterests.map(openInterest => ({
     long: parseFloat(openInterest[0].toString()) / 1e18,
     short: parseFloat(openInterest[1].toString()) / 1e18,
-    max: parseFloat(openInterest[2].toString()) / 1e18,
+    max: parseFloat(openInterest[2].toString()) / 1e10,
   }));
 };
