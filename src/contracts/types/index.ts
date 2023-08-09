@@ -4,8 +4,8 @@ import {
   GNSPairsStorageV6,
   GTokenOpenPnlFeed,
   GNSNftRewardsV6_3_1,
-  GNSBorrowingFeesV6_3_2,
-  GNSTradingCallbacksV6_3_2,
+  GNSBorrowingFeesV6_4,
+  GNSTradingCallbacksV6_4,
   GTokenV6_3_2,
 } from "./generated";
 
@@ -15,8 +15,8 @@ export type Contracts = {
   gnsPairsStorageV6: GNSPairsStorageV6;
   gTokenOpenPnlFeed: GTokenOpenPnlFeed;
   gnsNftRewards: GNSNftRewardsV6_3_1;
-  gnsBorrowingFees: GNSBorrowingFeesV6_3_2;
-  gnsTradingCallbacks: GNSTradingCallbacksV6_3_2;
+  gnsBorrowingFees: GNSBorrowingFeesV6_4;
+  gnsTradingCallbacks: GNSTradingCallbacksV6_4;
   gDai: GTokenV6_3_2;
 };
 

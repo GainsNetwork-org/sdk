@@ -23,6 +23,7 @@ describe("getFulfillmentPrice", () => {
     sl: 0,
     tp: 0,
     trader: "",
+    maxSlippageP: 1,
   };
   const pair: Pair = {
     feeIndex: 0,
@@ -67,7 +68,7 @@ describe("getFulfillmentPrice", () => {
       openInterest
     );
     const askingPrice = order.maxPrice;
-    const expected = askingPrice * (1 - spreadWithPriceImpactP);
+    const expected = askingPrice * (1 + spreadWithPriceImpactP);
 
     const result = getFulfillmentPrice(order, pair, pairParams, openInterest);
     expect(result).toBe(expected);
@@ -88,7 +89,7 @@ describe("getFulfillmentPrice", () => {
       openInterest
     );
     const askingPrice = sellOrder.minPrice;
-    const expected = askingPrice * (1 + spreadWithPriceImpactP);
+    const expected = askingPrice * (1 - spreadWithPriceImpactP);
 
     const result = getFulfillmentPrice(
       sellOrder,

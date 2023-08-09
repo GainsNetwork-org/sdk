@@ -33,6 +33,7 @@ export const fetchOpenLimitOrders = async (
     tp: parseFloat(order.tp.toString()) / 1e10,
     trader: order.trader,
     type: parseInt(order.type.toString()),
+    maxSlippageP: parseFloat(order.maxSlippageP.toString()) / 1e10,
   }));
 };
 
@@ -46,19 +47,26 @@ export const fetchOpenLimitOrdersRaw = async (
   console.time("fetchOpenLimitOrdersRaw");
   const { useMulticall = false, blockTag = "latest" } = overrides;
 
-  const { gfarmTradingStorageV5: storageContract, gnsNftRewards: nftRewards } =
-    contracts;
+  const {
+    gfarmTradingStorageV5: storageContract,
+    gnsNftRewards: nftRewards,
+    gnsTradingCallbacks: callbacks,
+  } = contracts;
 
   const openLimitOrders = await storageContract.getOpenLimitOrders({
     blockTag,
   });
 
   let openLimitOrderTypes: number[] = [];
+  let openLimitOrderTradeData: any[] = [];
   if (useMulticall) {
     const multicallProvider = new Provider();
     await multicallProvider.init(storageContract.provider);
     const nftRewardsContractMulticall = new Contract(nftRewards.address, [
       ...nftRewards.interface.fragments,
+    ]);
+    const callbacksContractMulticall = new Contract(callbacks.address, [
+      ...callbacks.interface.fragments,
     ]);
     openLimitOrderTypes = await multicallProvider.all(
       openLimitOrders.map(order =>
@@ -66,6 +74,17 @@ export const fetchOpenLimitOrdersRaw = async (
           order.trader,
           order.pairIndex,
           order.index
+        )
+      ),
+      blockTag
+    );
+    openLimitOrderTradeData = await multicallProvider.all(
+      openLimitOrders.map(order =>
+        callbacksContractMulticall.tradeData(
+          order.trader,
+          order.pairIndex,
+          order.index,
+          1
         )
       ),
       blockTag
@@ -81,10 +100,19 @@ export const fetchOpenLimitOrdersRaw = async (
         )
       )
     );
+    openLimitOrderTradeData = await Promise.all(
+      openLimitOrders.map(order =>
+        callbacks.tradeData(order.trader, order.pairIndex, order.index, 1, {
+          blockTag,
+        })
+      )
+    );
   }
 
   return openLimitOrderTypes.map((openLimitOrderType, index) => {
     const openLimitOrder = openLimitOrders[index];
+    const tradeData = openLimitOrderTradeData[index];
+
     return {
       trader: openLimitOrder.trader,
       pairIndex: openLimitOrder.pairIndex,
@@ -99,6 +127,7 @@ export const fetchOpenLimitOrdersRaw = async (
       maxPrice: openLimitOrder.maxPrice,
       block: openLimitOrder.block,
       type: openLimitOrderType,
+      maxSlippageP: tradeData.maxSlippageP,
     };
   });
 };

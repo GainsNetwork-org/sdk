@@ -7,8 +7,8 @@ import {
   GNSPairsStorageV6__factory,
   GTokenOpenPnlFeed__factory,
   GNSNftRewardsV6_3_1__factory,
-  GNSBorrowingFeesV6_3_2__factory,
-  GNSTradingCallbacksV6_3_2__factory,
+  GNSBorrowingFeesV6_4__factory,
+  GNSTradingCallbacksV6_4__factory,
   GTokenV6_3_2__factory,
 } from "./types/generated/factories";
 import { Contracts } from "./types";
@@ -40,11 +40,11 @@ export const getContractsForChain = (
       addresses.gnsNftRewardsV6_3_1,
       signerOrProvider as Signer | Provider
     ),
-    gnsBorrowingFees: GNSBorrowingFeesV6_3_2__factory.connect(
+    gnsBorrowingFees: GNSBorrowingFeesV6_4__factory.connect(
       addresses.gnsBorrowingFeesV6_3_2,
       signerOrProvider as Signer | Provider
     ),
-    gnsTradingCallbacks: GNSTradingCallbacksV6_3_2__factory.connect(
+    gnsTradingCallbacks: GNSTradingCallbacksV6_4__factory.connect(
       addresses.gnsTradingCallbacksV6_3_2,
       signerOrProvider as Signer | Provider
     ),
