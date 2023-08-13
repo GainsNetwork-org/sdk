@@ -39,7 +39,7 @@ export const isForexLowLiquidity = (timestampToCheck: number) => {
   const isInDST = now.isInDST;
 
   return (
-    (isInDST && ((hour == 15 && minute >= 45) || (hour >= 16 && hour < 18))) ||
-    (!isInDST && ((hour == 16 && minute >= 45) || (hour >= 17 && hour < 19)))
+    (isInDST && ((hour == 15 && minute >= 45) || (hour >= 16 && hour < 19))) ||
+    (!isInDST && ((hour == 16 && minute >= 45) || (hour >= 17 && hour < 20)))
   );
 };
