@@ -127,6 +127,15 @@ export const pairs = {
   "CAD/CHF": "forex",
   "CAD/JPY": "forex",
   "CHF/JPY": "forex",
+  "LDO/USD": "forex",
+  "INJ/USD": "forex",
+  "RUNE/USD": "forex",
+  "CAKE/USD": "forex",
+  "FXS/USD": "forex",
+  "TWT/USD": "forex",
+  "PEPE/USD": "forex",
+  "DYDX/USD": "forex",
+  "GMX/USD": "forex",
 };
 
 export const getAssetClassFromGroupIndex = (
@@ -167,7 +176,8 @@ export const defaultSpreadReductionsP100 = [15, 20, 25, 30, 35];
 export const delistedPairIxs = new Set([
   6, 31, 36, 42, 45, 48, 50, 54, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
   70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
-  89, 97, 99, 101, 106, 107, 108, 52,
+  89, 97, 99, 101, 106, 107, 108, 52, 128, 129, 130, 131, 132, 133, 134, 135,
+  136,
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);
