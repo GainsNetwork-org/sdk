@@ -33,3 +33,10 @@ export type ContractAddresses = {
 };
 
 export type BlockTag = number | "latest" | "pending";
+
+export enum CollateralTypes {
+  DAI = "DAI",
+  ETH = "ETH",
+  ARB = "ARB",
+  USDC = "USDC",
+}

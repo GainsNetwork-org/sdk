@@ -11,13 +11,14 @@ import {
   GNSTradingCallbacksV6_4__factory,
   GTokenV6_3_2__factory,
 } from "./types/generated/factories";
-import { Contracts } from "./types";
+import { CollateralTypes, Contracts } from "./types";
 
 export const getContractsForChain = (
   chainId: number,
-  signerOrProvider?: Signer | Provider
+  signerOrProvider?: Signer | Provider,
+  collateral?: CollateralTypes
 ): Contracts => {
-  const addresses = getContractAddressesForChain(chainId);
+  const addresses = getContractAddressesForChain(chainId, collateral);
 
   return {
     gfarmTradingStorageV5: GFarmTradingStorageV5__factory.connect(
