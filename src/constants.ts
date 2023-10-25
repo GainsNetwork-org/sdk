@@ -109,6 +109,33 @@ export const pairs = {
   "TON/USD": "crypto",
   "RPL/USD": "crypto",
   "ARB/USD": "crypto",
+  "EUR/AUD": "forex",
+  "EUR/NZD": "forex",
+  "EUR/CAD": "forex",
+  "GBP/AUD": "forex",
+  "GBP/NZD": "forex",
+  "GBP/CAD": "forex",
+  "GBP/CHF": "forex",
+  "GBP/JPY": "forex",
+  "AUD/NZD": "forex",
+  "AUD/CAD": "forex",
+  "AUD/CHF": "forex",
+  "AUD/JPY": "forex",
+  "NZD/CAD": "forex",
+  "NZD/CHF": "forex",
+  "NZD/JPY": "forex",
+  "CAD/CHF": "forex",
+  "CAD/JPY": "forex",
+  "CHF/JPY": "forex",
+  "LDO/USD": "crypto",
+  "INJ/USD": "crypto",
+  "RUNE/USD": "crypto",
+  "CAKE/USD": "crypto",
+  "FXS/USD": "crypto",
+  "TWT/USD": "crypto",
+  "PEPE/USD": "crypto",
+  "DYDX/USD": "crypto",
+  "GMX/USD": "crypto",
 };
 
 export const getAssetClassFromGroupIndex = (
@@ -149,7 +176,7 @@ export const defaultSpreadReductionsP100 = [15, 20, 25, 30, 35];
 export const delistedPairIxs = new Set([
   6, 31, 36, 42, 45, 48, 50, 54, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
   70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
-  89, 97, 99, 101, 106, 107, 108,
+  89, 97, 99, 101, 106, 107, 108, 52, 131, 132,
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);
