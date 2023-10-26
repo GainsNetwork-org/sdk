@@ -136,6 +136,13 @@ export const pairs = {
   "PEPE/USD": "crypto",
   "DYDX/USD": "crypto",
   "GMX/USD": "crypto",
+  "RNDR/USD": "crypto",
+  "SUI/USD": "crypto",
+  "FIL/USD": "crypto",
+  "FET/USD": "crypto",
+  "WLD/USD": "crypto",
+  "VET/USD": "crypto",
+  "ZIL/USD": "crypto",
 };
 
 export const getAssetClassFromGroupIndex = (
@@ -176,7 +183,8 @@ export const defaultSpreadReductionsP100 = [15, 20, 25, 30, 35];
 export const delistedPairIxs = new Set([
   6, 31, 36, 42, 45, 48, 50, 54, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
   70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
-  89, 97, 99, 101, 106, 107, 108, 52, 131, 132,
+  89, 97, 99, 101, 106, 107, 108, 52, 131, 132, 137, 138, 139, 140, 141, 142,
+  143,
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);
