@@ -198,3 +198,15 @@ export enum OpenLimitOrderType {
   REVERSAL = 1,
   MOMENTUM = 2,
 }
+
+export type OiWindowsSettings = {
+  startTs: number;
+  windowsDuration: number;
+  windowsCount: number;
+};
+
+export type OiWindow = OpenCollateral;
+
+export type OiWindows = {
+  [key: string]: OiWindow;
+};

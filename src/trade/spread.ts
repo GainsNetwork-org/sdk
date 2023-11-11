@@ -1,4 +1,10 @@
-import { OpenInterest, PairParams } from "./types";
+import {
+  OiWindows,
+  OiWindowsSettings,
+  OpenInterest,
+  PairParams,
+} from "./types";
+import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
 
 export const getBaseSpreadP = (
   pairSpreadP: number | undefined,
@@ -21,7 +27,9 @@ export const getSpreadWithPriceImpactP = (
   collateral: number,
   leverage: number,
   pairParams: PairParams | undefined,
-  openInterest: OpenInterest | undefined
+  openInterest: OpenInterest | undefined,
+  oiWindowsSettings?: OiWindowsSettings | undefined,
+  oiWindows?: OiWindows | undefined
 ): number => {
   if (baseSpreadP === undefined) {
     return 0;
@@ -30,18 +38,26 @@ export const getSpreadWithPriceImpactP = (
   const onePercentDepth = buy
     ? pairParams?.onePercentDepthAbove
     : pairParams?.onePercentDepthBelow;
-  const existingOi = buy ? openInterest?.long : openInterest?.short;
 
-  if (
-    !onePercentDepth ||
-    existingOi === undefined ||
-    collateral === undefined
-  ) {
+  let activeOi = buy ? openInterest?.long : openInterest?.short;
+
+  if (oiWindowsSettings !== undefined && oiWindowsSettings?.windowsCount > 0) {
+    const currWindowId = getCurrentOiWindowId(oiWindowsSettings);
+
+    activeOi = getActiveOi(
+      currWindowId,
+      oiWindowsSettings.windowsCount,
+      oiWindows,
+      buy
+    );
+  }
+
+  if (!onePercentDepth || activeOi === undefined || collateral === undefined) {
     return baseSpreadP;
   }
 
   return (
     baseSpreadP +
-    (existingOi + (collateral * leverage) / 2) / onePercentDepth / 100
+    (activeOi + (collateral * leverage) / 2) / onePercentDepth / 100
   );
 };
