@@ -4,8 +4,8 @@ export const getCurrentOiWindowId = (
   oiWindowSettings: OiWindowsSettings
 ): number => {
   return Math.floor(
-    Math.floor(Date.now() / 1000) -
-      oiWindowSettings.startTs / oiWindowSettings.windowsDuration
+    (Math.floor(Date.now() / 1000) - oiWindowSettings.startTs) /
+      oiWindowSettings.windowsDuration
   );
 };
 

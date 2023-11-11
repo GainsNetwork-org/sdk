@@ -42,10 +42,8 @@ export const getSpreadWithPriceImpactP = (
   let activeOi = buy ? openInterest?.long : openInterest?.short;
 
   if (oiWindowsSettings !== undefined && oiWindowsSettings?.windowsCount > 0) {
-    const currWindowId = getCurrentOiWindowId(oiWindowsSettings);
-
     activeOi = getActiveOi(
-      currWindowId,
+      getCurrentOiWindowId(oiWindowsSettings),
       oiWindowsSettings.windowsCount,
       oiWindows,
       buy
