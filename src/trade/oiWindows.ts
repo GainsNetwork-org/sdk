@@ -15,12 +15,12 @@ export const getActiveOi = (
   oiWindows: OiWindows | undefined,
   buy: boolean
 ): number => {
-  if (oiWindows === undefined) return 0;
+  if (oiWindows === undefined || windowsCount === 0) return 0;
 
   let activeOi = 0;
 
   for (
-    let id = currentOiWindowId - windowsCount;
+    let id = currentOiWindowId - (windowsCount - 1);
     id <= currentOiWindowId;
     id++
   ) {
