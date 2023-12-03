@@ -5,13 +5,17 @@ import {
   Pair,
   PairParams,
   OpenLimitOrderType,
+  OiWindowsSettings,
+  OiWindows,
 } from "./types";
 
 export const getFulfillmentPrice = (
   order: LimitOrder,
   pair: Pair,
   pairParams: PairParams,
-  openInterest: OpenInterest
+  openInterest: OpenInterest,
+  oiWindowsSettings?: OiWindowsSettings,
+  oiWindows?: OiWindows
 ): number => {
   if (!order || !pair) {
     return 0;
@@ -25,7 +29,9 @@ export const getFulfillmentPrice = (
     order.positionSize,
     order.leverage,
     pairParams,
-    openInterest
+    openInterest,
+    oiWindowsSettings,
+    oiWindows
   );
   if (spreadWithPriceImpactP === 0) {
     return 0;
