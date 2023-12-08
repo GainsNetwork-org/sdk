@@ -195,7 +195,7 @@ export const pairs = {
   "WTI/USD": COMMODITIES,
   "XPT/USD": COMMODITIES,
   "XPD/USD": COMMODITIES,
-  "CUC/USD": COMMODITIES,
+  "HG/USD": COMMODITIES,
 };
 
 export const getAssetClassFromGroupIndex = (
