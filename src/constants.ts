@@ -192,6 +192,10 @@ export const pairs = {
   "SKL/USD": CRYPTO,
   "SUPER/USD": CRYPTO,
   "BAL/USD": CRYPTO,
+  "WTI/USD": COMMODITIES,
+  "XPT/USD": COMMODITIES,
+  "XPD/USD": COMMODITIES,
+  "HG/USD": COMMODITIES,
 };
 
 export const getAssetClassFromGroupIndex = (
