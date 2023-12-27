@@ -1,8 +1,8 @@
-import { GNSBorrowingFeesInterfaceV6_4 } from "@/contracts/types/generated/GNSBorrowingFeesV6_4";
+import { IGNSBorrowingFees } from "@/contracts/types/generated/GNSBorrowingFees";
 import { BorrowingFee } from ".";
 
 export const convertPairGroupBorrowingFee = (
-  pairGroup: GNSBorrowingFeesInterfaceV6_4.PairGroupStructOutput
+  pairGroup: IGNSBorrowingFees.PairGroupStructOutput
 ): BorrowingFee.PairGroup => ({
   groupIndex: pairGroup.groupIndex,
   initialAccFeeLong: parseFloat(pairGroup.initialAccFeeLong.toString()) / 1e10,
@@ -18,8 +18,8 @@ export const convertPairGroupBorrowingFee = (
 });
 
 export const convertPairBorrowingFee = (
-  pair: GNSBorrowingFeesInterfaceV6_4.PairStructOutput,
-  pairOi: GNSBorrowingFeesInterfaceV6_4.PairOiStructOutput
+  pair: IGNSBorrowingFees.PairStructOutput,
+  pairOi: IGNSBorrowingFees.PairOiStructOutput
 ): BorrowingFee.Pair => ({
   feePerBlock: pair.feePerBlock / 1e10,
   accFeeLong: parseFloat(pair.accFeeLong.toString()) / 1e10,
@@ -32,13 +32,13 @@ export const convertPairBorrowingFee = (
   maxOi: parseFloat(pairOi.max.toString()) / 1e10,
 });
 export const convertPairBorrowingFees = ([pairs, pairOi]: [
-  GNSBorrowingFeesInterfaceV6_4.PairStructOutput[],
-  GNSBorrowingFeesInterfaceV6_4.PairOiStructOutput[]
+  IGNSBorrowingFees.PairStructOutput[],
+  IGNSBorrowingFees.PairOiStructOutput[]
 ]): BorrowingFee.Pair[] =>
   pairs.map((value, ix) => convertPairBorrowingFee(value, pairOi[ix]));
 
 export const convertGroupBorrowingFee = (
-  group: GNSBorrowingFeesInterfaceV6_4.GroupStructOutput,
+  group: IGNSBorrowingFees.GroupStructOutput,
   groupFeeExponent: number
 ): BorrowingFee.Group => ({
   oiLong: parseFloat(group.oiLong.toString()) / 1e10,
@@ -53,7 +53,7 @@ export const convertGroupBorrowingFee = (
   feeExponent: groupFeeExponent,
 });
 export const convertGroupBorrowingFees = ([groups, groupFeeExponents]: [
-  GNSBorrowingFeesInterfaceV6_4.GroupStructOutput[],
+  IGNSBorrowingFees.GroupStructOutput[],
   number[]
 ]): BorrowingFee.Group[] =>
   groups.map((value, ix) =>
