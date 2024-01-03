@@ -1,10 +1,10 @@
 import { getFulfillmentPrice } from "./openLimitOrder";
-import { getBaseSpreadP, getSpreadWithPriceImpactP } from "./spread";
+import { getSpreadWithPriceImpactP } from "./spread";
 import {
   LimitOrder,
   OpenInterest,
   Pair,
-  PairParams,
+  PairDepth,
   OpenLimitOrderType,
 } from "./types";
 
@@ -34,11 +34,9 @@ describe("getFulfillmentPrice", () => {
     pairIndex: 100,
     spreadP: 20,
   };
-  const pairParams: PairParams = {
-    onePercentDepthAbove: 1000,
-    onePercentDepthBelow: 1000,
-    rolloverFeePerBlockP: 0.01,
-    fundingFeePerBlockP: 0.01,
+  const pairParams: PairDepth = {
+    onePercentDepthAboveUsd: 1000,
+    onePercentDepthBelowUsd: 1000,
   };
   const openInterest: OpenInterest = {
     long: 500,
@@ -58,45 +56,33 @@ describe("getFulfillmentPrice", () => {
   });
 
   it("should calculate the trigger price for a buy order", () => {
-    const baseSpreadP = getBaseSpreadP(pair.spreadP, order.spreadReductionP);
     const spreadWithPriceImpactP = getSpreadWithPriceImpactP(
-      baseSpreadP,
+      pair.spreadP,
       order.buy,
       order.positionSize,
       order.leverage,
-      pairParams,
-      openInterest
+      pairParams
     );
     const askingPrice = order.maxPrice;
     const expected = askingPrice * (1 + spreadWithPriceImpactP);
 
-    const result = getFulfillmentPrice(order, pair, pairParams, openInterest);
+    const result = getFulfillmentPrice(order, pair, pairParams);
     expect(result).toBe(expected);
   });
 
   it("should calculate the trigger price for a sell order", () => {
     const sellOrder = { ...order, buy: false };
-    const baseSpreadP = getBaseSpreadP(
-      pair.spreadP,
-      sellOrder.spreadReductionP
-    );
     const spreadWithPriceImpactP = getSpreadWithPriceImpactP(
-      baseSpreadP,
+      pair.spreadP,
       sellOrder.buy,
       sellOrder.positionSize,
       sellOrder.leverage,
-      pairParams,
-      openInterest
+      pairParams
     );
     const askingPrice = sellOrder.minPrice;
     const expected = askingPrice * (1 - spreadWithPriceImpactP);
 
-    const result = getFulfillmentPrice(
-      sellOrder,
-      pair,
-      pairParams,
-      openInterest
-    );
+    const result = getFulfillmentPrice(sellOrder, pair, pairParams);
     expect(result).toBe(expected);
   });
 });

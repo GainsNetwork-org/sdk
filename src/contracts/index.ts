@@ -3,13 +3,12 @@ import type { Provider } from "@ethersproject/providers";
 import { getContractAddressesForChain } from "./addresses";
 import {
   GFarmTradingStorageV5__factory,
-  GNSPairInfosV6_1__factory,
-  GNSPairsStorageV6__factory,
   GTokenOpenPnlFeed__factory,
   GNSNftRewardsV6_3_1__factory,
   GNSBorrowingFees__factory,
-  GNSTradingCallbacksV6_4__factory,
+  GNSTradingCallbacks__factory,
   GTokenV6_3_2__factory,
+  GNSMultiCollatDiamond__factory,
 } from "./types/generated/factories";
 import { CollateralTypes, Contracts } from "./types";
 
@@ -25,12 +24,8 @@ export const getContractsForChain = (
       addresses.gfarmTradingStorageV5,
       signerOrProvider as Signer | Provider
     ),
-    gnsPairInfosV6_1: GNSPairInfosV6_1__factory.connect(
-      addresses.gnsPairInfosV6_1,
-      signerOrProvider as Signer | Provider
-    ),
-    gnsPairsStorageV6: GNSPairsStorageV6__factory.connect(
-      addresses.gnsPairsStorageV6,
+    gnsMultiCollatDiamond: GNSMultiCollatDiamond__factory.connect(
+      addresses.gnsMultiCollatDiamond,
       signerOrProvider as Signer | Provider
     ),
     gTokenOpenPnlFeed: GTokenOpenPnlFeed__factory.connect(
@@ -42,11 +37,11 @@ export const getContractsForChain = (
       signerOrProvider as Signer | Provider
     ),
     gnsBorrowingFees: GNSBorrowingFees__factory.connect(
-      addresses.gnsBorrowingFeesV6_3_2,
+      addresses.gnsBorrowingFees,
       signerOrProvider as Signer | Provider
     ),
-    gnsTradingCallbacks: GNSTradingCallbacksV6_4__factory.connect(
-      addresses.gnsTradingCallbacksV6_3_2,
+    gnsTradingCallbacks: GNSTradingCallbacks__factory.connect(
+      addresses.gnsTradingCallbacks,
       signerOrProvider as Signer | Provider
     ),
     gDai: GTokenV6_3_2__factory.connect(

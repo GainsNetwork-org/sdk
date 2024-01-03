@@ -19,7 +19,8 @@ export const fetchOpenPairTrades = async (
     _prepareTradeContainer(
       rawTrade.trade,
       rawTrade.tradeInfo,
-      rawTrade.initialAccFees
+      rawTrade.initialAccFees,
+      rawTrade.tradeData
     )
   );
 };
@@ -38,11 +39,12 @@ export const fetchOpenPairTradesRaw = async (
     blockTag = "latest",
   } = overrides;
 
-  const { gnsPairsStorageV6: pairsStorageContract } = contracts;
+  const { gnsMultiCollatDiamond: multiCollatDiamondContract } = contracts;
 
   try {
     const totalPairIndexes =
-      (await pairsStorageContract.pairsCount({ blockTag })).toNumber() - 1;
+      (await multiCollatDiamondContract.pairsCount({ blockTag })).toNumber() -
+      1;
     let allOpenPairTrades: TradeContainerRaw[] = [];
 
     for (
@@ -87,6 +89,7 @@ const fetchOpenPairTradesBatch = async (
   const {
     gfarmTradingStorageV5: storageContract,
     gnsBorrowingFees: borrowingFeesContract,
+    gnsTradingCallbacks: callbacksContract,
   } = contracts;
 
   const maxTradesPerPair = (
@@ -130,27 +133,40 @@ const fetchOpenPairTradesBatch = async (
             openTrade => openTrade.trader === pairTraderAddress
           );
 
-          const [actualOpenTradesTradeInfos, actualOpenTradesInitialAccFees] =
-            await Promise.all([
-              Promise.all(
-                actualOpenTradesForTrader.map(aot =>
-                  storageContract.openTradesInfo(
-                    aot.trader,
-                    aot.pairIndex,
-                    aot.index
-                  )
+          const [
+            actualOpenTradesTradeInfos,
+            actualOpenTradesInitialAccFees,
+            actualOpenTradesTradeData,
+          ] = await Promise.all([
+            Promise.all(
+              actualOpenTradesForTrader.map(aot =>
+                storageContract.openTradesInfo(
+                  aot.trader,
+                  aot.pairIndex,
+                  aot.index
                 )
-              ),
-              Promise.all(
-                actualOpenTradesForTrader.map(aot =>
-                  borrowingFeesContract.getTradeInitialAccFees(
-                    aot.trader,
-                    aot.pairIndex,
-                    aot.index
-                  )
+              )
+            ),
+            Promise.all(
+              actualOpenTradesForTrader.map(aot =>
+                borrowingFeesContract.initialAccFees(
+                  aot.trader,
+                  aot.pairIndex,
+                  aot.index
                 )
-              ),
-            ]);
+              )
+            ),
+            Promise.all(
+              actualOpenTradesForTrader.map(aot =>
+                callbacksContract.tradeData(
+                  aot.trader,
+                  aot.pairIndex,
+                  aot.index,
+                  0
+                )
+              )
+            ),
+          ]);
 
           const finalOpenTradesForTrader = new Array(
             actualOpenTradesForTrader.length
@@ -171,18 +187,16 @@ const fetchOpenPairTradesBatch = async (
               continue;
             }
 
-            const tradeInitialAccFees = {
-              ...actualOpenTradesInitialAccFees[tradeIndex].otherFees,
-              borrowing:
-                actualOpenTradesInitialAccFees[tradeIndex].borrowingFees,
-            };
-
             const trade = actualOpenTradesForTrader[tradeIndex];
+            const tradeData = actualOpenTradesTradeData[tradeIndex];
 
             finalOpenTradesForTrader[tradeIndex] = {
               trade,
               tradeInfo,
-              initialAccFees: tradeInitialAccFees,
+              initialAccFees: {
+                borrowing: actualOpenTradesInitialAccFees[tradeIndex],
+              },
+              tradeData,
             };
           }
 
@@ -207,6 +221,7 @@ const fetchOpenPairTradesBatchMulticall = async (
   const {
     gfarmTradingStorageV5: storageContract,
     gnsBorrowingFees: borrowingFeesContract,
+    gnsTradingCallbacks: callbacksContract,
   } = contracts;
 
   // Convert to Multicall for efficient RPC usage
@@ -219,6 +234,9 @@ const fetchOpenPairTradesBatchMulticall = async (
     borrowingFeesContract.address,
     [...borrowingFeesContract.interface.fragments]
   );
+  const callbacksContractMulticall = new Contract(callbacksContract.address, [
+    ...callbacksContract.interface.fragments,
+  ]);
 
   const maxTradesPerPair = (
     await storageContract.maxTradesPerPair()
@@ -266,30 +284,42 @@ const fetchOpenPairTradesBatchMulticall = async (
     openTrade => openTrade[0] !== "0x0000000000000000000000000000000000000000"
   );
 
-  const [openTradesTradeInfos, openTradesInitialAccFees] = await Promise.all([
-    multicallProvider.all(
-      openTrades.map(openTrade =>
-        storageContractMulticall.openTradesInfo(
-          openTrade.trader,
-          openTrade.pairIndex,
-          openTrade.index
-        )
+  const [openTradesTradeInfos, openTradesInitialAccFees, openTradesTradeData] =
+    await Promise.all([
+      multicallProvider.all(
+        openTrades.map(openTrade =>
+          storageContractMulticall.openTradesInfo(
+            openTrade.trader,
+            openTrade.pairIndex,
+            openTrade.index
+          )
+        ),
+        blockTag
       ),
-      blockTag
-    ),
-    multicallProvider.all<
-      Awaited<ReturnType<typeof borrowingFeesContract.getTradeInitialAccFees>>
-    >(
-      openTrades.map(openTrade =>
-        borrowingFeesContractMulticall.getTradeInitialAccFees(
-          openTrade.trader,
-          openTrade.pairIndex,
-          openTrade.index
-        )
+      multicallProvider.all<
+        Awaited<ReturnType<typeof borrowingFeesContract.initialAccFees>>
+      >(
+        openTrades.map(openTrade =>
+          borrowingFeesContractMulticall.initialAccFees(
+            openTrade.trader,
+            openTrade.pairIndex,
+            openTrade.index
+          )
+        ),
+        blockTag
       ),
-      blockTag
-    ),
-  ]);
+      multicallProvider.all(
+        openTrades.map(openTrade =>
+          callbacksContractMulticall.tradeData(
+            openTrade.trader,
+            openTrade.pairIndex,
+            openTrade.index,
+            0
+          )
+        ),
+        blockTag
+      ),
+    ]);
 
   const finalTrades = new Array(openTrades.length);
 
@@ -318,17 +348,16 @@ const fetchOpenPairTradesBatchMulticall = async (
       continue;
     }
 
-    const tradeInitialAccFees = {
-      ...openTradesInitialAccFees[tradeIndex].otherFees,
-      borrowing: openTradesInitialAccFees[tradeIndex].borrowingFees,
-    };
-
     const trade = openTrades[tradeIndex];
+    const tradeData = openTradesTradeData[tradeIndex];
 
     finalTrades[tradeIndex] = {
       trade,
       tradeInfo,
-      initialAccFees: tradeInitialAccFees,
+      initialAccFees: {
+        borrowing: openTradesInitialAccFees[tradeIndex],
+      },
+      tradeData,
     };
   }
 
@@ -338,7 +367,8 @@ const fetchOpenPairTradesBatchMulticall = async (
 const _prepareTradeContainer = (
   trade: any,
   tradeInfo: any,
-  tradeInitialAccFees: any
+  tradeInitialAccFees: any,
+  tradeData: any
 ) => ({
   trade: {
     trader: trade.trader,
@@ -358,11 +388,13 @@ const _prepareTradeContainer = (
     tpLastUpdated: tradeInfo.tpLastUpdated,
     slLastUpdated: tradeInfo.slLastUpdated,
   },
+  tradeData: {
+    maxSlippageP: parseFloat(tradeData.maxSlippageP.toString()) / 1e10,
+    lastOiUpdateTs: parseFloat(tradeData.lastOiUpdateTs),
+    collateralPriceUsd:
+      parseFloat(tradeData.collateralPriceUsd.toString()) / 1e8,
+  },
   initialAccFees: {
-    rollover: parseFloat(tradeInitialAccFees.rollover.toString()) / 1e18,
-    funding: parseFloat(tradeInitialAccFees.funding.toString()) / 1e18,
-    openedAfterUpdate:
-      tradeInitialAccFees.openedAfterUpdate.toString() === "true",
     borrowing: {
       accPairFee:
         parseFloat(tradeInitialAccFees.borrowing.accPairFee.toString()) / 1e10,

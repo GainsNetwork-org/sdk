@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import {
-  Pair,
-  PairParams,
-  PairRolloverFees,
-  Fee,
-  OpenInterest,
-} from "@/trade/types";
+import { Pair, Fee, OpenInterest, PairDepth } from "@/trade/types";
 import { Contracts } from "@/contracts/types";
 
 export const fetchPairs = async (
@@ -18,11 +12,11 @@ export const fetchPairs = async (
     return [];
   }
 
-  const { gnsPairsStorageV6: pairsStorageContract } = contracts;
+  const { gnsMultiCollatDiamond: multiCollatContract } = contracts;
 
   try {
     const pairs = await Promise.all(
-      pairIxs.map(pairIndex => pairsStorageContract.pairs(pairIndex))
+      pairIxs.map(pairIndex => multiCollatContract.pairs(pairIndex))
     );
 
     return pairs.map((pair, index) => {
@@ -43,59 +37,28 @@ export const fetchPairs = async (
   }
 };
 
-export const fetchPairsParams = async (
+export const fetchPairDepths = async (
   contracts: Contracts,
   pairIxs: number[]
-): Promise<PairParams[]> => {
+): Promise<PairDepth[]> => {
   if (!contracts) {
     return [];
   }
 
-  const { gnsPairInfosV6_1: pairInfosContract } = contracts;
+  const { gnsMultiCollatDiamond: multiCollatContract } = contracts;
 
   try {
-    const pairParams = await Promise.all(
-      pairIxs.map(pairIndex => pairInfosContract.pairParams(pairIndex))
-    );
+    const pairParams = await multiCollatContract.getPairDepths(pairIxs);
 
     return pairParams.map(pair => {
       return {
-        onePercentDepthAbove: parseFloat(pair.onePercentDepthAbove.toString()),
-        onePercentDepthBelow: parseFloat(pair.onePercentDepthBelow.toString()),
-        rolloverFeePerBlockP:
-          parseFloat(pair.rolloverFeePerBlockP.toString()) / 1e12,
-        fundingFeePerBlockP:
-          parseFloat(pair.fundingFeePerBlockP.toString()) / 1e12,
-      } as PairParams;
-    });
-  } catch (error) {
-    console.error(`Unexpected error while fetching pairs!`);
-
-    throw error;
-  }
-};
-
-export const fetchPairsRolloverFees = async (
-  contracts: Contracts,
-  pairIxs: number[]
-): Promise<PairRolloverFees[]> => {
-  if (!contracts) {
-    return [];
-  }
-
-  const { gnsPairInfosV6_1: pairInfosContract } = contracts;
-
-  try {
-    const pairsRolloverFees = await Promise.all(
-      pairIxs.map(pairIndex => pairInfosContract.pairRolloverFees(pairIndex))
-    );
-
-    return pairsRolloverFees.map(pairData => {
-      return {
-        accPerCollateral:
-          parseFloat(pairData.accPerCollateral.toString()) / 1e18,
-        lastUpdateBlock: parseInt(pairData.lastUpdateBlock.toString()),
-      } as PairRolloverFees;
+        onePercentDepthAboveUsd: parseFloat(
+          pair.onePercentDepthAboveUsd.toString()
+        ),
+        onePercentDepthBelowUsd: parseFloat(
+          pair.onePercentDepthBelowUsd.toString()
+        ),
+      } as PairDepth;
     });
   } catch (error) {
     console.error(`Unexpected error while fetching pairs!`);
@@ -112,20 +75,19 @@ export const fetchFees = async (
     return [];
   }
 
-  const { gnsPairsStorageV6: pairsStorageContract } = contracts;
+  const { gnsMultiCollatDiamond: multiCollatContract } = contracts;
 
   try {
     const fees = await Promise.all(
-      feeIxs.map(pairIndex => pairsStorageContract.fees(pairIndex))
+      feeIxs.map(pairIndex => multiCollatContract.fees(pairIndex))
     );
 
     return fees.map(fee => {
       return {
         closeFeeP: parseFloat(fee.closeFeeP.toString()) / 1e12,
-        minLevPosDai: parseFloat(fee.minLevPosDai.toString()) / 1e12,
+        minLevPosUsd: parseFloat(fee.minLevPosUsd.toString()) / 1e18,
         nftLimitOrderFeeP: parseFloat(fee.nftLimitOrderFeeP.toString()) / 1e12,
         openFeeP: parseFloat(fee.openFeeP.toString()) / 1e12,
-        referralFeeP: parseFloat(fee.referralFeeP.toString()) / 1e12,
       } as Fee;
     });
   } catch (error) {
@@ -138,6 +100,8 @@ export const fetchOpenInterest = async (
   contracts: Contracts,
   pairIxs: number[]
 ): Promise<OpenInterest[]> => {
+  const { precision: collateralPrecision } =
+    await contracts.gnsBorrowingFees.collateralConfig();
   const openInterests = await Promise.all(
     pairIxs.map(pairIndex =>
       Promise.all([
@@ -148,9 +112,10 @@ export const fetchOpenInterest = async (
     )
   );
 
+  const precision = parseFloat(collateralPrecision.toString());
   return openInterests.map(openInterest => ({
-    long: parseFloat(openInterest[0].toString()) / 1e18,
-    short: parseFloat(openInterest[1].toString()) / 1e18,
+    long: parseFloat(openInterest[0].toString()) / precision,
+    short: parseFloat(openInterest[1].toString()) / precision,
     max: parseFloat(openInterest[2].toString()) / 1e10,
   }));
 };

@@ -1,9 +1,8 @@
-import { getBaseSpreadP, getSpreadWithPriceImpactP } from "./spread";
+import { getSpreadWithPriceImpactP } from "./spread";
 import {
   LimitOrder,
-  OpenInterest,
   Pair,
-  PairParams,
+  PairDepth,
   OpenLimitOrderType,
   OiWindowsSettings,
   OiWindows,
@@ -12,8 +11,7 @@ import {
 export const getFulfillmentPrice = (
   order: LimitOrder,
   pair: Pair,
-  pairParams: PairParams,
-  openInterest: OpenInterest,
+  pairDepth: PairDepth,
   oiWindowsSettings?: OiWindowsSettings,
   oiWindows?: OiWindows
 ): number => {
@@ -22,14 +20,12 @@ export const getFulfillmentPrice = (
   }
 
   // Get spread percentage
-  const baseSpreadP = getBaseSpreadP(pair.spreadP, order.spreadReductionP);
   const spreadWithPriceImpactP = getSpreadWithPriceImpactP(
-    baseSpreadP,
+    pair.spreadP,
     order.buy,
     order.positionSize,
     order.leverage,
-    pairParams,
-    openInterest,
+    pairDepth,
     oiWindowsSettings,
     oiWindows
   );
