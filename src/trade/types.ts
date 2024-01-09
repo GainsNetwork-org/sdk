@@ -85,11 +85,6 @@ export type OpenInterest = {
   short: number;
 };
 
-export type OpenCollateral = {
-  long: number;
-  short: number;
-};
-
 export type PairDepth = {
   onePercentDepthAboveUsd: number;
   onePercentDepthBelowUsd: number;
@@ -202,4 +197,10 @@ export type OiWindow = PairOi;
 
 export type OiWindows = {
   [key: string]: OiWindow;
+};
+
+export type CollateralConfig = {
+  precision: number;
+  precisionDelta: number;
+  decimals?: number;
 };

@@ -33,6 +33,16 @@
       "gnsBorrowingFees": "0xA280c8e34dcD6A835183E13CA82c6fAE20988644",
       "gnsTradingCallbacks": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
       "gDai": "0x5215C8B3e76D493c8bcb9A7352F7afe18A6bb091"
+    },
+    "ETH": {
+      "gfarmTradingStorageV5": "0x3468885B028271e586419a8827C12c19673DBbcc",
+      "gnsMultiCollatDiamond": "0xDee93dD1Cb54ce80D690eC07a20CB0ce9d7F741C",
+      "gTokenOpenPnlFeed": "0x14148383529690EF511d35a3a24dE78b9414895c",
+      "gnsNftRewardsV6": "0x820781b85F446eDc4165C1c1D1e273B33d0B57aB",
+      "gnsNftRewardsV6_3_1": "0xf7Ac400b45Bdd2E098FaCA3642bE4d01071BC73B",
+      "gnsBorrowingFees": "0xBaE5EdF3DF8d1CA3DB5Ff9E9B43937c8e8f4CeC5",
+      "gnsTradingCallbacks": "0x9b897661E03ac0131d0f5E522eC188d9193Cb1f5",
+      "gDai": "0xBCfCE19e1a97222cbE2eeebC87196670Fce46c87"
     }
   },
   "421613": {
