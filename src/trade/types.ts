@@ -144,7 +144,7 @@ export type LeaderboardTrader = {
   pnl: number;
   volume: number;
   score: number;
-  total_pnl_usd: number;
+  totalPnlUsd: number;
 };
 
 export type OpenTradeParams = [
