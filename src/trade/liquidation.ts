@@ -1,16 +1,11 @@
 import { getBorrowingFee, GetBorrowingFeeContext } from "./fees";
 import { Trade, TradeInfo, TradeInitialAccFees } from "./types";
 
-export type GetLiqPriceContext = GetBorrowingFeeContext & {
-  currentBlock: number;
-  currentL1Block: number;
-};
-
 export const getLiquidationPrice = (
   trade: Trade,
   tradeInfo: TradeInfo,
   initialAccFees: TradeInitialAccFees,
-  context: GetLiqPriceContext
+  context: GetBorrowingFeeContext
 ): number => {
   const posDai = trade.initialPosToken * tradeInfo.tokenPriceDai;
 
@@ -22,7 +17,7 @@ export const getLiquidationPrice = (
           trade.pairIndex,
           trade.buy,
           initialAccFees.borrowing,
-          context as GetBorrowingFeeContext
+          context
         ))) /
     posDai /
     trade.leverage;

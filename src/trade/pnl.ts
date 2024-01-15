@@ -2,8 +2,6 @@ import { getBorrowingFee, GetBorrowingFeeContext, getClosingFee } from "./fees";
 import { Fee, Trade, TradeInfo, TradeInitialAccFees } from "./types";
 
 export type GetPnlContext = GetBorrowingFeeContext & {
-  currentBlock: number;
-  currentL1Block: number;
   fee: Fee | undefined;
   maxGainP: number | undefined;
 };
