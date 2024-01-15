@@ -109,6 +109,7 @@ export type TradeHistoryRecord = {
   action: string;
   address: string;
   buy: number;
+  collateralPriceUsd: number;
   date: string;
   leverage: number;
   pair: string;
@@ -143,6 +144,7 @@ export type LeaderboardTrader = {
   pnl: number;
   volume: number;
   score: number;
+  totalPnlUsd: number;
 };
 
 export type OpenTradeParams = [
