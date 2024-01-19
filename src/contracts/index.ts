@@ -1,6 +1,9 @@
 import type { Signer } from "ethers";
 import type { Provider } from "@ethersproject/providers";
-import { getContractAddressesForChain } from "./addresses";
+import {
+  getCollateralByAddressForChain,
+  getContractAddressesForChain,
+} from "./addresses";
 import {
   GFarmTradingStorageV5__factory,
   GTokenOpenPnlFeed__factory,
@@ -49,6 +52,18 @@ export const getContractsForChain = (
       signerOrProvider as Signer | Provider
     ),
   };
+};
+
+export const getContractsForChainByRequester = (
+  chainId: number,
+  requester: string,
+  signerOrProvider?: Signer | Provider
+): Contracts => {
+  return getContractsForChain(
+    chainId,
+    signerOrProvider,
+    getCollateralByAddressForChain(chainId, requester)
+  );
 };
 
 export * from "./utils";

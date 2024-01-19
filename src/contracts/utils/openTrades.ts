@@ -15,12 +15,16 @@ export const fetchOpenPairTrades = async (
   overrides: FetchOpenPairTradesOverrides = {}
 ): Promise<TradeContainer[]> => {
   const rawTrades = await fetchOpenPairTradesRaw(contracts, overrides);
+  const { precision: collateralPrecision } =
+    await contracts.gnsBorrowingFees.collateralConfig();
+
   return rawTrades.map(rawTrade =>
     _prepareTradeContainer(
       rawTrade.trade,
       rawTrade.tradeInfo,
       rawTrade.initialAccFees,
-      rawTrade.tradeData
+      rawTrade.tradeData,
+      collateralPrecision
     )
   );
 };
@@ -368,7 +372,8 @@ const _prepareTradeContainer = (
   trade: any,
   tradeInfo: any,
   tradeInitialAccFees: any,
-  tradeData: any
+  tradeData: any,
+  collateralPrecision: any
 ) => ({
   trade: {
     trader: trade.trader,
@@ -384,7 +389,9 @@ const _prepareTradeContainer = (
   tradeInfo: {
     beingMarketClosed: tradeInfo.beingMarketClosed.toString() === "true",
     tokenPriceDai: parseFloat(tradeInfo.tokenPriceDai.toString()) / 1e10,
-    openInterestDai: parseFloat(tradeInfo.openInterestDai.toString()) / 1e18,
+    openInterestDai:
+      parseFloat(tradeInfo.openInterestDai.toString()) /
+      parseFloat(collateralPrecision.toString()),
     tpLastUpdated: tradeInfo.tpLastUpdated,
     slLastUpdated: tradeInfo.slLastUpdated,
   },
