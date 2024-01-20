@@ -12,20 +12,20 @@
       "gToken": "0x91993f2101cc758D0dEB7279d41e880F7dEFe827"
     },
     "ETH": {
-      "gfarmTradingStorageV5": "0xaee4d11a16B2bc65EDD6416Fb626EB404a6D65BD",
-      "gTokenOpenPnlFeed": "0x8d687276543b92819F2f2B5C3faad4AD27F4440c",
-      "gnsNftRewards": "",
-      "gnsBorrowingFees": "0x83AE6fADB88872D77299550Dc746b95D0196FE15",
-      "gnsTradingCallbacks": "0x82e59334da8c667797009bbe82473b55c7a6b311",
-      "gToken": "0x91993f2101cc758D0dEB7279d41e880F7dEFe827"
+      "gfarmTradingStorageV5": "0xE7712ebcd451919B38Be8fD102800A496C5BeD4E",
+      "gTokenOpenPnlFeed": "0xF07f4507DD6A057Aea509cB9b218B7C4D1894473",
+      "gnsNftRewards": "0xA5002286A0Fd553017d8c829CDFe85D3162D7EF4",
+      "gnsBorrowingFees": "0x4C5C3380daDCa5AA97257AE8834A95e9561B2788",
+      "gnsTradingCallbacks": "0x0bBED2EaC3237BA128643670b7cF3be475933755",
+      "gToken": "0x1544E1fF1a6f6Bdbfb901622C12bb352a43464Fb"
     },
     "USDC": {
-      "gfarmTradingStorageV5": "0xaee4d11a16B2bc65EDD6416Fb626EB404a6D65BD",
-      "gTokenOpenPnlFeed": "0x8d687276543b92819F2f2B5C3faad4AD27F4440c",
-      "gnsNftRewards": "",
-      "gnsBorrowingFees": "0x83AE6fADB88872D77299550Dc746b95D0196FE15",
-      "gnsTradingCallbacks": "",
-      "gToken": "0x91993f2101cc758D0dEB7279d41e880F7dEFe827"
+      "gfarmTradingStorageV5": "0xC504C9C30B9d88cBc9704Fc2d06a08A4c7bE9378",
+      "gTokenOpenPnlFeed": "0xFF84e736A15F80E7E104e153d7f7D6c9bd6fE822",
+      "gnsNftRewards": "0x77C3f643e382973577ccD05A5f160AdE61CA1CCa",
+      "gnsBorrowingFees": "0x2c765bdA25A08f5eB0a99CA1F8Ac975685b05104",
+      "gnsTradingCallbacks": "0x2aC6749d0AffD42c8D61Ef25E433F92e375a1aEf",
+      "gToken": "0x29019Fe2e72E8d4D2118E8D0318BeF389ffe2C81"
     }
   },
   "42161": {
