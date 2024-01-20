@@ -22,7 +22,7 @@ export type ContractAddresses = {
   gfarmTradingStorageV5: string;
   gnsMultiCollatDiamond: string;
   gTokenOpenPnlFeed: string;
-  gnsNftRewardsV6_3_1: string;
+  gnsNftRewards: string;
   gnsBorrowingFees: string;
   gnsTradingCallbacks: string;
   gToken: string;

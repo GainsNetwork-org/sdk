@@ -36,7 +36,7 @@ export const getContractsForChain = (
       signerOrProvider as Signer | Provider
     ),
     gnsNftRewards: GNSNftRewardsV6_3_1__factory.connect(
-      addresses.gnsNftRewardsV6_3_1,
+      addresses.gnsNftRewards,
       signerOrProvider as Signer | Provider
     ),
     gnsBorrowingFees: GNSBorrowingFees__factory.connect(

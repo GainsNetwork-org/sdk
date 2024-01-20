@@ -6,7 +6,7 @@
     "DAI": {
       "gfarmTradingStorageV5": "0xaee4d11a16B2bc65EDD6416Fb626EB404a6D65BD",
       "gTokenOpenPnlFeed": "0x8d687276543b92819F2f2B5C3faad4AD27F4440c",
-      "gnsNftRewards": "0x8103C0665A544201BBF606d90845d1B2D8005F1c",
+      "gnsNftRewards": "0x18D30044B0b7a86Eea07f953238224Fe47d366e5",
       "gnsBorrowingFees": "0x83AE6fADB88872D77299550Dc746b95D0196FE15",
       "gnsTradingCallbacks": "0x82e59334da8c667797009bbe82473b55c7a6b311",
       "gToken": "0x91993f2101cc758D0dEB7279d41e880F7dEFe827"
@@ -35,7 +35,7 @@
     "DAI": {
       "gfarmTradingStorageV5": "0xcFa6ebD475d89dB04cAd5A756fff1cb2BC5bE33c",
       "gTokenOpenPnlFeed": "0x990BA9Edd8a9615A23E4c452E63A80e519A4a23D",
-      "gnsNftRewards": "0xde5750071CacA8db173FC6543D23d0BCACACFEC3",
+      "gnsNftRewards": "0xa3c13A8FBf49679df032d5cE8eFf2e46b3b8f560",
       "gnsBorrowingFees": "0xA03e32a42C75FDdDc9a39973ddd082F147393154",
       "gnsTradingCallbacks": "0x298a695906e16aea0a184a2815a76ead1a0b7522",
       "gToken": "0xd85E038593d7A098614721EaE955EC2022B9B91B"
