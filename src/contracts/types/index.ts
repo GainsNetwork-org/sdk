@@ -4,7 +4,7 @@ import {
   GNSNftRewardsV6_3_1,
   GNSBorrowingFees,
   GNSTradingCallbacks,
-  GTokenV6_3_2,
+  GToken,
   GNSMultiCollatDiamond,
 } from "./generated";
 
@@ -14,7 +14,7 @@ export type Contracts = {
   gnsNftRewards: GNSNftRewardsV6_3_1;
   gnsBorrowingFees: GNSBorrowingFees;
   gnsTradingCallbacks: GNSTradingCallbacks;
-  gDai: GTokenV6_3_2;
+  gToken: GToken;
   gnsMultiCollatDiamond: GNSMultiCollatDiamond;
 };
 
@@ -22,11 +22,10 @@ export type ContractAddresses = {
   gfarmTradingStorageV5: string;
   gnsMultiCollatDiamond: string;
   gTokenOpenPnlFeed: string;
-  gnsNftRewardsV6: string;
   gnsNftRewardsV6_3_1: string;
   gnsBorrowingFees: string;
   gnsTradingCallbacks: string;
-  gDai: string;
+  gToken: string;
 };
 
 export type BlockTag = number | "latest" | "pending";
@@ -37,3 +36,8 @@ export enum CollateralTypes {
   ARB = "ARB",
   USDC = "USDC",
 }
+
+export type ContractAddressList = Record<
+  string,
+  Partial<Record<CollateralTypes | "global", Partial<ContractAddresses>>>
+>;

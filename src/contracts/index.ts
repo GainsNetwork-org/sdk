@@ -47,8 +47,8 @@ export const getContractsForChain = (
       addresses.gnsTradingCallbacks,
       signerOrProvider as Signer | Provider
     ),
-    gDai: GTokenV6_3_2__factory.connect(
-      addresses.gDai,
+    gToken: GTokenV6_3_2__factory.connect(
+      addresses.gToken,
       signerOrProvider as Signer | Provider
     ),
   };

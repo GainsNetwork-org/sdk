@@ -1,14 +1,15 @@
-import { CollateralTypes, ContractAddresses } from "./types";
+import {
+  CollateralTypes,
+  ContractAddresses,
+  ContractAddressList,
+} from "./types";
 import addresses from "./addresses.json";
 
 export const getContractAddressesForChain = (
   chainId: number,
   collateral: CollateralTypes = CollateralTypes.DAI
 ): ContractAddresses => {
-  const _addresses: Record<
-    string,
-    Partial<Record<CollateralTypes, ContractAddresses>>
-  > = addresses;
+  const _addresses: ContractAddressList = addresses;
 
   if (!_addresses[chainId]) {
     throw new Error(
@@ -22,17 +23,17 @@ export const getContractAddressesForChain = (
     );
   }
 
-  return _addresses[chainId][collateral] as ContractAddresses;
+  return {
+    ..._addresses[chainId]["global"],
+    ..._addresses[chainId][collateral],
+  } as ContractAddresses;
 };
 
 export const getCollateralByAddressForChain = (
   chainId: number,
   address: string
 ): CollateralTypes => {
-  const _addresses: Record<
-    string,
-    Partial<Record<CollateralTypes, ContractAddresses>>
-  > = addresses;
+  const _addresses: ContractAddressList = addresses;
 
   if (!_addresses[chainId]) {
     throw new Error(
