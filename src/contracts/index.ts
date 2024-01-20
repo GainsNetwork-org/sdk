@@ -10,7 +10,7 @@ import {
   GNSNftRewardsV6_3_1__factory,
   GNSBorrowingFees__factory,
   GNSTradingCallbacks__factory,
-  GTokenV6_3_2__factory,
+  GToken__factory,
   GNSMultiCollatDiamond__factory,
 } from "./types/generated/factories";
 import { CollateralTypes, Contracts } from "./types";
@@ -47,7 +47,7 @@ export const getContractsForChain = (
       addresses.gnsTradingCallbacks,
       signerOrProvider as Signer | Provider
     ),
-    gToken: GTokenV6_3_2__factory.connect(
+    gToken: GToken__factory.connect(
       addresses.gToken,
       signerOrProvider as Signer | Provider
     ),
