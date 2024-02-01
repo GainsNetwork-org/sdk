@@ -1,4 +1,5 @@
 import { GFarmTradingStorageV5 } from "@/contracts/types/generated";
+import { IGNSTradingCallbacks } from "@/contracts/types/generated/GNSTradingCallbacks";
 import { BigNumber } from "ethers";
 import { BorrowingFee } from "./fees/borrowing";
 
@@ -10,6 +11,7 @@ export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
   initialAccFees: TradeInitialAccFees;
+  tradeData: TradeData;
   receivedAt?: number;
 };
 
@@ -33,14 +35,16 @@ export type TradeInfo = {
 };
 
 export type TradeInitialAccFees = {
-  rollover: number;
-  funding: number;
-  openedAfterUpdate: boolean;
   borrowing: BorrowingFee.InitialAccFees;
 };
 
+export type TradeData = {
+  maxSlippageP: number;
+  lastOiUpdateTs: number;
+  collateralPriceUsd: number;
+};
+
 export type TradingGroup = {
-  maxCollateralP: number;
   maxLeverage: number;
   minLeverage: number;
   name: string;
@@ -70,10 +74,9 @@ export type LimitOrderRaw = GFarmTradingStorageV5.OpenLimitOrderStructOutput & {
 
 export type Fee = {
   closeFeeP: number;
-  minLevPosDai: number;
+  minLevPosUsd: number;
   nftLimitOrderFeeP: number;
   openFeeP: number;
-  referralFeeP: number;
 };
 
 export type OpenInterest = {
@@ -82,27 +85,9 @@ export type OpenInterest = {
   short: number;
 };
 
-export type OpenCollateral = {
-  long: number;
-  short: number;
-};
-
-export type PairParams = {
-  onePercentDepthAbove: number;
-  onePercentDepthBelow: number;
-  rolloverFeePerBlockP: number;
-  fundingFeePerBlockP: number;
-};
-
-export type PairRolloverFees = {
-  accPerCollateral: number;
-  lastUpdateBlock: number;
-};
-
-export type PairFundingFees = {
-  accPerOiLong: number;
-  accPerOiShort: number;
-  lastUpdateBlock: number;
+export type PairDepth = {
+  onePercentDepthAboveUsd: number;
+  onePercentDepthBelowUsd: number;
 };
 
 export type PairParamsBorrowingFees = {
@@ -124,6 +109,7 @@ export type TradeHistoryRecord = {
   action: string;
   address: string;
   buy: number;
+  collateralPriceUsd: number;
   date: string;
   leverage: number;
   pair: string;
@@ -158,6 +144,7 @@ export type LeaderboardTrader = {
   pnl: number;
   volume: number;
   score: number;
+  totalPnlUsd: number;
 };
 
 export type OpenTradeParams = [
@@ -181,10 +168,8 @@ export enum PositionType {
 export type TradeContainerRaw = {
   trade: GFarmTradingStorageV5.TradeStruct;
   tradeInfo: GFarmTradingStorageV5.TradeInfoStruct;
+  tradeData: IGNSTradingCallbacks.TradeDataStruct;
   initialAccFees: {
-    rollover: BigNumber;
-    funding: BigNumber;
-    openedAfterUpdate: boolean;
     borrowing: {
       accPairFee: number;
       accGroupFee: number;
@@ -205,8 +190,19 @@ export type OiWindowsSettings = {
   windowsCount: number;
 };
 
-export type OiWindow = OpenCollateral;
+export type PairOi = {
+  oiLongUsd: number;
+  oiShortUsd: number;
+};
+
+export type OiWindow = PairOi;
 
 export type OiWindows = {
   [key: string]: OiWindow;
+};
+
+export type CollateralConfig = {
+  precision: number;
+  precisionDelta: number;
+  decimals?: number;
 };

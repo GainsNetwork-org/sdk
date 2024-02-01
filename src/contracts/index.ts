@@ -1,35 +1,34 @@
 import type { Signer } from "ethers";
 import type { Provider } from "@ethersproject/providers";
-import { getContractAddressesForChain } from "./addresses";
+import {
+  getCollateralByAddressForChain,
+  getContractAddressesForChain,
+} from "./addresses";
 import {
   GFarmTradingStorageV5__factory,
-  GNSPairInfosV6_1__factory,
-  GNSPairsStorageV6__factory,
   GTokenOpenPnlFeed__factory,
   GNSNftRewardsV6_3_1__factory,
   GNSBorrowingFees__factory,
-  GNSTradingCallbacksV6_4__factory,
-  GTokenV6_3_2__factory,
+  GNSTradingCallbacks__factory,
+  GToken__factory,
+  GNSMultiCollatDiamond__factory,
 } from "./types/generated/factories";
-import { Contracts } from "./types";
+import { CollateralTypes, Contracts } from "./types";
 
 export const getContractsForChain = (
   chainId: number,
-  signerOrProvider?: Signer | Provider
+  signerOrProvider?: Signer | Provider,
+  collateral?: CollateralTypes
 ): Contracts => {
-  const addresses = getContractAddressesForChain(chainId);
+  const addresses = getContractAddressesForChain(chainId, collateral);
 
   return {
     gfarmTradingStorageV5: GFarmTradingStorageV5__factory.connect(
       addresses.gfarmTradingStorageV5,
       signerOrProvider as Signer | Provider
     ),
-    gnsPairInfosV6_1: GNSPairInfosV6_1__factory.connect(
-      addresses.gnsPairInfosV6_1,
-      signerOrProvider as Signer | Provider
-    ),
-    gnsPairsStorageV6: GNSPairsStorageV6__factory.connect(
-      addresses.gnsPairsStorageV6,
+    gnsMultiCollatDiamond: GNSMultiCollatDiamond__factory.connect(
+      addresses.gnsMultiCollatDiamond,
       signerOrProvider as Signer | Provider
     ),
     gTokenOpenPnlFeed: GTokenOpenPnlFeed__factory.connect(
@@ -37,23 +36,36 @@ export const getContractsForChain = (
       signerOrProvider as Signer | Provider
     ),
     gnsNftRewards: GNSNftRewardsV6_3_1__factory.connect(
-      addresses.gnsNftRewardsV6_3_1,
+      addresses.gnsNftRewards,
       signerOrProvider as Signer | Provider
     ),
     gnsBorrowingFees: GNSBorrowingFees__factory.connect(
-      addresses.gnsBorrowingFeesV6_3_2,
+      addresses.gnsBorrowingFees,
       signerOrProvider as Signer | Provider
     ),
-    gnsTradingCallbacks: GNSTradingCallbacksV6_4__factory.connect(
-      addresses.gnsTradingCallbacksV6_3_2,
+    gnsTradingCallbacks: GNSTradingCallbacks__factory.connect(
+      addresses.gnsTradingCallbacks,
       signerOrProvider as Signer | Provider
     ),
-    gDai: GTokenV6_3_2__factory.connect(
-      addresses.gDai,
+    gToken: GToken__factory.connect(
+      addresses.gToken,
       signerOrProvider as Signer | Provider
     ),
   };
 };
 
+export const getContractsForChainByRequester = (
+  chainId: number,
+  requester: string,
+  signerOrProvider?: Signer | Provider
+): Contracts => {
+  return getContractsForChain(
+    chainId,
+    signerOrProvider,
+    getCollateralByAddressForChain(chainId, requester)
+  );
+};
+
 export * from "./utils";
 export * from "./addresses";
+export { CollateralTypes } from "./types";

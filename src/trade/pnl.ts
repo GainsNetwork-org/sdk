@@ -1,22 +1,10 @@
-import {
-  getBorrowingFee,
-  GetBorrowingFeeContext,
-  getClosingFee,
-  getFundingFee,
-  GetFundingFeeContext,
-  getRolloverFee,
-  GetRolloverFeeContext,
-} from "./fees";
+import { getBorrowingFee, GetBorrowingFeeContext, getClosingFee } from "./fees";
 import { Fee, Trade, TradeInfo, TradeInitialAccFees } from "./types";
 
-export type GetPnlContext = GetRolloverFeeContext &
-  GetFundingFeeContext &
-  GetBorrowingFeeContext & {
-    currentBlock: number;
-    currentL1Block: number;
-    fee: Fee | undefined;
-    maxGainP: number | undefined;
-  };
+export type GetPnlContext = GetBorrowingFeeContext & {
+  fee: Fee | undefined;
+  maxGainP: number | undefined;
+};
 
 export const getPnl = (
   price: number | undefined,
@@ -31,15 +19,7 @@ export const getPnl = (
   }
   const posDai = trade.initialPosToken * tradeInfo.tokenPriceDai;
   const { openPrice, leverage } = trade;
-  const {
-    maxGainP,
-    pairParams,
-    pairRolloverFees,
-    pairFundingFees,
-    openInterest,
-    fee,
-    currentL1Block,
-  } = context;
+  const { maxGainP, fee } = context;
   const maxGain = maxGainP === undefined ? Infinity : (maxGainP / 100) * posDai;
 
   let pnlDai = trade.buy
@@ -49,30 +29,6 @@ export const getPnl = (
   pnlDai = pnlDai > maxGain ? maxGain : pnlDai;
 
   if (useFees) {
-    pnlDai -= getRolloverFee(
-      posDai,
-      initialAccFees.rollover,
-      initialAccFees.openedAfterUpdate,
-      {
-        currentBlock: currentL1Block,
-        pairParams,
-        pairRolloverFees,
-      }
-    );
-
-    pnlDai -= getFundingFee(
-      posDai * trade.leverage,
-      initialAccFees.funding,
-      trade.buy,
-      initialAccFees.openedAfterUpdate,
-      {
-        currentBlock: currentL1Block,
-        pairParams,
-        pairFundingFees,
-        openInterest,
-      }
-    );
-
     pnlDai -= getBorrowingFee(
       posDai * trade.leverage,
       trade.pairIndex,

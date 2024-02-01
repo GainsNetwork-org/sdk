@@ -2,8 +2,8 @@ type GetPendingAccBlockWeightedMarketCap = {
   marketCap: number;
   accBlockWeightedMarketCap: number;
   accBlockWeightedMarketCapLastStored: number;
+  marketCapPrecision?: number;
 };
-const MC_PRECISION = 1e18;
 export const getPendingAccBlockWeightedMarketCap = (
   currentBlock: number,
   context: GetPendingAccBlockWeightedMarketCap
@@ -12,10 +12,11 @@ export const getPendingAccBlockWeightedMarketCap = (
     marketCap,
     accBlockWeightedMarketCap,
     accBlockWeightedMarketCapLastStored,
+    marketCapPrecision,
   } = context;
   return (
     accBlockWeightedMarketCap +
     (currentBlock - accBlockWeightedMarketCapLastStored) /
-      Math.max(marketCap * MC_PRECISION, 1)
+      Math.max(marketCap * (marketCapPrecision || 1e18), 1)
   );
 };

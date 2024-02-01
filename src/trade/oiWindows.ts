@@ -24,7 +24,8 @@ export const getActiveOi = (
     id <= currentOiWindowId;
     id++
   ) {
-    activeOi += (buy ? oiWindows?.[id]?.long : oiWindows?.[id]?.short) || 0;
+    activeOi +=
+      (buy ? oiWindows?.[id]?.oiLongUsd : oiWindows?.[id]?.oiShortUsd) || 0;
   }
 
   return activeOi;
