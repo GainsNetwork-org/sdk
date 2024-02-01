@@ -196,6 +196,15 @@ export const pairs = {
   "XPT/USD": COMMODITIES,
   "XPD/USD": COMMODITIES,
   "HG/USD": COMMODITIES,
+  "JUP/USD": COMMODITIES,
+  "MANTA/USD": COMMODITIES,
+  "BONK/USD": COMMODITIES,
+  "PENDLE/USD": COMMODITIES,
+  "OSMO/USD": COMMODITIES,
+  "ALT/USD": COMMODITIES,
+  "UMA/USD": COMMODITIES,
+  "MAGIC/USD": COMMODITIES,
+  "API3/USD": COMMODITIES,
 };
 
 export const getAssetClassFromGroupIndex = (
@@ -237,7 +246,7 @@ export const delistedPairIxs = new Set([
   6, 31, 36, 42, 45, 48, 50, 54, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
   70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
   89, 97, 99, 101, 106, 107, 108, 52, 131, 147, 157, 160, 179, 182, 183, 188,
-  189, 190,
+  189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199,
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);
