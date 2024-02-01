@@ -68,3 +68,4 @@ export const getContractsForChainByRequester = (
 
 export * from "./utils";
 export * from "./addresses";
+export { CollateralTypes } from "./types";
