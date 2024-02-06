@@ -1,4 +1,4 @@
-import { OiWindows, OiWindowsSettings } from "@/trade/types";
+import { OiWindows, OiWindowsSettings } from "../trade/types";
 
 export const getCurrentOiWindowId = (
   oiWindowSettings: OiWindowsSettings

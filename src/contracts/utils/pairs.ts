@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Pair, Fee, OpenInterest, PairDepth, PairIndex } from "@/trade/types";
-import { Contracts } from "@/contracts/types";
+import {
+  Pair,
+  Fee,
+  OpenInterest,
+  PairDepth,
+  PairIndex,
+} from "../../trade/types";
+import { Contracts } from "../../contracts/types";
 
 export const fetchPairs = async (
   contracts: Contracts,
@@ -215,7 +221,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.SPYUSD]: "SPDR S&P 500 ETF Trust to US Dollar",
   [PairIndex.QQQUSD]: "Invesco QQQ Trust to US Dollar",
   [PairIndex.IWMUSD]: "iShares Russell 2000 ETF to US Dollar",
-  [PairIndex.DIAUSD]: "SPDR Dow Jones Industrial Average ETF Trust to US Dollar",
+  [PairIndex.DIAUSD]:
+    "SPDR Dow Jones Industrial Average ETF Trust to US Dollar",
   [PairIndex.XAUUSD]: "Gold to US Dollar",
   [PairIndex.XAGUSD]: "Silver to US Dollar",
   [PairIndex.USDCNH]: "US Dollar to Chinese Yuan Offshore",

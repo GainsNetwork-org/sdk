@@ -1,5 +1,5 @@
-import { GFarmTradingStorageV5 } from "@/contracts/types/generated";
-import { IGNSTradingCallbacks } from "@/contracts/types/generated/GNSTradingCallbacks";
+import { GFarmTradingStorageV5 } from "../contracts/types/generated";
+import { IGNSTradingCallbacks } from "../contracts/types/generated/GNSTradingCallbacks";
 import { BigNumber } from "ethers";
 import { BorrowingFee } from "./fees/borrowing";
 

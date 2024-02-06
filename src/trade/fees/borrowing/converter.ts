@@ -1,4 +1,4 @@
-import { IGNSBorrowingFees } from "@/contracts/types/generated/GNSBorrowingFees";
+import { IGNSBorrowingFees } from "../../../contracts/types/generated/GNSBorrowingFees";
 import { BorrowingFee } from ".";
 
 export const convertPairGroupBorrowingFee = (

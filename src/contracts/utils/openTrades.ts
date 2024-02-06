@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Contract, Provider, Call } from "ethcall";
-import { TradeContainer, TradeContainerRaw } from "@/trade/types";
-import { Contracts, BlockTag } from "@/contracts/types";
+import { TradeContainer, TradeContainerRaw } from "../../trade/types";
+import { Contracts, BlockTag } from "../../contracts/types";
 
 export type FetchOpenPairTradesOverrides = {
   pairBatchSize?: number;
