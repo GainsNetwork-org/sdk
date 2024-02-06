@@ -3,10 +3,6 @@ import { IGNSTradingCallbacks } from "@/contracts/types/generated/GNSTradingCall
 import { BigNumber } from "ethers";
 import { BorrowingFee } from "./fees/borrowing";
 
-export type PairIndexes = {
-  [key: string]: number;
-};
-
 export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
@@ -21,7 +17,7 @@ export type Trade = {
   initialPosToken: number;
   leverage: number;
   openPrice: number;
-  pairIndex: number;
+  pairIndex: PairIndex;
   sl: number;
   tp: number;
   trader: string;
@@ -57,7 +53,7 @@ export type LimitOrder = {
   leverage: number;
   maxPrice: number;
   minPrice: number;
-  pairIndex: number;
+  pairIndex: PairIndex;
   positionSize: number;
   sl: number;
   spreadReductionP: number;
@@ -102,7 +98,7 @@ export type Pair = {
   to: string;
   feeIndex: number;
   groupIndex: number;
-  pairIndex: number;
+  pairIndex: PairIndex;
   spreadP: number;
 };
 
@@ -122,7 +118,7 @@ export type TradeHistoryRecord = {
 
 export type MarketOrder = {
   trader: string;
-  pairIndex: number;
+  pairIndex: PairIndex;
   index: number;
   block: number;
   open: boolean;
@@ -150,7 +146,7 @@ export type LeaderboardTrader = {
 
 export type OpenTradeParams = [
   address: string,
-  pairIndex: number,
+  pairIndex: PairIndex,
   x1: number,
   x2: number,
   wei: number,

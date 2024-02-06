@@ -6,7 +6,7 @@ import { Contracts } from "@/contracts/types";
 
 export const fetchPairs = async (
   contracts: Contracts,
-  pairIxs: number[]
+  pairIxs: PairIndex[]
 ): Promise<Pair[]> => {
   if (!contracts) {
     return [];
@@ -70,7 +70,7 @@ export const fetchPairDepths = async (
 
 export const fetchFees = async (
   contracts: Contracts,
-  feeIxs: number[]
+  feeIxs: PairIndex[]
 ): Promise<Fee[]> => {
   if (!contracts) {
     return [];
@@ -121,8 +121,8 @@ export const fetchOpenInterest = async (
   }));
 };
 
-export const getPairDescription = (pairIndex: number): string => {
-  return PAIR_INDEX_TO_DESCRIPTION[pairIndex as PairIndex];
+export const getPairDescription = (pairIndex: PairIndex): string => {
+  return PAIR_INDEX_TO_DESCRIPTION[pairIndex];
 };
 
 const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {

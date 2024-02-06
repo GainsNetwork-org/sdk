@@ -1,9 +1,9 @@
-import { Fee } from "../types";
+import { Fee, PairIndex } from "../types";
 
 export const getClosingFee = (
   posDai: number,
   leverage: number,
-  pairIndex: number,
+  pairIndex: PairIndex,
   pairFee: Fee | undefined
 ): number => {
   if (
