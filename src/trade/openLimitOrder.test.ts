@@ -30,6 +30,7 @@ describe("getFulfillmentPrice", () => {
     from: "FROM",
     to: "TO",
     name: "FROM/TO",
+    description: "Bitcoin to US Dollar",
     groupIndex: 0,
     pairIndex: 100,
     spreadP: 20,
