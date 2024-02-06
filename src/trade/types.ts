@@ -3,6 +3,10 @@ import { IGNSTradingCallbacks } from "../contracts/types/generated/GNSTradingCal
 import { BigNumber } from "ethers";
 import { BorrowingFee } from "./fees/borrowing";
 
+export type PairIndexes = {
+  [key: string]: PairIndex;
+};
+
 export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
