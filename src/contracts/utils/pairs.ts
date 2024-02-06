@@ -128,7 +128,7 @@ export const fetchOpenInterest = async (
 };
 
 export const getPairDescription = (pairIndex: PairIndex): string => {
-  return PAIR_INDEX_TO_DESCRIPTION[pairIndex];
+  return PAIR_INDEX_TO_DESCRIPTION[pairIndex] || '';
 };
 
 const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
@@ -324,4 +324,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.XPTUSD]: "Platinum to US Dollar",
   [PairIndex.XPDUSD]: "Palladium to US Dollar",
   [PairIndex.HGUSD]: "Copper to US Dollar",
+  [PairIndex.JUPUSD]: "Jupiter to US Dollar",
 };
