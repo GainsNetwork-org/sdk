@@ -400,4 +400,5 @@ export enum PairIndex {
   XPTUSD,
   XPDUSD,
   HGUSD,
+  JUPUSD,
 }
