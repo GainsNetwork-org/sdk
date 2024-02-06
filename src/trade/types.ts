@@ -1,11 +1,7 @@
-import { GFarmTradingStorageV5 } from "@/contracts/types/generated";
-import { IGNSTradingCallbacks } from "@/contracts/types/generated/GNSTradingCallbacks";
+import { GFarmTradingStorageV5 } from "../contracts/types/generated";
+import { IGNSTradingCallbacks } from "../contracts/types/generated/GNSTradingCallbacks";
 import { BigNumber } from "ethers";
 import { BorrowingFee } from "./fees/borrowing";
-
-export type PairIndexes = {
-  [key: string]: number;
-};
 
 export type TradeContainer = {
   trade: Trade;
@@ -21,7 +17,7 @@ export type Trade = {
   initialPosToken: number;
   leverage: number;
   openPrice: number;
-  pairIndex: number;
+  pairIndex: PairIndex;
   sl: number;
   tp: number;
   trader: string;
@@ -57,7 +53,7 @@ export type LimitOrder = {
   leverage: number;
   maxPrice: number;
   minPrice: number;
-  pairIndex: number;
+  pairIndex: PairIndex;
   positionSize: number;
   sl: number;
   spreadReductionP: number;
@@ -97,11 +93,12 @@ export type PairParamsBorrowingFees = {
 
 export type Pair = {
   name: string;
+  description: string;
   from: string;
   to: string;
   feeIndex: number;
   groupIndex: number;
-  pairIndex: number;
+  pairIndex: PairIndex;
   spreadP: number;
 };
 
@@ -121,7 +118,7 @@ export type TradeHistoryRecord = {
 
 export type MarketOrder = {
   trader: string;
-  pairIndex: number;
+  pairIndex: PairIndex;
   index: number;
   block: number;
   open: boolean;
@@ -149,7 +146,7 @@ export type LeaderboardTrader = {
 
 export type OpenTradeParams = [
   address: string,
-  pairIndex: number,
+  pairIndex: PairIndex,
   x1: number,
   x2: number,
   wei: number,
@@ -206,3 +203,197 @@ export type CollateralConfig = {
   precisionDelta: number;
   decimals?: number;
 };
+
+export enum PairIndex {
+  BTCUSD,
+  ETHUSD,
+  LINKUSD,
+  DOGEUSD,
+  MATICUSD,
+  ADAUSD,
+  SUSHIUSD,
+  AAVEUSD,
+  ALGOUSD,
+  BATUSD,
+  COMPUSD,
+  DOTUSD,
+  EOSUSD,
+  LTCUSD,
+  MANAUSD,
+  OMGUSD,
+  SNXUSD,
+  UNIUSD,
+  XLMUSD,
+  XRPUSD,
+  ZECUSD,
+  EURUSD,
+  USDJPY,
+  GBPUSD,
+  USDCHF,
+  AUDUSD,
+  USDCAD,
+  NZDUSD,
+  EURCHF,
+  EURJPY,
+  EURGBP,
+  LUNAUSD,
+  YFIUSD,
+  SOLUSD,
+  XTZUSD,
+  BCHUSD,
+  BNTUSD,
+  CRVUSD,
+  DASHUSD,
+  ETCUSD,
+  ICPUSD,
+  MKRUSD,
+  NEOUSD,
+  THETAUSD,
+  TRXUSD,
+  ZRXUSD,
+  SANDUSD,
+  BNBUSD,
+  AXSUSD,
+  GRTUSD,
+  HBARUSD,
+  XMRUSD,
+  ENJUSD,
+  FTMUSD,
+  FTTUSD,
+  APEUSD,
+  CHZUSD,
+  SHIBUSD,
+  AAPLUSD,
+  FBUSD,
+  GOOGLUSD,
+  AMZNUSD,
+  MSFTUSD,
+  TSLAUSD,
+  SNAPUSD,
+  NVDAUSD,
+  VUSD,
+  MAUSD,
+  PFEUSD,
+  KOUSD,
+  DISUSD,
+  GMEUSD,
+  NKEUSD,
+  AMDUSD,
+  PYPLUSD,
+  ABNBUSD,
+  BAUSD,
+  SBUXUSD,
+  WMTUSD,
+  INTCUSD,
+  MCDUSD,
+  METAUSD,
+  GOOGLUSD2,
+  GMEUSD2,
+  AMZNUSD2,
+  TSLAUSD2,
+  SPYUSD,
+  QQQUSD,
+  IWMUSD,
+  DIAUSD,
+  XAUUSD,
+  XAGUSD,
+  USDCNH,
+  USDSGD,
+  EURSEK,
+  USDKRW,
+  EURNOK,
+  USDINR,
+  USDMXN,
+  USDTWD,
+  USDZAR,
+  USDBRL,
+  AVAXUSD,
+  ATOMUSD,
+  NEARUSD,
+  QNTUSD,
+  IOTAUSD,
+  TONUSD,
+  RPLUSD,
+  ARBUSD,
+  EURAUD,
+  EURNZD,
+  EURCAD,
+  GBPAUD,
+  GBPNZD,
+  GBPCAD,
+  GBPCHF,
+  GBPJPY,
+  AUDNZD,
+  AUDCAD,
+  AUDCHF,
+  AUDJPY,
+  NZDCAD,
+  NZDCHF,
+  NZDJPY,
+  CADCHF,
+  CADJPY,
+  CHFJPY,
+  LDOUSD,
+  INJUSD,
+  RUNEUSD,
+  CAKEUSD,
+  FXSUSD,
+  TWTUSD,
+  PEPEUSD,
+  DYDXUSD,
+  GMXUSD,
+  FILUSD,
+  APTUSD,
+  IMXUSD,
+  VETUSD,
+  OPUSD,
+  RNDRUSD,
+  EGLDUSD,
+  TIAUSD,
+  STXUSD,
+  FLOWUSD,
+  KAVAUSD,
+  GALAUSD,
+  MINAUSD,
+  ORDIUSD,
+  ILVUSD,
+  KLAYUSD,
+  SUIUSD,
+  BLURUSD,
+  FETUSD,
+  CFXUSD,
+  BEAMUSD,
+  ARUSD,
+  SEIUSD,
+  BTTUSD,
+  ROSEUSD,
+  WOOUSD,
+  AGIXUSD,
+  ZILUSD,
+  GMTUSD,
+  ASTRUSD,
+  ONEINCHUSD,
+  FLOKIUSD,
+  QTUMUSD,
+  OCEANUSD,
+  WLDUSD,
+  MASKUSD,
+  CELOUSD,
+  LRCUSD,
+  ENSUSD,
+  MEMEUSD,
+  ANKRUSD,
+  IOTXUSD,
+  ICXUSD,
+  KSMUSD,
+  RVNUSD,
+  ANTUSD,
+  WAVESUSD,
+  SKLUSD,
+  SUPERUSD,
+  BALUSD,
+  WTIUSD,
+  XPTUSD,
+  XPDUSD,
+  HGUSD,
+}

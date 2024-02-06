@@ -1,4 +1,4 @@
-import { OpenInterest } from "../../types";
+import { OpenInterest, PairIndex } from "../../types";
 import * as BorrowingFee from "./types";
 
 export type GetBorrowingFeeContext = {
@@ -10,7 +10,7 @@ export type GetBorrowingFeeContext = {
 
 export const getBorrowingFee = (
   posDai: number,
-  pairIndex: number,
+  pairIndex: PairIndex,
   long: boolean,
   initialAccFees: BorrowingFee.InitialAccFees,
   context: GetBorrowingFeeContext
@@ -60,7 +60,7 @@ export const getBorrowingFee = (
 };
 
 export const withinMaxGroupOi = (
-  pairIndex: number,
+  pairIndex: PairIndex,
   long: boolean,
   positionSizeDai: number,
   context: { groups: BorrowingFee.Group[]; pairs: BorrowingFee.Pair[] }
@@ -77,7 +77,7 @@ export const withinMaxGroupOi = (
 };
 
 const getPairGroupIndex = (
-  pairIndex: number,
+  pairIndex: PairIndex,
   context: { pairs: BorrowingFee.Pair[] }
 ): number => {
   const { pairs } = context;
@@ -90,7 +90,7 @@ const getPairGroupIndex = (
 };
 
 const getPairPendingAccFees = (
-  pairIndex: number,
+  pairIndex: PairIndex,
   currentBlock: number,
   context: {
     pairs: BorrowingFee.Pair[];
@@ -118,7 +118,7 @@ const getPairPendingAccFees = (
 };
 
 const getPairPendingAccFee = (
-  pairIndex: number,
+  pairIndex: PairIndex,
   currentBlock: number,
   long: boolean,
   context: {
@@ -172,7 +172,7 @@ const getPairGroupAccFeesDeltas = (
   i: number,
   pairGroups: BorrowingFee.PairGroup[],
   initialFees: BorrowingFee.InitialAccFees,
-  pairIndex: number,
+  pairIndex: PairIndex,
   long: boolean,
   context: GetBorrowingFeeContext
 ): { deltaGroup: number; deltaPair: number; beforeTradeOpen: boolean } => {
