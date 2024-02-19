@@ -30,7 +30,7 @@ export const isForexOpen = (dateToCheck: Date): boolean => {
   return !isClosed;
 };
 
-export const isForexLowLiquidity = (timestampToCheck: number) => {
+export const isForexLowLiquidity = (timestampToCheck: number, pairId?: number) => {
   const now = DateTime.fromMillis(timestampToCheck).setZone(
     FOREX_MARKETS_TIME_ZONE_IANA
   );
@@ -38,8 +38,16 @@ export const isForexLowLiquidity = (timestampToCheck: number) => {
   const minute = now.minute;
   const isInDST = now.isInDST;
 
+  // NZD/CHF: increase low liquidity window by additional 30 mins
+  if (pairId === 123) {
+    return (
+      (isInDST && ((hour == 15 && minute >= 15) || (hour >= 16 && hour < 19))) ||
+      (!isInDST && ((hour == 16 && minute >= 15) || (hour >= 17 && hour < 20)))
+    );
+  }
+
   return (
-    (isInDST && ((hour == 15 && minute >= 15) || (hour >= 16 && hour < 19))) ||
-    (!isInDST && ((hour == 16 && minute >= 15) || (hour >= 17 && hour < 20)))
+    (isInDST && ((hour == 15 && minute >= 45) || (hour >= 16 && hour < 19))) ||
+    (!isInDST && ((hour == 16 && minute >= 45) || (hour >= 17 && hour < 20)))
   );
 };
