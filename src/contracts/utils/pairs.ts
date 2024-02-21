@@ -318,7 +318,7 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.ANTUSD]: "Aragon to US Dollar",
   [PairIndex.WAVESUSD]: "Waves to US Dollar",
   [PairIndex.SKLUSD]: "SKALE to US Dollar",
-  [PairIndex.SUPERUSD]: "SuperFarm to US Dollar",
+  [PairIndex.SUPERUSD]: "SuperVerse to US Dollar",
   [PairIndex.BALUSD]: "Balancer to US Dollar",
   [PairIndex.WTIUSD]: "Oil to US Dollar",
   [PairIndex.XPTUSD]: "Platinum to US Dollar",
