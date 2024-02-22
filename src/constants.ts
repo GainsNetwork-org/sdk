@@ -205,6 +205,11 @@ export const pairs = {
   "UMA/USD": CRYPTO,
   "MAGIC/USD": CRYPTO,
   "API3/USD": CRYPTO,
+  "STRK/USD": CRYPTO,
+  "DYM/USD": CRYPTO,
+  "NTRN/USD": CRYPTO,
+  "PYTH/USD": CRYPTO,
+  "SC/USD": CRYPTO
 };
 
 export const getAssetClassFromGroupIndex = (

@@ -333,4 +333,9 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.UMAUSD]: "UMA to US Dollar",
   [PairIndex.MAGICUSD]: "Magic to US Dollar",
   [PairIndex.API3USD]: "API3 to US Dollar",
+  [PairIndex.STRKUSD]: "Starknet to US Dollar",
+  [PairIndex.DYMUSD]: "Dymension to US Dollar",
+  [PairIndex.NTRNUSD]: "Neutron to US Dollar",
+  [PairIndex.PYTHUSD]: "Pyth Network to US Dollar",
+  [PairIndex.SCUSD]: "Siacoin to US Dollar",
 };

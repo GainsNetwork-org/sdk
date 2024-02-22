@@ -408,5 +408,10 @@ export enum PairIndex {
   ALTUSD,
   UMAUSD,
   MAGICUSD,
-  API3USD
+  API3USD,
+  STRKUSD,
+  DYMUSD,
+  NTRNUSD,
+  PYTHUSD,
+  SCUSD,
 }
