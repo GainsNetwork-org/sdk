@@ -325,4 +325,12 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.XPDUSD]: "Palladium to US Dollar",
   [PairIndex.HGUSD]: "Copper to US Dollar",
   [PairIndex.JUPUSD]: "Jupiter to US Dollar",
+  [PairIndex.MANTAUSD]: "Manta to US Dollar",
+  [PairIndex.BONKUSD]: "Bonk to US Dollar",
+  [PairIndex.PENDLEUSD]: "Pendle to US Dollar",
+  [PairIndex.OSMOUSD]: "Osmosis to US Dollar",
+  [PairIndex.ALTUSD]: "AltLayer to US Dollar",
+  [PairIndex.UMAUSD]: "UMA to US Dollar",
+  [PairIndex.MAGICUSD]: "Magic to US Dollar",
+  [PairIndex.API3USD]: "API3 to US Dollar",
 };

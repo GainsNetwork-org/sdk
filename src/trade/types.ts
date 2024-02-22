@@ -401,4 +401,12 @@ export enum PairIndex {
   XPDUSD,
   HGUSD,
   JUPUSD,
+  MANTAUSD,
+  BONKUSD,
+  PENDLEUSD,
+  OSMOUSD,
+  ALTUSD,
+  UMAUSD,
+  MAGICUSD,
+  API3USD
 }
