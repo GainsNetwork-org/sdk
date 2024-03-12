@@ -128,7 +128,7 @@ export const fetchOpenInterest = async (
 };
 
 export const getPairDescription = (pairIndex: PairIndex): string => {
-  return PAIR_INDEX_TO_DESCRIPTION[pairIndex] || '';
+  return PAIR_INDEX_TO_DESCRIPTION[pairIndex] || "";
 };
 
 const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
@@ -338,4 +338,19 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.NTRNUSD]: "Neutron to US Dollar",
   [PairIndex.PYTHUSD]: "Pyth Network to US Dollar",
   [PairIndex.SCUSD]: "Siacoin to US Dollar",
+  [PairIndex.WIFUSD]: "dogwifhat to US Dollar",
+  [PairIndex.PIXELUSD]: "Pixels to US Dollar",
+  [PairIndex.JTOUSD]: "Jito to US Dollar",
+  [PairIndex.MAVIAUSD]: "Heroes of Mavia to US Dollar",
+  [PairIndex.MYROUSD]: "Myro to US Dollar",
+  [PairIndex.STGUSD]: "Stargate to US Dollar",
 };
+
+/**
+ *   "WIF/USD": CRYPTO,
+  "PIXEL/USD": CRYPTO,
+  "JTO/USD": CRYPTO,
+  "MAVIA/USD": CRYPTO,
+  "MYRO/USD": CRYPTO,
+  "STG/USD": CRYPTO,
+ */

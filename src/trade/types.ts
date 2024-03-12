@@ -414,4 +414,10 @@ export enum PairIndex {
   NTRNUSD,
   PYTHUSD,
   SCUSD,
+  WIFUSD,
+  PIXELUSD,
+  JTOUSD,
+  MAVIAUSD,
+  MYROUSD,
+  STGUSD,
 }
