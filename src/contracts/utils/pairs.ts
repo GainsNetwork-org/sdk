@@ -345,12 +345,3 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.MYROUSD]: "Myro to US Dollar",
   [PairIndex.STGUSD]: "Stargate to US Dollar",
 };
-
-/**
- *   "WIF/USD": CRYPTO,
-  "PIXEL/USD": CRYPTO,
-  "JTO/USD": CRYPTO,
-  "MAVIA/USD": CRYPTO,
-  "MYRO/USD": CRYPTO,
-  "STG/USD": CRYPTO,
- */
