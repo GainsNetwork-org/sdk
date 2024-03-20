@@ -420,4 +420,8 @@ export enum PairIndex {
   MAVIAUSD,
   MYROUSD,
   STGUSD,
+  BOMEUSD,
+  ETHFIUSD,
+  METISUSD,
+  AEVOUSD,
 }
