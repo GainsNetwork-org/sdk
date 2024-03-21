@@ -344,4 +344,9 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.MAVIAUSD]: "Heroes of Mavia to US Dollar",
   [PairIndex.MYROUSD]: "Myro to US Dollar",
   [PairIndex.STGUSD]: "Stargate to US Dollar",
+  [PairIndex.BOMEUSD]: "Book Of Meme to US Dollar",
+  [PairIndex.ETHFIUSD]: "EtherFi to US Dollar",
+  [PairIndex.METISUSD]: "Metis to US Dollar",
+  [PairIndex.AEVOUSD]: "Aevo to US Dollar",
+
 };
