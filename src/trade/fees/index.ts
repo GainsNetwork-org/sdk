@@ -21,3 +21,4 @@ export const getClosingFee = (
 };
 
 export * from "./borrowing";
+export * from "./tiers";
