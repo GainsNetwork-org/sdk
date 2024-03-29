@@ -424,4 +424,8 @@ export enum PairIndex {
   ETHFIUSD,
   METISUSD,
   AEVOUSD,
+  ONDOUSD,
+  MNTUSD,
+  KASUSD,
+  RONINUSD,
 }
