@@ -216,6 +216,10 @@ export const pairs = {
   "MAVIA/USD": CRYPTO,
   "MYRO/USD": CRYPTO,
   "STG/USD": CRYPTO,
+  "BOME/USD": CRYPTO,
+  "ETHFI/USD": CRYPTO,
+  "METIS/USD": CRYPTO,
+  "AEVO/USD": CRYPTO,
 };
 
 export const getAssetClassFromGroupIndex = (
