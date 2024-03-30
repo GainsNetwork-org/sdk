@@ -223,7 +223,7 @@ export const pairs = {
   "ONDO/USD": CRYPTO,
   "MNT/USD": CRYPTO,
   "KAS/USD": CRYPTO,
-  "RONIN/USD": CRYPTO,
+  "RON/USD": CRYPTO,
 };
 
 export const getAssetClassFromGroupIndex = (
