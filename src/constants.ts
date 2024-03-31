@@ -220,6 +220,10 @@ export const pairs = {
   "ETHFI/USD": CRYPTO,
   "METIS/USD": CRYPTO,
   "AEVO/USD": CRYPTO,
+  "ONDO/USD": CRYPTO,
+  "MNT/USD": CRYPTO,
+  "KAS/USD": CRYPTO,
+  "RON/USD": CRYPTO,
 };
 
 export const getAssetClassFromGroupIndex = (
@@ -259,7 +263,7 @@ export const delistedPairIxs = new Set([
   6, 31, 36, 42, 45, 48, 50, 51, 54, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68,
   69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
   88, 89, 97, 99, 101, 106, 107, 108, 52, 131, 147, 157, 160, 179, 182, 183,
-  190, 194,
+  190, 194, 215, 216, 217, 218
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);

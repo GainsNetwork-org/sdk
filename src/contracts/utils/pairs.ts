@@ -348,5 +348,9 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.ETHFIUSD]: "EtherFi to US Dollar",
   [PairIndex.METISUSD]: "Metis to US Dollar",
   [PairIndex.AEVOUSD]: "Aevo to US Dollar",
+  [PairIndex.ONDOUSD]: "Ondo to US Dollar",
+  [PairIndex.MNTUSD]: "Mantle to US Dollar",
+  [PairIndex.KASUSD]: "Kaspa to US Dollar",
+  [PairIndex.RONUSD]: "Ronin to US Dollar",
 
 };
