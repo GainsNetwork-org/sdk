@@ -208,6 +208,12 @@ export type CollateralConfig = {
   decimals?: number;
 };
 
+export type GCredits = {
+  tiers: [number, number][]; // gCredits, discount
+  multipliers: number[]; // gCredits per $1 USD asset group
+  currentDay: number; // current day seconds
+};
+
 export enum PairIndex {
   BTCUSD,
   ETHUSD,
