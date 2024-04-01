@@ -219,6 +219,7 @@ export type TraderFeeTiers = {
   traderInfo: TraderInfo;
   inboundPoints: number;
   outboundPoints: number;
+  lastDayUpdatedPoints: number;
   expiredPoints: number[];
 };
 
