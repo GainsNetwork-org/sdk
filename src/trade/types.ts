@@ -2,6 +2,7 @@ import { GFarmTradingStorageV5 } from "../contracts/types/generated";
 import { IGNSTradingCallbacks } from "../contracts/types/generated/GNSTradingCallbacks";
 import { BigNumber } from "ethers";
 import { BorrowingFee } from "./fees/borrowing";
+import { FeeTier, TraderInfo } from "./fees/tiers/types";
 
 export type PairIndexes = {
   [key: string]: PairIndex;
@@ -208,10 +209,17 @@ export type CollateralConfig = {
   decimals?: number;
 };
 
-export type GCredits = {
-  tiers: [number, number][]; // gCredits, discount
-  multipliers: number[]; // gCredits per $1 USD asset group
-  currentDay: number; // current day seconds
+export type FeeTiers = {
+  tiers: FeeTier[];
+  multipliers: number[];
+  currentDay: number;
+};
+
+export type TraderFeeTiers = {
+  traderInfo: TraderInfo;
+  inboundPoints: number;
+  outboundPoints: number;
+  expiredPoints: number[];
 };
 
 export enum PairIndex {
