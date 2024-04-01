@@ -7,8 +7,3 @@ export type TraderInfo = {
   lastDayUpdated: number;
   trailingPoints: number;
 };
-
-export type TraderDailyInfo = {
-  feeMultiplierCache: number;
-  points: number;
-};
