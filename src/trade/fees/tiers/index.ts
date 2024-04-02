@@ -20,7 +20,7 @@ export const getFeeTiersCount = (feeTiers: FeeTier[]): number => {
   return 0;
 };
 
-export const computeFeeMulitplier = (
+export const computeFeeMultiplier = (
   feeTiers: FeeTiers,
   traderFeeTiers: TraderFeeTiers
 ): { feeMultiplier: number; trailingPoints: number } => {
