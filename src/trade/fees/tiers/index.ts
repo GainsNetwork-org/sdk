@@ -20,6 +20,23 @@ export const getFeeTiersCount = (feeTiers: FeeTier[]): number => {
   return 0;
 };
 
+export const getFeeMultiplier = (
+  trailingPoints: number,
+  tiers: FeeTier[]
+): number => {
+  let feeMultiplier = FEE_MULTIPLIER_SCALE;
+  for (let i = getFeeTiersCount(tiers); i > 0; --i) {
+    const feeTier = tiers[i - 1];
+
+    if (trailingPoints >= feeTier.pointsThreshold) {
+      feeMultiplier = feeTier.feeMultiplier;
+      break;
+    }
+  }
+
+  return feeMultiplier;
+};
+
 export const computeFeeMultiplier = (
   feeTiers: FeeTiers,
   traderFeeTiers: TraderFeeTiers
@@ -46,23 +63,10 @@ export const computeFeeMultiplier = (
     }
   }
 
-  let newFeeMultiplier = FEE_MULTIPLIER_SCALE;
-  for (let i = getFeeTiersCount(tiers); i > 0; --i) {
-    const feeTier = tiers[i - 1];
-
-    if (curTrailingPoints >= feeTier.pointsThreshold) {
-      newFeeMultiplier = feeTier.feeMultiplier;
-      break;
-    }
-  }
+  const feeMultiplier = getFeeMultiplier(curTrailingPoints, tiers);
 
   return {
-    feeMultiplier: newFeeMultiplier,
+    feeMultiplier,
     trailingPoints: curTrailingPoints,
-  };
-
-  return {
-    feeMultiplier: FEE_MULTIPLIER_SCALE,
-    trailingPoints,
   };
 };
