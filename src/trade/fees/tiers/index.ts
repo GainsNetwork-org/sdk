@@ -28,8 +28,9 @@ export const computeFeeMultiplier = (
   const { traderInfo, expiredPoints, lastDayUpdatedPoints } = traderFeeTiers;
   const { lastDayUpdated, trailingPoints } = traderInfo;
 
+  let curTrailingPoints = trailingPoints;
   if (currentDay > lastDayUpdated) {
-    let curTrailingPoints = 0;
+    curTrailingPoints = 0;
 
     const earliestActiveDay = currentDay - TRAILING_PERIOD_DAYS;
 
@@ -43,22 +44,22 @@ export const computeFeeMultiplier = (
 
       curTrailingPoints -= expiredTrailingPoints;
     }
-
-    let newFeeMultiplier = FEE_MULTIPLIER_SCALE;
-    for (let i = getFeeTiersCount(tiers); i > 0; --i) {
-      const feeTier = tiers[i - 1];
-
-      if (curTrailingPoints >= feeTier.pointsThreshold) {
-        newFeeMultiplier = feeTier.feeMultiplier;
-        break;
-      }
-    }
-
-    return {
-      feeMultiplier: newFeeMultiplier,
-      trailingPoints: curTrailingPoints,
-    };
   }
+
+  let newFeeMultiplier = FEE_MULTIPLIER_SCALE;
+  for (let i = getFeeTiersCount(tiers); i > 0; --i) {
+    const feeTier = tiers[i - 1];
+
+    if (curTrailingPoints >= feeTier.pointsThreshold) {
+      newFeeMultiplier = feeTier.feeMultiplier;
+      break;
+    }
+  }
+
+  return {
+    feeMultiplier: newFeeMultiplier,
+    trailingPoints: curTrailingPoints,
+  };
 
   return {
     feeMultiplier: FEE_MULTIPLIER_SCALE,
