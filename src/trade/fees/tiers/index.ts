@@ -12,7 +12,7 @@ export const getCurrentDay = (): number =>
 
 export const getFeeTiersCount = (feeTiers: FeeTier[]): number => {
   for (let i = MAX_FEE_TIERS; i > 0; --i) {
-    if (feeTiers[i - 1].feeMultiplier > 0) {
+    if (feeTiers[i - 1]?.feeMultiplier > 0) {
       return i;
     }
   }
