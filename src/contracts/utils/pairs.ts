@@ -352,5 +352,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.MNTUSD]: "Mantle to US Dollar",
   [PairIndex.KASUSD]: "Kaspa to US Dollar",
   [PairIndex.RONINUSD]: "Ronin to US Dollar",
-
+  [PairIndex.ENAUSD]: "Ethena to US Dollar",
 };
