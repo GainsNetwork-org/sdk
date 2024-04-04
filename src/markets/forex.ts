@@ -31,7 +31,7 @@ export const isForexOpen = (dateToCheck: Date): boolean => {
   return !isClosed;
 };
 
-const chfMinorPairIds = [28, 116, 120, 123, 125, 127];
+const extendedLowLiqPairIds = [28, 116, 120, 123, 125, 127, 95];
 export const isForexLowLiquidity = (timestampToCheck: number, pair?: Pair) => {
   const now = DateTime.fromMillis(timestampToCheck).setZone(
     FOREX_MARKETS_TIME_ZONE_IANA
@@ -42,9 +42,10 @@ export const isForexLowLiquidity = (timestampToCheck: number, pair?: Pair) => {
 
   // CHF minor pairs: increase low liquidity window by additional 30 mins
   const pairIndex = pair?.pairIndex;
-  if (pairIndex && chfMinorPairIds.includes(+pairIndex)) {
+  if (pairIndex && extendedLowLiqPairIds.includes(+pairIndex)) {
     return (
-      (isInDST && ((hour == 15 && minute >= 15) || (hour >= 16 && hour < 19))) ||
+      (isInDST &&
+        ((hour == 15 && minute >= 15) || (hour >= 16 && hour < 19))) ||
       (!isInDST && ((hour == 16 && minute >= 15) || (hour >= 17 && hour < 20)))
     );
   }
