@@ -443,5 +443,6 @@ export enum PairIndex {
   MNTUSD,
   KASUSD,
   RONINUSD,
-  ENAUSD,  
+  ENAUSD,
+  WUSD,  
 }
