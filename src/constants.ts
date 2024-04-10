@@ -226,8 +226,8 @@ export const pairs = {
   "RONIN/USD": CRYPTO,
   "ENA/USD": CRYPTO,
   "W/USD": CRYPTO,  
-  "TNSR/USD": CRYPTO,  
   "ZEUS/USD": CRYPTO,  
+  "TNSR/USD": CRYPTO,  
 };
 
 export const getAssetClassFromGroupIndex = (
