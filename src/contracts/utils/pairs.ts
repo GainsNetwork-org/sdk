@@ -356,4 +356,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.WUSD]: "Wormhole to US Dollar",
   [PairIndex.ZEUSUSD]: "Zeus to US Dollar",
   [PairIndex.TNSRUSD]: "Tensor to US Dollar",
+  [PairIndex.TAOUSD]: "Bittensor to US Dollar",
 };
