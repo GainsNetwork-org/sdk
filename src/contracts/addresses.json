@@ -57,33 +57,33 @@
       "gToken": "0xd3443ee1e91aF28e5FB858Fbd0D72A63bA8046E0"
     }
   },
-  "80001": {
+  "421614": {
     "global": {
-      "gnsMultiCollatDiamond": "0xDee93dD1Cb54ce80D690eC07a20CB0ce9d7F741C"
+      "gnsMultiCollatDiamond": "0xd659a15812064C79E189fd950A189b15c75d3186"
     },
     "DAI": {
-      "gfarmTradingStorageV5": "0x4d2dF485c608aa55A23d8d98dD2B4FA24Ba0f2Cf",
-      "gTokenOpenPnlFeed": "0xA7C829CB2346E12DC49Fd5ea8002Abaf48E9396C",
-      "gnsNftRewards": "0xf7Ac400b45Bdd2E098FaCA3642bE4d01071BC73B",
-      "gnsBorrowingFees": "0xA280c8e34dcD6A835183E13CA82c6fAE20988644",
-      "gnsTradingCallbacks": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
-      "gToken": "0x5215C8B3e76D493c8bcb9A7352F7afe18A6bb091"
+      "gfarmTradingStorageV5": "0xD6Ccdcf7AB475aA2Ea8BCDC9E540c0eE2d0AfE14",
+      "gTokenOpenPnlFeed": "0x371a924C2DC433D0C83b67Ff71A4CBd2013b5046",
+      "gnsNftRewards": "0xfaB58402e6D69150aF3E644055CF36fb8590B3EA",
+      "gnsBorrowingFees": "0x46d1bb3a35f29DD585ecD23155d65D3cD41261ee",
+      "gnsTradingCallbacks": "0x81b3A32C5e1909d7Eb6Eb16266Cd7399dCB3f302",
+      "gToken": "0xD6e33C7560009D60052d7A5E0476A8Db295bF8C7"
     },
     "ETH": {
-      "gfarmTradingStorageV5": "0x989DF13f4feE478cAc463CCCDB784Aa36108aB37",
-      "gTokenOpenPnlFeed": "0xC8D8d6efBC343604f8B6288a20C00a9D7f697A38",
-      "gnsNftRewards": "0xa974360d916877D97635d7595565CBBF1776D2Cc",
-      "gnsBorrowingFees": "0x61bd04984adde83Baa904eC70885038c66459e48",
-      "gnsTradingCallbacks": "0x0Bb7f01c3808Ec9B7af16E20d71eCb7a27C7ECf5",
-      "gToken": "0x71A52242f7430cF4a290854d93f6719a8C35F287"
+      "gfarmTradingStorageV5": "0x197bfF032c3A0A738c92628458B777Da525c4888",
+      "gTokenOpenPnlFeed": "0xab1042C2767461D59ABC9547b3B717ccae3Eb7C9",
+      "gnsNftRewards": "0x42D908dfCc6589601d2d467bb2ee5055216E9B2b",
+      "gnsBorrowingFees": "0x31dD0B11539Ae23c5E51eD156bC4d6B317eb8b51",
+      "gnsTradingCallbacks": "0x09e3ABFfA561a02024208C659BaF406233c07577",
+      "gToken": "0xfd7E69042812f3416C18261673b55eD005F67E01"
     },
     "USDC": {
-      "gfarmTradingStorageV5": "0x13ed64798DfC826f6384F226913509e18662ab0B",
-      "gTokenOpenPnlFeed": "0x540E381b5Aef048D317A715667b12ec999D397Bc",
-      "gnsNftRewards": "0x9b19727268CF23E1874b8681694CAE7F66E40aE3",
-      "gnsBorrowingFees": "0xcC160C98eC5dad51021266284048F59a2535b329",
-      "gnsTradingCallbacks": "0x0c8C70eF2744A9376195855C63B59A3360FEEbBe",
-      "gToken": "0xd7F8D728414a6aD18476B5a72a0C20be5704f868"
+      "gfarmTradingStorageV5": "0xbF34a6677D8E8e7e80Ce133A22167Dd7c9AdDB01",
+      "gTokenOpenPnlFeed": "0x38e6cEFcE96bdB65D64Fce8f4736b3763A5F9eD2",
+      "gnsNftRewards": "0x41251590157641f05566730CF5d8A80029DFC727",
+      "gnsBorrowingFees": "0x93c70eE2B75c0ab0BB9da6cF46b59Ed06017d49a",
+      "gnsTradingCallbacks": "0xc780B89FC7073C6414f9183dC518C3Ca18334E98",
+      "gToken": "0xb0C25646774Ad985B4f9ccD262623bA6D6F64677"
     }
   }
 }
