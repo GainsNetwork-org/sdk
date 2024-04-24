@@ -409,7 +409,7 @@ const _prepareTradeContainer = (
     createdBlock: parseInt(tradeInfo.createdBlock.toString()),
     tpLastUpdatedBlock: parseInt(tradeInfo.tpLastUpdatedBlock.toString()),
     slLastUpdatedBlock: parseInt(tradeInfo.slLastUpdatedBlock.toString()),
-    maxSlippageP: parseFloat(tradeInfo.maxSlippageP.toString()) / 1e10,
+    maxSlippageP: parseFloat(tradeInfo.maxSlippageP.toString()) / 1e3,
     lastOiUpdateTs: parseFloat(tradeInfo.lastOiUpdateTs),
     collateralPriceUsd:
       parseFloat(tradeInfo.collateralPriceUsd.toString()) / 1e8,
