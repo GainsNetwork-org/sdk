@@ -451,4 +451,7 @@ export enum PairIndex {
   OMNIUSD,
   PRCLUSD,
   MERLUSD,
+  SAFEUSD,
+  SAGAUSD,
+  LLUSD,
 }

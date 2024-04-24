@@ -360,4 +360,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.OMNIUSD]: "Omni Network to US Dollar",
   [PairIndex.PRCLUSD]: "Parcl to US Dollar",
   [PairIndex.MERLUSD]: "Merlin Chain to US Dollar",
+  [PairIndex.SAFEUSD]: "Safe to US Dollar",
+  [PairIndex.SAGAUSD]: "Saga to US Dollar",
+  [PairIndex.LLUSD]: "Light Link to US Dollar",
+
 };
