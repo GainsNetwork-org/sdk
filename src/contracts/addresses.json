@@ -4,27 +4,15 @@
       "gnsMultiCollatDiamond": "0x209A9A01980377916851af2cA075C2b170452018"
     },
     "DAI": {
-      "gfarmTradingStorageV5": "0xaee4d11a16B2bc65EDD6416Fb626EB404a6D65BD",
       "gTokenOpenPnlFeed": "0x8d687276543b92819F2f2B5C3faad4AD27F4440c",
-      "gnsNftRewards": "0x18D30044B0b7a86Eea07f953238224Fe47d366e5",
-      "gnsBorrowingFees": "0x83AE6fADB88872D77299550Dc746b95D0196FE15",
-      "gnsTradingCallbacks": "0x82e59334da8c667797009bbe82473b55c7a6b311",
       "gToken": "0x91993f2101cc758D0dEB7279d41e880F7dEFe827"
     },
     "ETH": {
-      "gfarmTradingStorageV5": "0xE7712ebcd451919B38Be8fD102800A496C5BeD4E",
       "gTokenOpenPnlFeed": "0xF07f4507DD6A057Aea509cB9b218B7C4D1894473",
-      "gnsNftRewards": "0xA5002286A0Fd553017d8c829CDFe85D3162D7EF4",
-      "gnsBorrowingFees": "0x4C5C3380daDCa5AA97257AE8834A95e9561B2788",
-      "gnsTradingCallbacks": "0x0bBED2EaC3237BA128643670b7cF3be475933755",
       "gToken": "0x1544E1fF1a6f6Bdbfb901622C12bb352a43464Fb"
     },
     "USDC": {
-      "gfarmTradingStorageV5": "0xC504C9C30B9d88cBc9704Fc2d06a08A4c7bE9378",
       "gTokenOpenPnlFeed": "0xFF84e736A15F80E7E104e153d7f7D6c9bd6fE822",
-      "gnsNftRewards": "0x77C3f643e382973577ccD05A5f160AdE61CA1CCa",
-      "gnsBorrowingFees": "0x2c765bdA25A08f5eB0a99CA1F8Ac975685b05104",
-      "gnsTradingCallbacks": "0x2aC6749d0AffD42c8D61Ef25E433F92e375a1aEf",
       "gToken": "0x29019Fe2e72E8d4D2118E8D0318BeF389ffe2C81"
     }
   },
@@ -33,27 +21,15 @@
       "gnsMultiCollatDiamond": "0xFF162c694eAA571f685030649814282eA457f169"
     },
     "DAI": {
-      "gfarmTradingStorageV5": "0xcFa6ebD475d89dB04cAd5A756fff1cb2BC5bE33c",
       "gTokenOpenPnlFeed": "0x990BA9Edd8a9615A23E4c452E63A80e519A4a23D",
-      "gnsNftRewards": "0xa3c13A8FBf49679df032d5cE8eFf2e46b3b8f560",
-      "gnsBorrowingFees": "0xA03e32a42C75FDdDc9a39973ddd082F147393154",
-      "gnsTradingCallbacks": "0x298a695906e16aea0a184a2815a76ead1a0b7522",
       "gToken": "0xd85E038593d7A098614721EaE955EC2022B9B91B"
     },
     "ETH": {
-      "gfarmTradingStorageV5": "0xFe54a9A1C2C276cf37C56CeeE30737FDc6dA4d27",
       "gTokenOpenPnlFeed": "0x018D9A3F0D06cCb7C305B7C9219a4307e1f9f27e",
-      "gnsNftRewards": "0x0d3EcF681C38D50a06C414C3e530Ce564F32C611",
-      "gnsBorrowingFees": "0x4475935686154a68B7b2a4B50BD917FD50aD3536",
-      "gnsTradingCallbacks": "0x62a9f50c92a57C719Ff741133caa55c7A81Ce019",
       "gToken": "0x5977A9682D7AF81D347CFc338c61692163a2784C"
     },
     "USDC": {
-      "gfarmTradingStorageV5": "0x3B09fCa4cC6b140fDd364f28db830ccE01Fd60fD",
       "gTokenOpenPnlFeed": "0xBF55C78132ab06a2B217040b7A7F20B5cBD47982",
-      "gnsNftRewards": "0xaCb9C3196b23413fE1e8E997C8Aa27600c4d2c88",
-      "gnsBorrowingFees": "0x0775dC8Fc3E389e5eF3442c06de70Ea3181bdD66",
-      "gnsTradingCallbacks": "0x4542256C583bCaD66a19a525B57203773a6485bf",
       "gToken": "0xd3443ee1e91aF28e5FB858Fbd0D72A63bA8046E0"
     }
   },
@@ -62,27 +38,15 @@
       "gnsMultiCollatDiamond": "0xDee93dD1Cb54ce80D690eC07a20CB0ce9d7F741C"
     },
     "DAI": {
-      "gfarmTradingStorageV5": "0x4d2dF485c608aa55A23d8d98dD2B4FA24Ba0f2Cf",
       "gTokenOpenPnlFeed": "0xA7C829CB2346E12DC49Fd5ea8002Abaf48E9396C",
-      "gnsNftRewards": "0xf7Ac400b45Bdd2E098FaCA3642bE4d01071BC73B",
-      "gnsBorrowingFees": "0xA280c8e34dcD6A835183E13CA82c6fAE20988644",
-      "gnsTradingCallbacks": "0xA7443A20B42f9156F7D9DB01e51523C42CAC8eCE",
       "gToken": "0x5215C8B3e76D493c8bcb9A7352F7afe18A6bb091"
     },
     "ETH": {
-      "gfarmTradingStorageV5": "0x989DF13f4feE478cAc463CCCDB784Aa36108aB37",
       "gTokenOpenPnlFeed": "0xC8D8d6efBC343604f8B6288a20C00a9D7f697A38",
-      "gnsNftRewards": "0xa974360d916877D97635d7595565CBBF1776D2Cc",
-      "gnsBorrowingFees": "0x61bd04984adde83Baa904eC70885038c66459e48",
-      "gnsTradingCallbacks": "0x0Bb7f01c3808Ec9B7af16E20d71eCb7a27C7ECf5",
       "gToken": "0x71A52242f7430cF4a290854d93f6719a8C35F287"
     },
     "USDC": {
-      "gfarmTradingStorageV5": "0x13ed64798DfC826f6384F226913509e18662ab0B",
       "gTokenOpenPnlFeed": "0x540E381b5Aef048D317A715667b12ec999D397Bc",
-      "gnsNftRewards": "0x9b19727268CF23E1874b8681694CAE7F66E40aE3",
-      "gnsBorrowingFees": "0xcC160C98eC5dad51021266284048F59a2535b329",
-      "gnsTradingCallbacks": "0x0c8C70eF2744A9376195855C63B59A3360FEEbBe",
       "gToken": "0xd7F8D728414a6aD18476B5a72a0C20be5704f868"
     }
   }

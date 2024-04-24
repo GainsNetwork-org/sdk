@@ -5,16 +5,13 @@ import {
   getContractAddressesForChain,
 } from "./addresses";
 import {
-  GFarmTradingStorageV5__factory,
   GTokenOpenPnlFeed__factory,
-  GNSNftRewardsV6_3_1__factory,
-  GNSBorrowingFees__factory,
-  GNSTradingCallbacks__factory,
   GToken__factory,
   GNSMultiCollatDiamond__factory,
 } from "./types/generated/factories";
 import { CollateralTypes, Contracts } from "./types";
 
+// @todo rework this to return all
 export const getContractsForChain = (
   chainId: number,
   signerOrProvider?: Signer | Provider,
@@ -23,28 +20,12 @@ export const getContractsForChain = (
   const addresses = getContractAddressesForChain(chainId, collateral);
 
   return {
-    gfarmTradingStorageV5: GFarmTradingStorageV5__factory.connect(
-      addresses.gfarmTradingStorageV5,
-      signerOrProvider as Signer | Provider
-    ),
     gnsMultiCollatDiamond: GNSMultiCollatDiamond__factory.connect(
       addresses.gnsMultiCollatDiamond,
       signerOrProvider as Signer | Provider
     ),
     gTokenOpenPnlFeed: GTokenOpenPnlFeed__factory.connect(
       addresses.gTokenOpenPnlFeed,
-      signerOrProvider as Signer | Provider
-    ),
-    gnsNftRewards: GNSNftRewardsV6_3_1__factory.connect(
-      addresses.gnsNftRewards,
-      signerOrProvider as Signer | Provider
-    ),
-    gnsBorrowingFees: GNSBorrowingFees__factory.connect(
-      addresses.gnsBorrowingFees,
-      signerOrProvider as Signer | Provider
-    ),
-    gnsTradingCallbacks: GNSTradingCallbacks__factory.connect(
-      addresses.gnsTradingCallbacks,
       signerOrProvider as Signer | Provider
     ),
     gToken: GToken__factory.connect(

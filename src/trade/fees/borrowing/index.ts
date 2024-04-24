@@ -62,7 +62,7 @@ export const getBorrowingFee = (
 export const withinMaxGroupOi = (
   pairIndex: PairIndex,
   long: boolean,
-  positionSizeDai: number,
+  positionSizeCollateral: number,
   context: { groups: BorrowingFee.Group[]; pairs: BorrowingFee.Pair[] }
 ): boolean => {
   const { groups, pairs } = context;
@@ -70,9 +70,9 @@ export const withinMaxGroupOi = (
     return false;
   }
 
-  const g = groups[getPairGroupIndex(pairIndex, { pairs })];
+  const g = groups[getPairGroupIndex(pairIndex, { pairs })].oi;
   return (
-    g.maxOi == 0 || (long ? g.oiLong : g.oiShort) + positionSizeDai <= g.maxOi
+    g.max == 0 || (long ? g.long : g.short) + positionSizeCollateral <= g.max
   );
 };
 
@@ -112,7 +112,7 @@ const getPairPendingAccFees = (
     pair.feePerBlock,
     currentBlock,
     pair.accLastUpdatedBlock,
-    pair.maxOi,
+    pair.oi.max,
     pair.feeExponent
   );
 };
@@ -144,12 +144,12 @@ const getGroupPendingAccFees = (
   return getPendingAccFees(
     group.accFeeLong,
     group.accFeeShort,
-    group.oiLong,
-    group.oiShort,
+    group.oi.long,
+    group.oi.short,
     group.feePerBlock,
     currentBlock,
     group.accLastUpdatedBlock,
-    group.maxOi,
+    group.oi.max,
     group.feeExponent
   );
 };
@@ -238,35 +238,26 @@ const getPendingAccFees = (
   return { accFeeLong: newAccFeeLong, accFeeShort: newAccFeeShort, delta };
 };
 
-const getActivePairFeePerBlock = (
-  pair: BorrowingFee.Pair,
-  openInterest: OpenInterest
+const getBorrowingDataActiveFeePerBlock = (
+  val: BorrowingFee.Pair | BorrowingFee.Group
 ): number => {
-  const { long, short } = openInterest;
+  const { long, short, max } = val.oi;
   const netOi = Math.abs(long - short);
 
-  return pair.feePerBlock * (netOi / pair.maxOi) ** pair.feeExponent;
-};
-
-const getActiveGroupFeePerBlock = (group: BorrowingFee.Group): number => {
-  const { oiLong, oiShort } = group;
-  const netOi = Math.abs(oiLong - oiShort);
-
-  return group.feePerBlock * (netOi / group.maxOi) ** group.feeExponent;
+  return val.feePerBlock * (netOi / max) ** val.feeExponent;
 };
 
 const getActiveFeePerBlock = (
   pair: BorrowingFee.Pair,
-  group: BorrowingFee.Group | undefined,
-  pairOpenInterest: OpenInterest
+  group: BorrowingFee.Group | undefined
 ): number => {
-  const pairFeePerBlock = getActivePairFeePerBlock(pair, pairOpenInterest);
+  const pairFeePerBlock = getBorrowingDataActiveFeePerBlock(pair);
 
   if (!group) {
     return pairFeePerBlock;
   }
 
-  const groupFeePerBlock = getActiveGroupFeePerBlock(group);
+  const groupFeePerBlock = getBorrowingDataActiveFeePerBlock(group);
 
   return Math.max(pairFeePerBlock, groupFeePerBlock);
 };
@@ -278,9 +269,8 @@ export const borrowingFeeUtils = {
   getGroupPendingAccFees,
   getGroupPendingAccFee,
   getPendingAccFees,
-  getActivePairFeePerBlock,
-  getActiveGroupFeePerBlock,
   getActiveFeePerBlock,
+  getBorrowingDataActiveFeePerBlock,
   getPairGroupIndex,
 };
 

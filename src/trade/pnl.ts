@@ -17,39 +17,40 @@ export const getPnl = (
   if (!price) {
     return;
   }
-  const posDai = trade.initialPosToken * tradeInfo.tokenPriceDai;
+  const posCollat = trade.collateralAmount;
   const { openPrice, leverage } = trade;
   const { maxGainP, fee } = context;
-  const maxGain = maxGainP === undefined ? Infinity : (maxGainP / 100) * posDai;
+  const maxGain =
+    maxGainP === undefined ? Infinity : (maxGainP / 100) * posCollat;
 
-  let pnlDai = trade.buy
-    ? ((price - openPrice) / openPrice) * leverage * posDai
-    : ((openPrice - price) / openPrice) * leverage * posDai;
+  let pnlCollat = trade.long
+    ? ((price - openPrice) / openPrice) * leverage * posCollat
+    : ((openPrice - price) / openPrice) * leverage * posCollat;
 
-  pnlDai = pnlDai > maxGain ? maxGain : pnlDai;
+  pnlCollat = pnlCollat > maxGain ? maxGain : pnlCollat;
 
   if (useFees) {
-    pnlDai -= getBorrowingFee(
-      posDai * trade.leverage,
+    pnlCollat -= getBorrowingFee(
+      posCollat * trade.leverage,
       trade.pairIndex,
-      trade.buy,
-      initialAccFees.borrowing,
+      trade.long,
+      initialAccFees,
       context as GetBorrowingFeeContext
     );
   }
 
-  let pnlPercentage = (pnlDai / posDai) * 100;
+  let pnlPercentage = (pnlCollat / posCollat) * 100;
 
   // Can be liquidated
   if (pnlPercentage <= -90) {
     pnlPercentage = -100;
   } else {
-    pnlDai -= getClosingFee(posDai, trade.leverage, trade.pairIndex, fee);
-    pnlPercentage = (pnlDai / posDai) * 100;
+    pnlCollat -= getClosingFee(posCollat, trade.leverage, trade.pairIndex, fee);
+    pnlPercentage = (pnlCollat / posCollat) * 100;
   }
 
   pnlPercentage = pnlPercentage < -100 ? -100 : pnlPercentage;
-  pnlDai = (posDai * pnlPercentage) / 100;
+  pnlCollat = (posCollat * pnlPercentage) / 100;
 
-  return [pnlDai, pnlPercentage];
+  return [pnlCollat, pnlPercentage];
 };

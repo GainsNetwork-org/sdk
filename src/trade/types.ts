@@ -1,6 +1,7 @@
-import { GFarmTradingStorageV5 } from "../contracts/types/generated";
-import { IGNSTradingCallbacks } from "../contracts/types/generated/GNSTradingCallbacks";
-import { BigNumber } from "ethers";
+import {
+  ITradingStorage,
+  IBorrowingFees,
+} from "../contracts/types/generated/GNSMultiCollatDiamond";
 import { BorrowingFee } from "./fees/borrowing";
 import { FeeTier, TraderInfo } from "./fees/tiers/types";
 
@@ -12,34 +13,28 @@ export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
   initialAccFees: TradeInitialAccFees;
-  tradeData: TradeData;
   receivedAt?: number;
 };
 
 export type Trade = {
-  buy: boolean;
+  user: string;
   index: number;
-  initialPosToken: number;
-  leverage: number;
-  openPrice: number;
   pairIndex: PairIndex;
+  leverage: number; // 3 decimals
+  long: boolean;
+  isOpen: boolean;
+  collateralIndex: number;
+  tradeType: TradeType;
+  collateralAmount: number;
+  openPrice: number;
   sl: number;
   tp: number;
-  trader: string;
 };
 
 export type TradeInfo = {
-  openInterestDai: number;
-  slLastUpdated: number;
-  tokenPriceDai: number;
-  tpLastUpdated: number;
-};
-
-export type TradeInitialAccFees = {
-  borrowing: BorrowingFee.InitialAccFees;
-};
-
-export type TradeData = {
+  createdBlock: number;
+  tpLastUpdatedBlock: number;
+  slLastUpdatedBlock: number;
   maxSlippageP: number;
   lastOiUpdateTs: number;
   collateralPriceUsd: number;
@@ -51,39 +46,11 @@ export type TradingGroup = {
   name: string;
 };
 
-export type LimitOrder = {
-  block: number;
-  buy: boolean;
-  index: number;
-  leverage: number;
-  maxPrice: number;
-  minPrice: number;
-  pairIndex: PairIndex;
-  positionSize: number;
-  sl: number;
-  spreadReductionP: number;
-  tp: number;
-  trader: string;
-  type: number;
-  maxSlippageP: number;
-};
-
-export type LimitOrderRaw = GFarmTradingStorageV5.OpenLimitOrderStructOutput & {
-  type: number;
-  maxSlippageP: BigNumber;
-};
-
 export type Fee = {
-  closeFeeP: number;
-  minLevPosUsd: number;
-  nftLimitOrderFeeP: number;
   openFeeP: number;
-};
-
-export type OpenInterest = {
-  long: number;
-  max: number;
-  short: number;
+  closeFeeP: number;
+  minPositionSizeUsd: number;
+  triggerOrderFeeP: number;
 };
 
 export type PairDepth = {
@@ -112,6 +79,7 @@ export type TradeHistoryRecord = {
   address: string;
   buy: number;
   collateralPriceUsd: number;
+  collateralIndex: number;
   date: string;
   leverage: number;
   pair: string;
@@ -168,23 +136,10 @@ export enum PositionType {
 }
 
 export type TradeContainerRaw = {
-  trade: GFarmTradingStorageV5.TradeStruct;
-  tradeInfo: GFarmTradingStorageV5.TradeInfoStruct;
-  tradeData: IGNSTradingCallbacks.TradeDataStruct;
-  initialAccFees: {
-    borrowing: {
-      accPairFee: number;
-      accGroupFee: number;
-      block: number;
-    };
-  };
+  trade: ITradingStorage.TradeStruct;
+  tradeInfo: ITradingStorage.TradeInfoStruct;
+  initialAccFees: IBorrowingFees.BorrowingInitialAccFeesStruct;
 };
-
-export enum OpenLimitOrderType {
-  LEGACY = 0,
-  REVERSAL = 1,
-  MOMENTUM = 2,
-}
 
 export type OiWindowsSettings = {
   startTs: number;
@@ -204,6 +159,8 @@ export type OiWindows = {
 };
 
 export type CollateralConfig = {
+  collateral: string;
+  isActive: boolean;
   precision: number;
   precisionDelta: number;
   decimals?: number;
@@ -222,6 +179,20 @@ export type TraderFeeTiers = {
   lastDayUpdatedPoints: number;
   expiredPoints: number[];
 };
+
+export enum TradeType {
+  TRADE,
+  LIMIT,
+  STOP,
+}
+
+export type OpenInterest = {
+  long: number;
+  short: number;
+  max: number;
+};
+
+export type TradeInitialAccFees = BorrowingFee.InitialAccFees;
 
 export enum PairIndex {
   BTCUSD,
@@ -446,5 +417,5 @@ export enum PairIndex {
   ENAUSD,
   WUSD,
   TNSRUSD,
-  ZEUSUSD,  
+  ZEUSUSD,
 }

@@ -91,10 +91,11 @@ export const fetchFees = async (
 
     return fees.map(fee => {
       return {
-        closeFeeP: parseFloat(fee.closeFeeP.toString()) / 1e12,
-        minLevPosUsd: parseFloat(fee.minLevPosUsd.toString()) / 1e18,
-        nftLimitOrderFeeP: parseFloat(fee.nftLimitOrderFeeP.toString()) / 1e12,
         openFeeP: parseFloat(fee.openFeeP.toString()) / 1e12,
+        closeFeeP: parseFloat(fee.closeFeeP.toString()) / 1e12,
+        triggerOrderFeeP: parseFloat(fee.triggerOrderFeeP.toString()) / 1e12,
+        minPositionSizeUsd:
+          parseFloat(fee.minPositionSizeUsd.toString()) / 1e18,
       } as Fee;
     });
   } catch (error) {
@@ -103,28 +104,47 @@ export const fetchFees = async (
   }
 };
 
+// @todo test
 export const fetchOpenInterest = async (
+  collateralIndex: number,
   contracts: Contracts,
   pairIxs: number[]
 ): Promise<OpenInterest[]> => {
-  const { precision: collateralPrecision } =
-    await contracts.gnsBorrowingFees.collateralConfig();
-  const openInterests = await Promise.all(
-    pairIxs.map(pairIndex =>
-      Promise.all([
-        contracts.gfarmTradingStorageV5.openInterestDai(pairIndex, 0),
-        contracts.gfarmTradingStorageV5.openInterestDai(pairIndex, 1),
-        contracts.gnsBorrowingFees.getPairMaxOi(pairIndex),
-      ])
-    )
-  );
+  if (pairIxs.length === 0) {
+    return [];
+  }
+
+  const {
+    precision: collateralPrecision,
+    precisionDelta: collateralPrecisionDelta,
+  } = await contracts.gnsMultiCollatDiamond.getCollateral(collateralIndex);
 
   const precision = parseFloat(collateralPrecision.toString());
-  return openInterests.map(openInterest => ({
-    long: parseFloat(openInterest[0].toString()) / precision,
-    short: parseFloat(openInterest[1].toString()) / precision,
-    max: parseFloat(openInterest[2].toString()) / 1e10,
-  }));
+  const precisionDelta = parseFloat(collateralPrecisionDelta.toString());
+
+  const openInterests = (
+    await contracts.gnsMultiCollatDiamond.getAllBorrowingPairs(collateralIndex)
+  )[1];
+
+  return pairIxs.map(pairIndex => {
+    const openInterest = openInterests[pairIndex];
+
+    if (!openInterest) {
+      return { long: 0, short: 0, max: 0 };
+    }
+
+    return {
+      long:
+        (parseFloat(openInterest[0].toString()) * precisionDelta) /
+        1e10 /
+        precision, // @todo check precision
+      short:
+        (parseFloat(openInterest[1].toString()) * precisionDelta) /
+        1e10 /
+        precision,
+      max: parseFloat(openInterest[2].toString()) / 1e10,
+    };
+  });
 };
 
 export const getPairDescription = (pairIndex: PairIndex): string => {
@@ -356,5 +376,4 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.WUSD]: "Wormhole to US Dollar",
   [PairIndex.TNSRUSD]: "Tensor to US Dollar",
   [PairIndex.ZEUSUSD]: "Zeus to US Dollar",
-
 };
