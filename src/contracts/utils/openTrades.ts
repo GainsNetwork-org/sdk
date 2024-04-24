@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Contract, Provider, Call } from "ethcall";
+// import { Contract, Provider, Call } from "ethcall";
 import { TradeContainer, TradeContainerRaw } from "../../trade/types";
 import { Contracts, BlockTag } from "../../contracts/types";
 
@@ -42,8 +42,8 @@ export const fetchOpenPairTradesRaw = async (
 
   const {
     batchSize = 50,
-    useMulticall = false,
-    blockTag = "latest",
+    // useMulticall = false,
+    // blockTag = "latest",
   } = overrides;
 
   const { gnsMultiCollatDiamond: multiCollatDiamondContract } = contracts;
