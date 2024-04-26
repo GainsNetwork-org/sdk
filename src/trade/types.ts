@@ -180,6 +180,21 @@ export type TraderFeeTiers = {
   expiredPoints: number[];
 };
 
+export enum PendingOrderType {
+  MARKET_OPEN,
+  MARKET_CLOSE,
+  LIMIT_OPEN,
+  STOP_OPEN,
+  TP_CLOSE,
+  SL_CLOSE,
+  LIQ_CLOSE,
+}
+
+export enum CounterType {
+  TRADE,
+  PENDING_ORDER,
+}
+
 export enum TradeType {
   TRADE,
   LIMIT,
@@ -190,6 +205,16 @@ export type OpenInterest = {
   long: number;
   short: number;
   max: number;
+};
+
+export type PendingOrder = {
+  trade: Trade;
+  user: string;
+  index: string;
+  isOpen: boolean;
+  orderType: PendingOrderType;
+  createdBlock: string;
+  maxSlippageP: string;
 };
 
 export type TradeInitialAccFees = BorrowingFee.InitialAccFees;
