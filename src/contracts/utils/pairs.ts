@@ -363,5 +363,6 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.SAFEUSD]: "Safe to US Dollar",
   [PairIndex.SAGAUSD]: "Saga to US Dollar",
   [PairIndex.LLUSD]: "Light Link to US Dollar",
-
+  [PairIndex.MSNUSD]: "Meson Network to US Dollar",
+  [PairIndex.REZUSD]: "Renzo to US Dollar",
 };

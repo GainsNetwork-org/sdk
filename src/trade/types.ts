@@ -454,4 +454,6 @@ export enum PairIndex {
   SAFEUSD,
   SAGAUSD,
   LLUSD,
+  MSNUSD,
+  REZUSD,
 }
