@@ -77,7 +77,7 @@ export type Pair = {
 export type TradeHistoryRecord = {
   action: string;
   address: string;
-  buy: number;
+  long: number;
   collateralPriceUsd: number;
   collateralIndex: number;
   date: string;
