@@ -105,21 +105,13 @@ export const fetchFees = async (
 };
 
 export const fetchOpenInterest = async (
-  collateralIndex: number,
   contracts: Contracts,
+  collateralIndex: number,
   pairIxs: number[]
 ): Promise<OpenInterest[]> => {
   if (pairIxs.length === 0) {
     return [];
   }
-
-  const {
-    precision: collateralPrecision,
-    precisionDelta: collateralPrecisionDelta,
-  } = await contracts.gnsMultiCollatDiamond.getCollateral(collateralIndex);
-
-  const precision = parseFloat(collateralPrecision.toString());
-  const precisionDelta = parseFloat(collateralPrecisionDelta.toString());
 
   const openInterests = (
     await contracts.gnsMultiCollatDiamond.getAllBorrowingPairs(collateralIndex)
@@ -133,14 +125,8 @@ export const fetchOpenInterest = async (
     }
 
     return {
-      long:
-        (parseFloat(openInterest[0].toString()) * precisionDelta) /
-        1e10 /
-        precision,
-      short:
-        (parseFloat(openInterest[1].toString()) * precisionDelta) /
-        1e10 /
-        precision,
+      long: parseFloat(openInterest[0].toString()) / 1e10,
+      short: parseFloat(openInterest[1].toString()) / 1e10,
       max: parseFloat(openInterest[2].toString()) / 1e10,
     };
   });

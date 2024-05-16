@@ -40,11 +40,32 @@ export const getContractsForChainByRequester = (
   requester: string,
   signerOrProvider?: Signer | Provider
 ): Contracts => {
-  return getContractsForChain(
+  const { contracts } = getCollateralIndexAndContractsForChainByRequester(
     chainId,
-    signerOrProvider,
-    getCollateralByAddressForChain(chainId, requester)
+    requester,
+    signerOrProvider
   );
+  return contracts;
+};
+
+export const getCollateralIndexAndContractsForChainByRequester = (
+  chainId: number,
+  requester: string,
+  signerOrProvider?: Signer | Provider
+): { contracts: Contracts; collateralIndex: number } => {
+  const collateral = getCollateralByAddressForChain(chainId, requester);
+
+  return {
+    contracts: getContractsForChain(chainId, signerOrProvider, collateral),
+    collateralIndex: COLLATERAL_TO_COLLATERAL_INDEX[collateral],
+  };
+};
+
+export const COLLATERAL_TO_COLLATERAL_INDEX: Record<CollateralTypes, number> = {
+  [CollateralTypes.DAI]: 1,
+  [CollateralTypes.ETH]: 2,
+  [CollateralTypes.USDC]: 3,
+  [CollateralTypes.ARB]: 0, // not in use
 };
 
 export * from "./utils";
