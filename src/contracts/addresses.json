@@ -33,21 +33,21 @@
       "gToken": "0xd3443ee1e91aF28e5FB858Fbd0D72A63bA8046E0"
     }
   },
-  "80001": {
+  "421614": {
     "global": {
-      "gnsMultiCollatDiamond": "0xDee93dD1Cb54ce80D690eC07a20CB0ce9d7F741C"
+      "gnsMultiCollatDiamond": "0xd659a15812064C79E189fd950A189b15c75d3186"
     },
     "DAI": {
-      "gTokenOpenPnlFeed": "0xA7C829CB2346E12DC49Fd5ea8002Abaf48E9396C",
-      "gToken": "0x5215C8B3e76D493c8bcb9A7352F7afe18A6bb091"
+      "gTokenOpenPnlFeed": "0x371a924C2DC433D0C83b67Ff71A4CBd2013b5046",
+      "gToken": "0xD6e33C7560009D60052d7A5E0476A8Db295bF8C7"
     },
     "ETH": {
-      "gTokenOpenPnlFeed": "0xC8D8d6efBC343604f8B6288a20C00a9D7f697A38",
-      "gToken": "0x71A52242f7430cF4a290854d93f6719a8C35F287"
+      "gTokenOpenPnlFeed": "0xab1042C2767461D59ABC9547b3B717ccae3Eb7C9",
+      "gToken": "0xfd7E69042812f3416C18261673b55eD005F67E01"
     },
     "USDC": {
-      "gTokenOpenPnlFeed": "0x540E381b5Aef048D317A715667b12ec999D397Bc",
-      "gToken": "0xd7F8D728414a6aD18476B5a72a0C20be5704f868"
+      "gTokenOpenPnlFeed": "0x38e6cEFcE96bdB65D64Fce8f4736b3763A5F9eD2",
+      "gToken": "0xb0C25646774Ad985B4f9ccD262623bA6D6F64677"
     }
   }
 }

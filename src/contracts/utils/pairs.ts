@@ -104,7 +104,6 @@ export const fetchFees = async (
   }
 };
 
-// @todo test
 export const fetchOpenInterest = async (
   collateralIndex: number,
   contracts: Contracts,
@@ -137,7 +136,7 @@ export const fetchOpenInterest = async (
       long:
         (parseFloat(openInterest[0].toString()) * precisionDelta) /
         1e10 /
-        precision, // @todo check precision
+        precision,
       short:
         (parseFloat(openInterest[1].toString()) * precisionDelta) /
         1e10 /
@@ -374,6 +373,15 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.RONINUSD]: "Ronin to US Dollar",
   [PairIndex.ENAUSD]: "Ethena to US Dollar",
   [PairIndex.WUSD]: "Wormhole to US Dollar",
-  [PairIndex.TNSRUSD]: "Tensor to US Dollar",
   [PairIndex.ZEUSUSD]: "Zeus to US Dollar",
+  [PairIndex.TNSRUSD]: "Tensor to US Dollar",
+  [PairIndex.TAOUSD]: "Bittensor to US Dollar",
+  [PairIndex.OMNIUSD]: "Omni Network to US Dollar",
+  [PairIndex.PRCLUSD]: "Parcl to US Dollar",
+  [PairIndex.MERLUSD]: "Merlin Chain to US Dollar",
+  [PairIndex.SAFEUSD]: "Safe to US Dollar",
+  [PairIndex.SAGAUSD]: "Saga to US Dollar",
+  [PairIndex.LLUSD]: "Light Link to US Dollar",
+  [PairIndex.MSNUSD]: "Meson Network to US Dollar",
+  [PairIndex.REZUSD]: "Renzo to US Dollar",
 };
