@@ -237,6 +237,7 @@ export const pairs = {
   "LL/USD": CRYPTO,
   "MSN/USD": CRYPTO,
   "REZ/USD": CRYPTO,
+  "NOT/USD": CRYPTO,
 };
 
 export const getAssetClassFromGroupIndex = (
@@ -275,7 +276,7 @@ export const stockSplits = {
 export const delistedPairIxs = new Set([
   6, 31, 36, 42, 45, 48, 51, 54, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
   70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88,
-  89, 97, 99, 101, 106, 108, 52, 131, 147, 160, 179, 182, 183, 190, 229,
+  89, 97, 99, 101, 106, 108, 52, 131, 147, 160, 179, 182, 183, 190, 229,232,
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);

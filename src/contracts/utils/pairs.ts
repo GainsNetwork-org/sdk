@@ -365,4 +365,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.LLUSD]: "Light Link to US Dollar",
   [PairIndex.MSNUSD]: "Meson Network to US Dollar",
   [PairIndex.REZUSD]: "Renzo to US Dollar",
+  [PairIndex.NOTUSD]: "Notcoin to US Dollar",
 };
