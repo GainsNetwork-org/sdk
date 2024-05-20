@@ -1,30 +1,14 @@
-import {
-  GFarmTradingStorageV5,
-  GTokenOpenPnlFeed,
-  GNSNftRewardsV6_3_1,
-  GNSBorrowingFees,
-  GNSTradingCallbacks,
-  GToken,
-  GNSMultiCollatDiamond,
-} from "./generated";
+import { GTokenOpenPnlFeed, GToken, GNSMultiCollatDiamond } from "./generated";
 
 export type Contracts = {
-  gfarmTradingStorageV5: GFarmTradingStorageV5;
-  gTokenOpenPnlFeed: GTokenOpenPnlFeed;
-  gnsNftRewards: GNSNftRewardsV6_3_1;
-  gnsBorrowingFees: GNSBorrowingFees;
-  gnsTradingCallbacks: GNSTradingCallbacks;
-  gToken: GToken;
   gnsMultiCollatDiamond: GNSMultiCollatDiamond;
+  gTokenOpenPnlFeed: GTokenOpenPnlFeed;
+  gToken: GToken;
 };
-
+// @todo export all addresses
 export type ContractAddresses = {
-  gfarmTradingStorageV5: string;
   gnsMultiCollatDiamond: string;
   gTokenOpenPnlFeed: string;
-  gnsNftRewards: string;
-  gnsBorrowingFees: string;
-  gnsTradingCallbacks: string;
   gToken: string;
 };
 

@@ -15,9 +15,9 @@ export const getClosingFee = (
     return 0;
   }
 
-  const { closeFeeP, nftLimitOrderFeeP } = pairFee;
+  const { closeFeeP, triggerOrderFeeP } = pairFee;
 
-  return (closeFeeP + nftLimitOrderFeeP) * posDai * leverage;
+  return (closeFeeP + triggerOrderFeeP) * posDai * leverage;
 };
 
 export * from "./borrowing";

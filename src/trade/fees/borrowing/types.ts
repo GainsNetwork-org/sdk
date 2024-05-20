@@ -1,36 +1,34 @@
+import { OpenInterest } from "../../types";
+
+export type BorrowingData = {
+  feePerBlock: number;
+  accFeeLong: number;
+  accFeeShort: number;
+  accLastUpdatedBlock: number;
+  feeExponent: number;
+};
+
 export type PairGroup = {
   groupIndex: number;
+  block: number;
   initialAccFeeLong: number;
   initialAccFeeShort: number;
   prevGroupAccFeeLong: number;
   prevGroupAccFeeShort: number;
   pairAccFeeLong: number;
   pairAccFeeShort: number;
-  block: number;
 };
 
-export type Pair = {
-  groups: PairGroup[];
-  feePerBlock: number;
-  accFeeLong: number;
-  accFeeShort: number;
-  accLastUpdatedBlock: number;
-  maxOi: number;
-  lastAccBlockWeightedMarketCap: number;
-  feeExponent: number;
+export type BorrowingOi = {
+  oi: OpenInterest;
 };
 
-export type Group = {
-  oiLong: number;
-  oiShort: number;
-  feePerBlock: number;
-  accFeeLong: number;
-  accFeeShort: number;
-  accLastUpdatedBlock: number;
-  maxOi: number;
-  lastAccBlockWeightedMarketCap: number;
-  feeExponent: number;
-};
+export type Pair = BorrowingData &
+  BorrowingOi & {
+    groups: PairGroup[];
+  };
+
+export type Group = BorrowingData & BorrowingOi;
 
 export type InitialAccFees = {
   accPairFee: number;

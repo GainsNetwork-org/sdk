@@ -1,28 +1,26 @@
-import { getBorrowingFee, GetBorrowingFeeContext } from "./fees";
-import { Trade, TradeInfo, TradeInitialAccFees } from "./types";
+import { getBorrowingFee, GetBorrowingFeeContext, BorrowingFee } from "./fees";
+import { Trade, TradeInfo } from "./types";
 
 export const getLiquidationPrice = (
   trade: Trade,
   tradeInfo: TradeInfo,
-  initialAccFees: TradeInitialAccFees,
+  initialAccFees: BorrowingFee.InitialAccFees,
   context: GetBorrowingFeeContext
 ): number => {
-  const posDai = trade.initialPosToken * tradeInfo.tokenPriceDai;
-
   const liqPriceDistance =
     (trade.openPrice *
-      (posDai * 0.9 -
+      (trade.collateralAmount * 0.9 -
         getBorrowingFee(
-          posDai * trade.leverage,
+          trade.collateralAmount * trade.leverage,
           trade.pairIndex,
-          trade.buy,
-          initialAccFees.borrowing,
+          trade.long,
+          initialAccFees,
           context
         ))) /
-    posDai /
+    trade.collateralAmount /
     trade.leverage;
 
-  return trade.buy
+  return trade.long
     ? Math.max(trade.openPrice - liqPriceDistance, 0)
     : Math.max(trade.openPrice + liqPriceDistance, 0);
 };

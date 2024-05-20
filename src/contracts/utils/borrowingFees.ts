@@ -1,4 +1,4 @@
-import { GNSBorrowingFees } from "../types/generated";
+import { GNSMultiCollatDiamond } from "../types/generated";
 import {
   BorrowingFee,
   convertGroupBorrowingFees,
@@ -6,23 +6,31 @@ import {
 } from "../../trade";
 
 export const fetchAllPairBorrowingFees = async (
-  contract: GNSBorrowingFees
+  contract: GNSMultiCollatDiamond,
+  collateralIndex: number
 ): Promise<BorrowingFee.Pair[]> =>
-  convertPairBorrowingFees(await contract.getAllPairs());
+  convertPairBorrowingFees(
+    await contract.getAllBorrowingPairs(collateralIndex)
+  );
 
 export const fetchGroupBorrowingFees = async (
-  contract: GNSBorrowingFees,
+  contract: GNSMultiCollatDiamond,
+  collateralIndex: number,
   groupIxs: number[]
 ): Promise<BorrowingFee.Group[]> =>
-  convertGroupBorrowingFees(await contract.getGroups(groupIxs));
+  convertGroupBorrowingFees(
+    await contract.getBorrowingGroups(collateralIndex, groupIxs)
+  );
 
 export const fetchAllPairAndGroupBorrowingFees = async (
-  contract: GNSBorrowingFees
+  contract: GNSMultiCollatDiamond,
+  collateralIndex: number
 ): Promise<{
   pairs: BorrowingFee.Pair[];
   groups: BorrowingFee.Group[];
 }> => {
-  const pairs = await fetchAllPairBorrowingFees(contract);
+  const pairs = await fetchAllPairBorrowingFees(contract, collateralIndex);
+
   const groupIxs = [
     ...new Set(
       pairs
@@ -30,6 +38,10 @@ export const fetchAllPairAndGroupBorrowingFees = async (
         .reduce((acc, value) => acc.concat(value), [])
     ),
   ].sort((a, b) => a - b);
-  const groups = await fetchGroupBorrowingFees(contract, groupIxs);
+  const groups = await fetchGroupBorrowingFees(
+    contract,
+    collateralIndex,
+    groupIxs
+  );
   return { pairs, groups };
 };
