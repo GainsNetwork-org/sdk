@@ -374,5 +374,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.IOUSD]: "Ionet to US Dollar",
   [PairIndex.BRETTUSD]: "Brett to US Dollar",
   [PairIndex.ATHUSD]: "Aethir to US Dollar",
-
+  [PairIndex.ZKUSD]: "ZKsync to US Dollar",
 };
