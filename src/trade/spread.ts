@@ -8,7 +8,9 @@ export const getSpreadWithPriceImpactP = (
   leverage: number,
   pairDepth: PairDepth | undefined,
   oiWindowsSettings?: OiWindowsSettings | undefined,
-  oiWindows?: OiWindows | undefined
+  oiWindows?: OiWindows | undefined,
+  isOpen?: boolean,
+  protectionCloseFactor?: number
 ): number => {
   if (pairSpreadP === undefined) {
     return 0;
@@ -25,16 +27,17 @@ export const getSpreadWithPriceImpactP = (
       getCurrentOiWindowId(oiWindowsSettings),
       oiWindowsSettings.windowsCount,
       oiWindows,
-      buy
+      isOpen === undefined || isOpen ? buy : !buy
     );
   }
 
   if (!onePercentDepth || activeOi === undefined || collateral === undefined) {
-    return pairSpreadP;
+    return pairSpreadP / 2;
   }
 
   return (
-    pairSpreadP +
-    (activeOi + (collateral * leverage) / 2) / onePercentDepth / 100
+    pairSpreadP / 2 +
+    ((activeOi + (collateral * leverage) / 2) / onePercentDepth / 100 / 2) *
+      (protectionCloseFactor === undefined ? 1 : protectionCloseFactor)
   );
 };

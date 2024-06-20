@@ -17,7 +17,8 @@ describe("getSpreadWithPriceImpactP", () => {
       true,
       collateral,
       leverage,
-      pairParams
+      pairParams,
+      undefined
     );
     expect(result).toBe(0);
   });
@@ -30,7 +31,7 @@ describe("getSpreadWithPriceImpactP", () => {
       leverage,
       undefined
     );
-    expect(result).toBe(baseSpreadP);
+    expect(result).toBe(baseSpreadP / 2);
   });
 
   /*
