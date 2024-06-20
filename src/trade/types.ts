@@ -457,4 +457,5 @@ export enum PairIndex {
   BRETTUSD,
   ATHUSD,
   ZKUSD,
+  ZROUSD,
 }
