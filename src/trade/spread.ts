@@ -1,5 +1,6 @@
 import { OiWindows, OiWindowsSettings, PairDepth } from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
+import { PROTECTION_CLOSE_FACTOR_BLOCKS } from "../constants";
 
 export const getSpreadWithPriceImpactP = (
   pairSpreadP: number,
@@ -10,7 +11,9 @@ export const getSpreadWithPriceImpactP = (
   oiWindowsSettings?: OiWindowsSettings | undefined,
   oiWindows?: OiWindows | undefined,
   isOpen?: boolean,
-  protectionCloseFactor?: number
+  protectionCloseFactor?: number,
+  createdBlock?: number,
+  currentBlock?: number
 ): number => {
   if (pairSpreadP === undefined) {
     return 0;
@@ -38,6 +41,11 @@ export const getSpreadWithPriceImpactP = (
   return (
     pairSpreadP / 2 +
     ((activeOi + (collateral * leverage) / 2) / onePercentDepth / 100 / 2) *
-      (protectionCloseFactor === undefined ? 1 : protectionCloseFactor)
+      (protectionCloseFactor === undefined ||
+      createdBlock === undefined ||
+      currentBlock === undefined ||
+      createdBlock + PROTECTION_CLOSE_FACTOR_BLOCKS < currentBlock
+        ? 1
+        : protectionCloseFactor)
   );
 };

@@ -306,3 +306,5 @@ export const delistedPairIxs = new Set([
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);
+
+export const PROTECTION_CLOSE_FACTOR_BLOCKS = 1615; // ~1615 blocks per 7 minutes on Arbitrum
