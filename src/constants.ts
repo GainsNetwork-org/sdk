@@ -241,8 +241,8 @@ export const pairs = {
   "IO/USD": CRYPTO,
   "BRETT/USD": CRYPTO,
   "ATH/USD": CRYPTO,
-  "ZK/USD": CRYPTO,
   "ZRO/USD": CRYPTO,
+  "ZK/USD": CRYPTO,
 };
 
 export const getAssetClassFromGroupIndex = (
