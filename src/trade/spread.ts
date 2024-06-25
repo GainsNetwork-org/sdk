@@ -2,6 +2,26 @@ import { OiWindows, OiWindowsSettings, PairDepth } from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
 import { PROTECTION_CLOSE_FACTOR_BLOCKS } from "../constants";
 
+export type SpreadContext = {
+  isOpen: boolean | undefined;
+  protectionCloseFactor: number | undefined;
+  createdBlock: number | undefined;
+  currentBlock: number | undefined;
+};
+
+export const getProtectionCloseFactor = (
+  spreadCtx: SpreadContext | undefined
+): number => {
+  return spreadCtx === undefined ||
+    spreadCtx.protectionCloseFactor === undefined ||
+    spreadCtx.createdBlock === undefined ||
+    spreadCtx.currentBlock === undefined ||
+    spreadCtx.createdBlock + PROTECTION_CLOSE_FACTOR_BLOCKS <
+      spreadCtx.currentBlock
+    ? 1
+    : spreadCtx.protectionCloseFactor;
+};
+
 export const getSpreadWithPriceImpactP = (
   pairSpreadP: number,
   buy: boolean,
@@ -10,10 +30,7 @@ export const getSpreadWithPriceImpactP = (
   pairDepth: PairDepth | undefined,
   oiWindowsSettings?: OiWindowsSettings | undefined,
   oiWindows?: OiWindows | undefined,
-  isOpen?: boolean,
-  protectionCloseFactor?: number,
-  createdBlock?: number,
-  currentBlock?: number
+  spreadCtx?: SpreadContext | undefined
 ): number => {
   if (pairSpreadP === undefined) {
     return 0;
@@ -30,7 +47,11 @@ export const getSpreadWithPriceImpactP = (
       getCurrentOiWindowId(oiWindowsSettings),
       oiWindowsSettings.windowsCount,
       oiWindows,
-      isOpen === undefined || isOpen ? buy : !buy
+      spreadCtx === undefined ||
+        spreadCtx.isOpen === undefined ||
+        spreadCtx.isOpen
+        ? buy
+        : !buy
     );
   }
 
@@ -41,11 +62,6 @@ export const getSpreadWithPriceImpactP = (
   return (
     pairSpreadP / 2 +
     ((activeOi + (collateral * leverage) / 2) / onePercentDepth / 100 / 2) *
-      (protectionCloseFactor === undefined ||
-      createdBlock === undefined ||
-      currentBlock === undefined ||
-      createdBlock + PROTECTION_CLOSE_FACTOR_BLOCKS < currentBlock
-        ? 1
-        : protectionCloseFactor)
+      getProtectionCloseFactor(spreadCtx)
   );
 };
