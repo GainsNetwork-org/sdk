@@ -459,6 +459,5 @@ export enum PairIndex {
   ZROUSD,
   ZKUSD,
   LISTAUSD,
-  MTLUSD,
-  BLASTUSD,  
+  BLASTUSD,
 }
