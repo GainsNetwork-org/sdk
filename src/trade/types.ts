@@ -87,6 +87,9 @@ export type TradeHistoryRecord = {
   price: number;
   size: number;
   tx: string;
+  collateralDelta: number | null;
+  leverageDelta: number | null;
+  marketPrice: number | null;
 };
 
 export type MarketOrder = {
