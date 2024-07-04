@@ -378,4 +378,11 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.ZKUSD]: "ZKsync to US Dollar",
   [PairIndex.LISTAUSD]: "Lista DAO to US Dollar",
   [PairIndex.BLASTUSD]: "Blast to US Dollar",
+  [PairIndex.RATSUSD]: "Rats to US Dollar",
+  [PairIndex.BNXUSD]: "BinaryX to US Dollar",
+  [PairIndex.PEOPLEUSD]: "Constitution DAO to US Dollar",
+  [PairIndex.TURBOUSD]: "Turbo to US Dollar",
+  [PairIndex.SATSUSD]: "SATS Ordinals to US Dollar",
+  [PairIndex.POPCATUSD]: "Popcat to US Dollar",
+  [PairIndex.MOGUSD]: "Mog Coin to US Dollar",
 };
