@@ -245,6 +245,13 @@ export const pairs = {
   "ZK/USD": CRYPTO,
   "LISTA/USD": CRYPTO,
   "BLAST/USD": CRYPTO,
+  "RATS/USD": CRYPTO,
+  "BNX/USD": CRYPTO,
+  "PEOPLE/USD": CRYPTO,
+  "TURBO/USD": CRYPTO,
+  "SATS/USD": CRYPTO,
+  "POPCAT/USD": CRYPTO,
+  "MOG/USD": CRYPTO,
 };
 
 export const getAssetClassFromGroupIndex = (

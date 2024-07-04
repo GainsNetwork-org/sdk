@@ -460,4 +460,11 @@ export enum PairIndex {
   ZKUSD,
   LISTAUSD,
   BLASTUSD,
+  RATSUSD,
+  BNXUSD,
+  PEOPLEUSD,
+  TURBOUSD,
+  SATSUSD,
+  POPCATUSD,
+  MOGUSD,
 }
