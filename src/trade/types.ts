@@ -470,4 +470,8 @@ export enum PairIndex {
   SATSUSD,
   POPCATUSD,
   MOGUSD,
+  OMUSD,
+  COREUSD,
+  JASMYUSD,
+  DARUSD,
 }
