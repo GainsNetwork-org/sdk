@@ -385,4 +385,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.SATSUSD]: "SATS Ordinals to US Dollar",
   [PairIndex.POPCATUSD]: "Popcat to US Dollar",
   [PairIndex.MOGUSD]: "Mog Coin to US Dollar",
+  [PairIndex.OMUSD]: "Mantra Chain to US Dollar",
+  [PairIndex.COREUSD]: "Core to US Dollar",
+  [PairIndex.JASMYUSD]: "Jasmy Coin to US Dollar",
+  [PairIndex.DARUSD]: "Mines of Dalarnia to US Dollar",
 };
