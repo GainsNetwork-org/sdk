@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-// import { Contract, Provider, Call } from "ethcall";
 import { TradeContainer, TradeContainerRaw } from "../../trade/types";
 import { Contracts, BlockTag } from "../../contracts/types";
-import { Contract, Provider } from "ethcall";
 import { IBorrowingFees } from "../types/generated/GNSMultiCollatDiamond";
+import { Contract, Provider } from "ethcall";
 
 export type FetchOpenPairTradesOverrides = {
   batchSize?: number;
@@ -26,6 +25,7 @@ export const fetchOpenPairTrades = async (
     _prepareTradeContainer(
       rawTrade.trade,
       rawTrade.tradeInfo,
+      rawTrade.liquidationParams,
       rawTrade.initialAccFees,
       collateralPrecisions[
         parseInt(rawTrade.trade.collateralIndex.toString()) - 1
@@ -76,6 +76,12 @@ export const fetchOpenPairTradesRaw = async (
         offset,
         offset + batchSize
       );
+      const tradeLiquidationParams =
+        await multiCollatDiamondContract.getAllTradesLiquidationParams(
+          offset,
+          offset + batchSize
+        );
+
       // Array is always of length `batchSize`
       // so we need to filter out the empty trades, indexes are reliable
       const openTrades = trades
@@ -88,6 +94,7 @@ export const fetchOpenPairTradesRaw = async (
           (trade, ix): TradeContainerRaw => ({
             trade,
             tradeInfo: tradeInfos[ix],
+            liquidationParams: tradeLiquidationParams[ix],
             initialAccFees: {
               accPairFee: 0,
               accGroupFee: 0,
@@ -136,6 +143,7 @@ export const fetchOpenPairTradesRaw = async (
 const _prepareTradeContainer = (
   trade: any,
   tradeInfo: any,
+  tradeLiquidationParams: any,
   tradeInitialAccFees: any,
   collateralPrecision: any
 ) => ({
@@ -163,6 +171,18 @@ const _prepareTradeContainer = (
     lastOiUpdateTs: parseFloat(tradeInfo.lastOiUpdateTs),
     collateralPriceUsd:
       parseFloat(tradeInfo.collateralPriceUsd.toString()) / 1e8,
+  },
+  liquidationParams: {
+    maxLiqSpreadP:
+      parseFloat(tradeLiquidationParams.maxLiqSpreadP.toString()) / 1e10,
+    startLiqThresholdP:
+      parseFloat(tradeLiquidationParams.startLiqThresholdP.toString()) / 1e10,
+    endLiqThresholdP:
+      parseFloat(tradeLiquidationParams.endLiqThresholdP.toString()) / 1e10,
+    startLeverage:
+      parseFloat(tradeLiquidationParams.startLeverage.toString()) / 1e3,
+    endLeverage:
+      parseFloat(tradeLiquidationParams.endLeverage.toString()) / 1e3,
   },
   initialAccFees: {
     accPairFee: parseFloat(tradeInitialAccFees.accPairFee.toString()) / 1e10,
