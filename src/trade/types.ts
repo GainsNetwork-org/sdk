@@ -474,4 +474,8 @@ export enum PairIndex {
   COREUSD,
   JASMYUSD,
   DARUSD,
+  MEWUSD,
+  DEGENUSD,
+  SLERFUSD,
+  UXLINKUSD,
 }
