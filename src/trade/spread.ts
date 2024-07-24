@@ -1,25 +1,41 @@
 import { OiWindows, OiWindowsSettings, PairDepth } from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
-import { PROTECTION_CLOSE_FACTOR_BLOCKS } from "../constants";
+import { DEFAULT_PROTECTION_CLOSE_FACTOR } from "../constants";
 
 export type SpreadContext = {
-  isOpen: boolean | undefined;
-  protectionCloseFactor: number | undefined;
-  createdBlock: number | undefined;
+  isOpen?: boolean;
+  isPnlPositive?: boolean;
+  protectionCloseFactor?: number;
+  protectionCloseFactorBlocks?: number;
+  createdBlock?: number;
   currentBlock: number | undefined;
 };
 
 export const getProtectionCloseFactor = (
   spreadCtx: SpreadContext | undefined
 ): number => {
-  return spreadCtx === undefined ||
+  if (
+    spreadCtx === undefined ||
+    spreadCtx.isOpen === undefined ||
+    spreadCtx.isPnlPositive === undefined ||
     spreadCtx.protectionCloseFactor === undefined ||
+    spreadCtx.protectionCloseFactorBlocks === undefined ||
     spreadCtx.createdBlock === undefined ||
-    spreadCtx.currentBlock === undefined ||
-    spreadCtx.createdBlock + PROTECTION_CLOSE_FACTOR_BLOCKS <
-      spreadCtx.currentBlock
-    ? 1
-    : spreadCtx.protectionCloseFactor;
+    spreadCtx.currentBlock === undefined
+  )
+    return DEFAULT_PROTECTION_CLOSE_FACTOR;
+
+  if (
+    spreadCtx.isPnlPositive &&
+    !spreadCtx.isOpen &&
+    spreadCtx.protectionCloseFactor > 0 &&
+    spreadCtx.currentBlock <=
+      spreadCtx.createdBlock + spreadCtx.protectionCloseFactorBlocks
+  ) {
+    return spreadCtx.protectionCloseFactor;
+  }
+
+  return DEFAULT_PROTECTION_CLOSE_FACTOR;
 };
 
 export const getSpreadWithPriceImpactP = (
@@ -37,8 +53,14 @@ export const getSpreadWithPriceImpactP = (
   }
 
   const onePercentDepth = buy
-    ? pairDepth?.onePercentDepthAboveUsd
-    : pairDepth?.onePercentDepthBelowUsd;
+    ? // if `long`
+      spreadCtx?.isOpen !== false // assumes it's an open unless it's explicitly false
+      ? pairDepth?.onePercentDepthAboveUsd
+      : pairDepth?.onePercentDepthBelowUsd
+    : // if `short`
+    spreadCtx?.isOpen !== false
+    ? pairDepth?.onePercentDepthBelowUsd
+    : pairDepth?.onePercentDepthAboveUsd;
 
   let activeOi = undefined;
 
@@ -47,11 +69,7 @@ export const getSpreadWithPriceImpactP = (
       getCurrentOiWindowId(oiWindowsSettings),
       oiWindowsSettings.windowsCount,
       oiWindows,
-      spreadCtx === undefined ||
-        spreadCtx.isOpen === undefined ||
-        spreadCtx.isOpen
-        ? buy
-        : !buy
+      spreadCtx?.isOpen !== false ? buy : !buy
     );
   }
 
