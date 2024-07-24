@@ -389,8 +389,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.COREUSD]: "Core to US Dollar",
   [PairIndex.JASMYUSD]: "Jasmy Coin to US Dollar",
   [PairIndex.DARUSD]: "Mines of Dalarnia to US Dollar",
-  [PairIndex.MEWUSD]: "Cats in a dog world to US Dollar",
-  [PairIndex.DEGENUSD]: "Degen Base to US Dollar",
+  [PairIndex.MEWUSD]: "cat in a dogs world to US Dollar",
+  [PairIndex.DEGENUSD]: "Degen to US Dollar",
   [PairIndex.SLERFUSD]: "Slerf to US Dollar",
-  [PairIndex.UXLINKUSD]: "UXLink to US Dollar",
+  [PairIndex.UXLINKUSD]: "UXLINK to US Dollar",
 };
