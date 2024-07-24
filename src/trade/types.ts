@@ -1,6 +1,7 @@
 import {
   ITradingStorage,
   IBorrowingFees,
+  IPairsStorage,
 } from "../contracts/types/generated/GNSMultiCollatDiamond";
 import { BorrowingFee } from "./fees/borrowing";
 import { FeeTier, TraderInfo } from "./fees/tiers/types";
@@ -12,6 +13,7 @@ export type PairIndexes = {
 export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
+  liquidationParams: LiquidationParams;
   initialAccFees: TradeInitialAccFees;
   receivedAt?: number;
 };
@@ -38,6 +40,14 @@ export type TradeInfo = {
   maxSlippageP: number;
   lastOiUpdateTs: number;
   collateralPriceUsd: number;
+};
+
+export type LiquidationParams = {
+  maxLiqSpreadP: number;
+  startLiqThresholdP: number;
+  endLiqThresholdP: number;
+  startLeverage: number;
+  endLeverage: number;
 };
 
 export type TradingGroup = {
@@ -141,6 +151,7 @@ export enum PositionType {
 export type TradeContainerRaw = {
   trade: ITradingStorage.TradeStruct;
   tradeInfo: ITradingStorage.TradeInfoStruct;
+  liquidationParams: IPairsStorage.GroupLiquidationParamsStruct;
   initialAccFees: IBorrowingFees.BorrowingInitialAccFeesStruct;
 };
 
