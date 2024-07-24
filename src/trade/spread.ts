@@ -1,4 +1,9 @@
-import { OiWindows, OiWindowsSettings, PairDepth } from "./types";
+import {
+  LiquidationParams,
+  OiWindows,
+  OiWindowsSettings,
+  PairDepth,
+} from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
 import { DEFAULT_PROTECTION_CLOSE_FACTOR } from "../constants";
 
@@ -8,6 +13,7 @@ export type SpreadContext = {
   protectionCloseFactor?: number;
   protectionCloseFactorBlocks?: number;
   createdBlock?: number;
+  liquidationParams?: LiquidationParams | undefined;
   currentBlock: number | undefined;
 };
 
@@ -52,6 +58,15 @@ export const getSpreadWithPriceImpactP = (
     return 0;
   }
 
+  // No spread or price impact when closing pre-v9.2 trades
+  if (
+    spreadCtx?.isOpen === false &&
+    spreadCtx?.liquidationParams !== undefined &&
+    spreadCtx.liquidationParams.maxLiqSpreadP === 0
+  ) {
+    return 0;
+  }
+
   const onePercentDepth = buy
     ? // if `long`
       spreadCtx?.isOpen !== false // assumes it's an open unless it's explicitly false
@@ -78,8 +93,27 @@ export const getSpreadWithPriceImpactP = (
   }
 
   return (
-    pairSpreadP / 2 +
+    getSpreadP(pairSpreadP) +
     ((activeOi + (collateral * leverage) / 2) / onePercentDepth / 100 / 2) *
       getProtectionCloseFactor(spreadCtx)
   );
+};
+
+export const getSpreadP = (
+  pairSpreadP: number | undefined,
+  isLiquidation?: boolean | undefined,
+  liquidationParams?: LiquidationParams | undefined
+): number => {
+  if (pairSpreadP === undefined || pairSpreadP === 0) {
+    return 0;
+  }
+
+  const spreadP = pairSpreadP / 2;
+
+  return isLiquidation === true &&
+    liquidationParams !== undefined &&
+    liquidationParams.maxLiqSpreadP > 0 &&
+    spreadP > liquidationParams.maxLiqSpreadP
+    ? liquidationParams.maxLiqSpreadP
+    : spreadP;
 };
