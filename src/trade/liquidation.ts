@@ -56,7 +56,7 @@ export const getLiquidationPrice = (
       context.liquidationParams
     );
 
-    liqPriceDistance += trade.openPrice * closingSpreadP;
+    liqPriceDistance -= trade.openPrice * closingSpreadP;
   }
 
   return trade.long
