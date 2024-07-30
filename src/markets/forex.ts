@@ -44,8 +44,8 @@ export const isForexLowLiquidity = (timestampToCheck: number, pair?: Pair) => {
   if (groupIndex && extendedLowLiqGroupIds.includes(+groupIndex)) {
     return (
       (isInDST &&
-        ((hour == 15 && minute >= 15) || (hour >= 16 && hour < 21))) ||
-      (!isInDST && ((hour == 16 && minute >= 15) || (hour >= 17 && hour < 22)))
+        ((hour == 14 && minute >= 45) || (hour >= 16 && hour < 21))) ||
+      (!isInDST && ((hour == 15 && minute >= 45) || (hour >= 17 && hour < 22)))
     );
   }
 
