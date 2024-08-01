@@ -393,4 +393,6 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.DEGENUSD]: "Degen to US Dollar",
   [PairIndex.SLERFUSD]: "Slerf to US Dollar",
   [PairIndex.UXLINKUSD]: "UXLINK to US Dollar",
+  [PairIndex.AVAILUSD]: "Avail to US Dollar",
+  [PairIndex.BANANAUSD]: "Banana Gun to US Dollar",
 };

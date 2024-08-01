@@ -478,4 +478,6 @@ export enum PairIndex {
   DEGENUSD,
   SLERFUSD,
   UXLINKUSD,
+  AVAILUSD,
+  BANANAUSD,
 }
