@@ -174,11 +174,11 @@ const _prepareTradeContainer = (
   },
   liquidationParams: {
     maxLiqSpreadP:
-      parseFloat(tradeLiquidationParams.maxLiqSpreadP.toString()) / 1e10,
+      parseFloat(tradeLiquidationParams.maxLiqSpreadP.toString()) / 1e12,
     startLiqThresholdP:
-      parseFloat(tradeLiquidationParams.startLiqThresholdP.toString()) / 1e10,
+      parseFloat(tradeLiquidationParams.startLiqThresholdP.toString()) / 1e12,
     endLiqThresholdP:
-      parseFloat(tradeLiquidationParams.endLiqThresholdP.toString()) / 1e10,
+      parseFloat(tradeLiquidationParams.endLiqThresholdP.toString()) / 1e12,
     startLeverage:
       parseFloat(tradeLiquidationParams.startLeverage.toString()) / 1e3,
     endLeverage:
