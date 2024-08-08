@@ -4,6 +4,7 @@ import { Fee, Trade, TradeInfo, TradeInitialAccFees } from "./types";
 export type GetPnlContext = GetBorrowingFeeContext & {
   fee: Fee | undefined;
   maxGainP: number | undefined;
+  collateralPriceUsd: number | undefined;
 };
 
 export const getPnl = (
@@ -45,7 +46,13 @@ export const getPnl = (
   if (pnlPercentage <= -90) {
     pnlPercentage = -100;
   } else {
-    pnlCollat -= getClosingFee(posCollat, trade.leverage, trade.pairIndex, fee);
+    pnlCollat -= getClosingFee(
+      posCollat,
+      trade.leverage,
+      trade.pairIndex,
+      fee,
+      context.collateralPriceUsd
+    );
     pnlPercentage = (pnlCollat / posCollat) * 100;
   }
 
