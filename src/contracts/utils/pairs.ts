@@ -74,28 +74,6 @@ export const fetchPairDepths = async (
   }
 };
 
-export const fetchProtectionCloseFactors = async (
-  contracts: Contracts,
-  pairIxs: number[]
-): Promise<number[]> => {
-  if (!contracts) {
-    return [];
-  }
-  const { gnsMultiCollatDiamond: multiCollatContract } = contracts;
-
-  try {
-    const protectionCloseFactors =
-      await multiCollatContract.getProtectionCloseFactors(pairIxs);
-    return protectionCloseFactors.map(protectionCloseFactor => {
-      return protectionCloseFactor.toNumber();
-    });
-  } catch (error) {
-    console.error(`Unexpected error while fetching pairs!`);
-
-    throw error;
-  }
-};
-
 export const fetchFees = async (
   contracts: Contracts,
   feeIxs: PairIndex[]

@@ -131,6 +131,11 @@
     },
     {
       "inputs": [],
+      "name": "WrongOrderType",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "WrongParams",
       "type": "error"
     },
@@ -604,14 +609,14 @@
               "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "startLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "endLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
               "internalType": "uint24",
@@ -632,7 +637,7 @@
       ],
       "name": "GroupLiquidationParamsUpdated",
       "type": "event",
-      "signature": "0x52bf41e4c95a813ed559a6c8bd01fa75e1ef80e29720fae8a1c1691bce4519aa"
+      "signature": "0x7e8e79d406657a52635b68c3f3ad15d2526e71077df1b40afad9d323eacbabfc"
     },
     {
       "anonymous": false,
@@ -956,14 +961,14 @@
               "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "startLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "endLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
               "internalType": "uint24",
@@ -1003,14 +1008,14 @@
               "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "startLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "endLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
               "internalType": "uint24",
@@ -1098,14 +1103,14 @@
               "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "startLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "endLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
               "internalType": "uint24",
@@ -1127,7 +1132,7 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xda13028a"
+      "signature": "0x85d4390e"
     },
     {
       "inputs": [
@@ -1640,14 +1645,14 @@
               "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "startLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "endLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
               "internalType": "uint24",
@@ -1669,7 +1674,7 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x8eb657f6"
+      "signature": "0xd0cb753e"
     },
     {
       "inputs": [
@@ -3098,6 +3103,26 @@
       "inputs": [
         {
           "indexed": true,
+          "internalType": "uint256",
+          "name": "pairIndex",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint40",
+          "name": "cumulativeFactor",
+          "type": "uint40"
+        }
+      ],
+      "name": "CumulativeFactorUpdated",
+      "type": "event",
+      "signature": "0x2742ec28d0252b4477106a77a10b04e1c1ecd2b568c7168d56c3a3154d3a3122"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
           "internalType": "uint48",
           "name": "windowsDuration",
           "type": "uint48"
@@ -3239,60 +3264,8 @@
               "type": "bool"
             },
             {
-              "internalType": "uint128",
-              "name": "openInterestUsd",
-              "type": "uint128"
-            }
-          ],
-          "indexed": false,
-          "internalType": "struct IPriceImpact.OiWindowUpdate",
-          "name": "oiWindowUpdate",
-          "type": "tuple"
-        },
-        {
-          "indexed": false,
-          "internalType": "bool",
-          "name": "isPartial",
-          "type": "bool"
-        }
-      ],
-      "name": "PriceImpactOpenInterestAdded",
-      "type": "event",
-      "signature": "0x4ad96f03f62012d64f1a3676413b5a73b13a99eebe005158b124403e3c3ab70d"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "address",
-              "name": "trader",
-              "type": "address"
-            },
-            {
-              "internalType": "uint32",
-              "name": "index",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint48",
-              "name": "windowsDuration",
-              "type": "uint48"
-            },
-            {
-              "internalType": "uint256",
-              "name": "pairIndex",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "windowId",
-              "type": "uint256"
-            },
-            {
               "internalType": "bool",
-              "name": "long",
+              "name": "open",
               "type": "bool"
             },
             {
@@ -3305,17 +3278,11 @@
           "internalType": "struct IPriceImpact.OiWindowUpdate",
           "name": "oiWindowUpdate",
           "type": "tuple"
-        },
-        {
-          "indexed": false,
-          "internalType": "bool",
-          "name": "notOutdated",
-          "type": "bool"
         }
       ],
-      "name": "PriceImpactOpenInterestRemoved",
+      "name": "PriceImpactOpenInterestAdded",
       "type": "event",
-      "signature": "0x02c87303d6313dfe4cd344c2850cf9b343c7b2baa78546cec5892065611b0181"
+      "signature": "0xcca5358ade10271036cf22898f07ad681f9dd7fc3e861da5fc31319c4b890ad4"
     },
     {
       "anonymous": false,
@@ -3349,15 +3316,21 @@
       "anonymous": false,
       "inputs": [
         {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "pairIndex",
+          "type": "uint256"
+        },
+        {
           "indexed": false,
-          "internalType": "uint24",
+          "internalType": "uint32",
           "name": "protectionCloseFactorBlocks",
-          "type": "uint24"
+          "type": "uint32"
         }
       ],
       "name": "ProtectionCloseFactorBlocksUpdated",
       "type": "event",
-      "signature": "0xbb1ab3cb7b05f44cea93ff3a0ea17c517fa0a0c1a6aab8d78b996128d2b0199f"
+      "signature": "0xd537ef0f85bea3a23f6af53d4c1b29fdc74cdbd3a07a37bfdb76f5368aebd660"
     },
     {
       "anonymous": false,
@@ -3370,14 +3343,14 @@
         },
         {
           "indexed": false,
-          "internalType": "uint256",
+          "internalType": "uint40",
           "name": "protectionCloseFactor",
-          "type": "uint256"
+          "type": "uint40"
         }
       ],
       "name": "ProtectionCloseFactorUpdated",
       "type": "event",
-      "signature": "0x91702eff4d91af5aaa0a65e6c7cd5893e9e354b77f408789116e6f18054bb611"
+      "signature": "0x471eb2788149a10519cea684f0149db7c6af0e5fa1182f06b50c5420fe95d12a"
     },
     {
       "inputs": [
@@ -3395,13 +3368,18 @@
           "internalType": "uint256",
           "name": "_oiDeltaCollateral",
           "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "_open",
+          "type": "bool"
         }
       ],
       "name": "addPriceImpactOpenInterest",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x4c8a7602"
+      "signature": "0x23ce624b"
     },
     {
       "inputs": [
@@ -3585,6 +3563,48 @@
     {
       "inputs": [
         {
+          "internalType": "uint256[]",
+          "name": "_indices",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getPairFactors",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint40",
+              "name": "protectionCloseFactor",
+              "type": "uint40"
+            },
+            {
+              "internalType": "uint32",
+              "name": "protectionCloseFactorBlocks",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint40",
+              "name": "cumulativeFactor",
+              "type": "uint40"
+            },
+            {
+              "internalType": "uint144",
+              "name": "__placeholder",
+              "type": "uint144"
+            }
+          ],
+          "internalType": "struct IPriceImpact.PairFactors[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x8db9e2da"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_pairIndex",
           "type": "uint256"
@@ -3606,65 +3626,6 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0xb6d92b02"
-    },
-    {
-      "inputs": [],
-      "name": "getProtectionCloseFactorBlocks",
-      "outputs": [
-        {
-          "internalType": "uint24",
-          "name": "",
-          "type": "uint24"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "signature": "0xa7059886"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "_indices",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "getProtectionCloseFactors",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "signature": "0xf33fc605"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_trader",
-          "type": "address"
-        },
-        {
-          "internalType": "uint32",
-          "name": "_index",
-          "type": "uint32"
-        }
-      ],
-      "name": "getTradeLastWindowOiUsd",
-      "outputs": [
-        {
-          "internalType": "uint128",
-          "name": "",
-          "type": "uint128"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "signature": "0x273064f2"
     },
     {
       "inputs": [
@@ -3702,6 +3663,11 @@
           "internalType": "uint256",
           "name": "_createdBlock",
           "type": "uint256"
+        },
+        {
+          "internalType": "enum ITradingStorage.ContractsVersion",
+          "name": "_contractsVersion",
+          "type": "uint8"
         }
       ],
       "name": "getTradePriceImpact",
@@ -3719,44 +3685,36 @@
       ],
       "stateMutability": "view",
       "type": "function",
-      "signature": "0x31d20230"
+      "signature": "0xdd5ef6f1"
     },
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "_trader",
-          "type": "address"
+          "internalType": "uint16[]",
+          "name": "_pairIndices",
+          "type": "uint16[]"
         },
         {
-          "internalType": "uint32",
-          "name": "_index",
-          "type": "uint32"
-        }
-      ],
-      "name": "getTradePriceImpactInfo",
-      "outputs": [
+          "internalType": "uint40[]",
+          "name": "_protectionCloseFactors",
+          "type": "uint40[]"
+        },
         {
-          "components": [
-            {
-              "internalType": "uint128",
-              "name": "lastWindowOiUsd",
-              "type": "uint128"
-            },
-            {
-              "internalType": "uint128",
-              "name": "__placeholder",
-              "type": "uint128"
-            }
-          ],
-          "internalType": "struct IPriceImpact.TradePriceImpactInfo",
-          "name": "",
-          "type": "tuple"
+          "internalType": "uint32[]",
+          "name": "_protectionCloseFactorBlocks",
+          "type": "uint32[]"
+        },
+        {
+          "internalType": "uint40[]",
+          "name": "_cumulativeFactors",
+          "type": "uint40[]"
         }
       ],
-      "stateMutability": "view",
+      "name": "initializePairFactors",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xc3248367"
+      "signature": "0x3d7e587a"
     },
     {
       "inputs": [
@@ -3780,40 +3738,21 @@
     {
       "inputs": [
         {
-          "internalType": "uint24",
-          "name": "_protectionCloseFactorBlocks",
-          "type": "uint24"
+          "internalType": "uint16[]",
+          "name": "_pairIndices",
+          "type": "uint16[]"
+        },
+        {
+          "internalType": "uint40[]",
+          "name": "_cumulativeFactors",
+          "type": "uint40[]"
         }
       ],
-      "name": "initializeProtectionCloseFactorBlocks",
+      "name": "setCumulativeFactors",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x0420f323"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_trader",
-          "type": "address"
-        },
-        {
-          "internalType": "uint32",
-          "name": "_index",
-          "type": "uint32"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_oiDeltaCollateral",
-          "type": "uint256"
-        }
-      ],
-      "name": "removePriceImpactOpenInterest",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0x2f29a9e8"
+      "signature": "0xa7d518fc"
     },
     {
       "inputs": [
@@ -3870,16 +3809,21 @@
     {
       "inputs": [
         {
-          "internalType": "uint24",
+          "internalType": "uint16[]",
+          "name": "_pairIndices",
+          "type": "uint16[]"
+        },
+        {
+          "internalType": "uint32[]",
           "name": "_protectionCloseFactorBlocks",
-          "type": "uint24"
+          "type": "uint32[]"
         }
       ],
       "name": "setProtectionCloseFactorBlocks",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xb63280b2"
+      "signature": "0x2a4cde4a"
     },
     {
       "inputs": [
@@ -3889,16 +3833,16 @@
           "type": "uint16[]"
         },
         {
-          "internalType": "uint256[]",
+          "internalType": "uint40[]",
           "name": "_protectionCloseFactors",
-          "type": "uint256[]"
+          "type": "uint40[]"
         }
       ],
       "name": "setProtectionCloseFactors",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x928ca2f0"
+      "signature": "0xef0243dc"
     },
     {
       "inputs": [],
@@ -4311,6 +4255,38 @@
         },
         {
           "indexed": false,
+          "internalType": "uint16",
+          "name": "maxClosingSlippageP",
+          "type": "uint16"
+        }
+      ],
+      "name": "TradeMaxClosingSlippagePUpdated",
+      "type": "event",
+      "signature": "0xb34e0065c48018b4a48b78c4729fd9ffd1968c59d6532e600c4afb42ce093da1"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct ITradingStorage.Id",
+          "name": "tradeId",
+          "type": "tuple"
+        },
+        {
+          "indexed": false,
           "internalType": "uint120",
           "name": "collateralAmount",
           "type": "uint120"
@@ -4338,11 +4314,17 @@
           "internalType": "uint64",
           "name": "newSl",
           "type": "uint64"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "refreshLiquidationParams",
+          "type": "bool"
         }
       ],
       "name": "TradePositionUpdated",
       "type": "event",
-      "signature": "0x39ede689b34cc36c8cf85698a4e83530eb6a29a07a57f0bfc3d02bfaca44edb5"
+      "signature": "0x3890801c6f1ea37e9eb6aaae6cb1e57eeb8fe67e3af47b2533ff1fc4d1031ede"
     },
     {
       "anonymous": false,
@@ -4485,9 +4467,14 @@
               "type": "uint48"
             },
             {
-              "internalType": "uint48",
+              "internalType": "enum ITradingStorage.ContractsVersion",
+              "name": "contractsVersion",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint40",
               "name": "__placeholder",
-              "type": "uint48"
+              "type": "uint40"
             }
           ],
           "indexed": false,
@@ -4503,14 +4490,14 @@
               "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "startLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "endLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
               "internalType": "uint24",
@@ -4531,7 +4518,7 @@
       ],
       "name": "TradeStored",
       "type": "event",
-      "signature": "0x68a5f29b49e875ed9fb6226960bdeb3ba45320ae3d7521d3689d6f97638fbe0c"
+      "signature": "0xb40b87d57025355f7877bcb0b13819afb13b4ce2a1bf3a1795af7109d99ab3a9"
     },
     {
       "anonymous": false,
@@ -4827,9 +4814,14 @@
               "type": "uint48"
             },
             {
-              "internalType": "uint48",
+              "internalType": "enum ITradingStorage.ContractsVersion",
+              "name": "contractsVersion",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint40",
               "name": "__placeholder",
-              "type": "uint48"
+              "type": "uint40"
             }
           ],
           "internalType": "struct ITradingStorage.TradeInfo[]",
@@ -4956,14 +4948,14 @@
               "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "startLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "endLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
               "internalType": "uint24",
@@ -5148,6 +5140,20 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0x0212f0d6"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentContractsVersion",
+      "outputs": [
+        {
+          "internalType": "enum ITradingStorage.ContractsVersion",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function",
+      "signature": "0x9095b119"
     },
     {
       "inputs": [
@@ -5569,9 +5575,14 @@
               "type": "uint48"
             },
             {
-              "internalType": "uint48",
+              "internalType": "enum ITradingStorage.ContractsVersion",
+              "name": "contractsVersion",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint40",
               "name": "__placeholder",
-              "type": "uint48"
+              "type": "uint40"
             }
           ],
           "internalType": "struct ITradingStorage.TradeInfo",
@@ -5626,9 +5637,14 @@
               "type": "uint48"
             },
             {
-              "internalType": "uint48",
+              "internalType": "enum ITradingStorage.ContractsVersion",
+              "name": "contractsVersion",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint40",
               "name": "__placeholder",
-              "type": "uint48"
+              "type": "uint40"
             }
           ],
           "internalType": "struct ITradingStorage.TradeInfo[]",
@@ -5663,14 +5679,14 @@
               "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "startLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "endLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
               "internalType": "uint24",
@@ -5879,14 +5895,14 @@
               "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "startLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
-              "internalType": "uint64",
+              "internalType": "uint40",
               "name": "endLiqThresholdP",
-              "type": "uint64"
+              "type": "uint40"
             },
             {
               "internalType": "uint24",
@@ -6326,9 +6342,14 @@
               "type": "uint48"
             },
             {
-              "internalType": "uint48",
+              "internalType": "enum ITradingStorage.ContractsVersion",
+              "name": "contractsVersion",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint40",
               "name": "__placeholder",
-              "type": "uint48"
+              "type": "uint40"
             }
           ],
           "internalType": "struct ITradingStorage.TradeInfo",
@@ -6413,7 +6434,7 @@
       ],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x9f30b640"
+      "signature": "0xb857d386"
     },
     {
       "inputs": [
@@ -6545,6 +6566,37 @@
           "type": "tuple"
         },
         {
+          "internalType": "uint16",
+          "name": "_maxSlippageP",
+          "type": "uint16"
+        }
+      ],
+      "name": "updateTradeMaxClosingSlippageP",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x07d426fd"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Id",
+          "name": "_tradeId",
+          "type": "tuple"
+        },
+        {
           "internalType": "uint120",
           "name": "_collateralAmount",
           "type": "uint120"
@@ -6558,13 +6610,18 @@
           "internalType": "uint64",
           "name": "_openPrice",
           "type": "uint64"
+        },
+        {
+          "internalType": "bool",
+          "name": "_refreshLiquidationParams",
+          "type": "bool"
         }
       ],
       "name": "updateTradePosition",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x7281d8f8"
+      "signature": "0x72570e24"
     },
     {
       "inputs": [
@@ -6925,11 +6982,6 @@
     {
       "inputs": [],
       "name": "WrongLeverage",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "WrongOrderType",
       "type": "error"
     },
     {
@@ -7806,13 +7858,18 @@
           "internalType": "uint32",
           "name": "_index",
           "type": "uint32"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_expectedPrice",
+          "type": "uint64"
         }
       ],
       "name": "closeTradeMarket",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xbdb340cd"
+      "signature": "0x36ce736b"
     },
     {
       "inputs": [
@@ -7830,13 +7887,18 @@
           "internalType": "uint24",
           "name": "_leverageDelta",
           "type": "uint24"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_expectedPrice",
+          "type": "uint64"
         }
       ],
       "name": "decreasePositionSize",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x69f6bde1"
+      "signature": "0xa7cac572"
     },
     {
       "inputs": [
@@ -8273,6 +8335,25 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x52d029d2"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint16",
+          "name": "_maxSlippageP",
+          "type": "uint16"
+        }
+      ],
+      "name": "updateMaxClosingSlippageP",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x9e8433d0"
     },
     {
       "inputs": [
@@ -9431,6 +9512,356 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0xcbc8e6f2"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Id",
+          "name": "_tradeId",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum ITradingStorage.PendingOrderType",
+          "name": "_orderType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_open",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_high",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_low",
+          "type": "uint64"
+        }
+      ],
+      "name": "validateTriggerCloseOrderCallback",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint16",
+              "name": "pairIndex",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint24",
+              "name": "leverage",
+              "type": "uint24"
+            },
+            {
+              "internalType": "bool",
+              "name": "long",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isOpen",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint8",
+              "name": "collateralIndex",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ITradingStorage.TradeType",
+              "name": "tradeType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint120",
+              "name": "collateralAmount",
+              "type": "uint120"
+            },
+            {
+              "internalType": "uint64",
+              "name": "openPrice",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "tp",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "sl",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint192",
+              "name": "__placeholder",
+              "type": "uint192"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Trade",
+          "name": "t",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum ITradingCallbacks.CancelReason",
+          "name": "cancelReason",
+          "type": "uint8"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "positionSizeCollateral",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "gnsPriceCollateral",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "profitP",
+              "type": "int256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "executionPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "liqPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amountSentToTrader",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reward1",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reward2",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reward3",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint128",
+              "name": "collateralPrecisionDelta",
+              "type": "uint128"
+            },
+            {
+              "internalType": "uint256",
+              "name": "collateralPriceUsd",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bool",
+              "name": "exactExecution",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint256",
+              "name": "closingFeeCollateral",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "triggerFeeCollateral",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "collateralLeftInStorage",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct ITradingCallbacks.Values",
+          "name": "v",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceImpactP",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x85ea3c78"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Id",
+          "name": "_tradeId",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum ITradingStorage.PendingOrderType",
+          "name": "_orderType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_open",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_high",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_low",
+          "type": "uint64"
+        }
+      ],
+      "name": "validateTriggerOpenOrderCallback",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint16",
+              "name": "pairIndex",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint24",
+              "name": "leverage",
+              "type": "uint24"
+            },
+            {
+              "internalType": "bool",
+              "name": "long",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isOpen",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint8",
+              "name": "collateralIndex",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ITradingStorage.TradeType",
+              "name": "tradeType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint120",
+              "name": "collateralAmount",
+              "type": "uint120"
+            },
+            {
+              "internalType": "uint64",
+              "name": "openPrice",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "tp",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "sl",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint192",
+              "name": "__placeholder",
+              "type": "uint192"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Trade",
+          "name": "t",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum ITradingCallbacks.CancelReason",
+          "name": "cancelReason",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceImpactP",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceAfterImpact",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "exactExecution",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xa96ae63b"
     },
     {
       "inputs": [],
@@ -10679,6 +11110,38 @@
               "internalType": "bool",
               "name": "useBorrowingFees",
               "type": "bool"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint40",
+                  "name": "maxLiqSpreadP",
+                  "type": "uint40"
+                },
+                {
+                  "internalType": "uint40",
+                  "name": "startLiqThresholdP",
+                  "type": "uint40"
+                },
+                {
+                  "internalType": "uint40",
+                  "name": "endLiqThresholdP",
+                  "type": "uint40"
+                },
+                {
+                  "internalType": "uint24",
+                  "name": "startLeverage",
+                  "type": "uint24"
+                },
+                {
+                  "internalType": "uint24",
+                  "name": "endLeverage",
+                  "type": "uint24"
+                }
+              ],
+              "internalType": "struct IPairsStorage.GroupLiquidationParams",
+              "name": "liquidationParams",
+              "type": "tuple"
             }
           ],
           "internalType": "struct IBorrowingFees.LiqPriceInput",
@@ -10696,7 +11159,7 @@
       ],
       "stateMutability": "view",
       "type": "function",
-      "signature": "0xea122fd8"
+      "signature": "0x61ddacb0"
     },
     {
       "inputs": [
@@ -11012,11 +11475,6 @@
     },
     {
       "inputs": [],
-      "name": "T",
-      "type": "error"
-    },
-    {
-      "inputs": [],
       "name": "TransferAndCallToOracleFailed",
       "type": "error"
     },
@@ -11024,34 +11482,6 @@
       "inputs": [],
       "name": "WrongCollateralUsdDecimals",
       "type": "error"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "bytes32",
-          "name": "id",
-          "type": "bytes32"
-        }
-      ],
-      "name": "ChainlinkFulfilled",
-      "type": "event",
-      "signature": "0x7cc135e0cebb02c3480ae5d74d377283180a2601f8f644edf7987b009316c63a"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "bytes32",
-          "name": "id",
-          "type": "bytes32"
-        }
-      ],
-      "name": "ChainlinkRequested",
-      "type": "event",
-      "signature": "0xb5e6e01e79f91267dc17b4e6314d5d4d03593d2ceee0fbb452b750bd70ea5af9"
     },
     {
       "anonymous": false,
@@ -11363,15 +11793,27 @@
         },
         {
           "indexed": true,
-          "internalType": "address",
-          "name": "trader",
-          "type": "address"
-        },
-        {
-          "indexed": true,
           "internalType": "uint256",
           "name": "pairIndex",
           "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct ITradingStorage.Id",
+          "name": "tradeId",
+          "type": "tuple"
         },
         {
           "components": [
@@ -11430,7 +11872,7 @@
       ],
       "name": "PriceRequested",
       "type": "event",
-      "signature": "0x64ef5f525ba1978b433275b3e10998a2fac9ccad2c78aa723bb841fe527beb3b"
+      "signature": "0x59fd16e7bbed6457d473d57a799cffde3ff43e27a3a87479a5a431b4801f754f"
     },
     {
       "anonymous": false,
@@ -11885,14 +12327,26 @@
           "type": "uint8"
         },
         {
-          "internalType": "address",
-          "name": "_trader",
-          "type": "address"
-        },
-        {
           "internalType": "uint16",
           "name": "_pairIndex",
           "type": "uint16"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Id",
+          "name": "_tradeId",
+          "type": "tuple"
         },
         {
           "components": [
@@ -11931,7 +12385,7 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x10d86d65"
+      "signature": "0x7e156b8c"
     },
     {
       "inputs": [
