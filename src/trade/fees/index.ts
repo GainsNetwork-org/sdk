@@ -4,7 +4,8 @@ export const getClosingFee = (
   posDai: number,
   leverage: number,
   pairIndex: PairIndex,
-  pairFee: Fee | undefined
+  pairFee: Fee | undefined,
+  collateralPriceUsd?: number
 ): number => {
   if (
     posDai === undefined ||
@@ -15,9 +16,17 @@ export const getClosingFee = (
     return 0;
   }
 
-  const { closeFeeP, triggerOrderFeeP } = pairFee;
+  const { closeFeeP, triggerOrderFeeP, minPositionSizeUsd } = pairFee;
 
-  return (closeFeeP + triggerOrderFeeP) * posDai * leverage;
+  return (
+    (closeFeeP + triggerOrderFeeP) *
+    Math.max(
+      collateralPriceUsd && collateralPriceUsd > 0
+        ? minPositionSizeUsd / collateralPriceUsd
+        : 0,
+      posDai * leverage
+    )
+  );
 };
 
 export * from "./borrowing";
