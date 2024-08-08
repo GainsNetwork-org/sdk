@@ -10,6 +10,7 @@ import { getSpreadP } from "./spread";
 export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
   liquidationParams: LiquidationParams | undefined;
   pairSpreadP: number | undefined;
+  collateralPriceUsd: number | undefined;
 };
 
 export const getLiquidationPrice = (
@@ -22,7 +23,8 @@ export const getLiquidationPrice = (
     trade.collateralAmount,
     trade.leverage,
     trade.pairIndex,
-    fee
+    fee,
+    context.collateralPriceUsd
   );
   const borrowingFee = getBorrowingFee(
     trade.collateralAmount * trade.leverage,
