@@ -10,6 +10,7 @@ import { getSpreadP } from "./spread";
 export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
   liquidationParams: LiquidationParams | undefined;
   pairSpreadP: number | undefined;
+  collateralPriceUsd: number | undefined;
 };
 
 export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
