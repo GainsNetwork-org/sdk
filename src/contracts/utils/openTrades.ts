@@ -171,6 +171,8 @@ const _prepareTradeContainer = (
     lastOiUpdateTs: parseFloat(tradeInfo.lastOiUpdateTs),
     collateralPriceUsd:
       parseFloat(tradeInfo.collateralPriceUsd.toString()) / 1e8,
+    contractsVersion: parseInt(tradeInfo.contractsVersion.toString()),
+    lastPosIncreaseBlock: parseInt(tradeInfo.lastPosIncreaseBlock.toString()),
   },
   liquidationParams: {
     maxLiqSpreadP:

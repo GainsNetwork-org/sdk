@@ -40,6 +40,8 @@ export type TradeInfo = {
   maxSlippageP: number;
   lastOiUpdateTs: number;
   collateralPriceUsd: number;
+  contractsVersion: number;
+  lastPosIncreaseBlock: number;
 };
 
 export type LiquidationParams = {

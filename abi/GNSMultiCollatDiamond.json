@@ -3661,7 +3661,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "_createdBlock",
+          "name": "_lastPosIncreaseBlock",
           "type": "uint256"
         },
         {
@@ -4318,7 +4318,7 @@
         {
           "indexed": false,
           "internalType": "bool",
-          "name": "refreshLiquidationParams",
+          "name": "isPartialIncrease",
           "type": "bool"
         }
       ],
@@ -4472,9 +4472,14 @@
               "type": "uint8"
             },
             {
-              "internalType": "uint40",
+              "internalType": "uint32",
+              "name": "lastPosIncreaseBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint8",
               "name": "__placeholder",
-              "type": "uint40"
+              "type": "uint8"
             }
           ],
           "indexed": false,
@@ -4518,7 +4523,7 @@
       ],
       "name": "TradeStored",
       "type": "event",
-      "signature": "0xb40b87d57025355f7877bcb0b13819afb13b4ce2a1bf3a1795af7109d99ab3a9"
+      "signature": "0xb4c8599e992aeeb8f86e02eaee1061646ddf10a354b91f1daa776eb4595387a3"
     },
     {
       "anonymous": false,
@@ -4819,9 +4824,14 @@
               "type": "uint8"
             },
             {
-              "internalType": "uint40",
+              "internalType": "uint32",
+              "name": "lastPosIncreaseBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint8",
               "name": "__placeholder",
-              "type": "uint40"
+              "type": "uint8"
             }
           ],
           "internalType": "struct ITradingStorage.TradeInfo[]",
@@ -5580,9 +5590,14 @@
               "type": "uint8"
             },
             {
-              "internalType": "uint40",
+              "internalType": "uint32",
+              "name": "lastPosIncreaseBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint8",
               "name": "__placeholder",
-              "type": "uint40"
+              "type": "uint8"
             }
           ],
           "internalType": "struct ITradingStorage.TradeInfo",
@@ -5642,9 +5657,14 @@
               "type": "uint8"
             },
             {
-              "internalType": "uint40",
+              "internalType": "uint32",
+              "name": "lastPosIncreaseBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint8",
               "name": "__placeholder",
-              "type": "uint40"
+              "type": "uint8"
             }
           ],
           "internalType": "struct ITradingStorage.TradeInfo[]",
@@ -6347,9 +6367,14 @@
               "type": "uint8"
             },
             {
-              "internalType": "uint40",
+              "internalType": "uint32",
+              "name": "lastPosIncreaseBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint8",
               "name": "__placeholder",
-              "type": "uint40"
+              "type": "uint8"
             }
           ],
           "internalType": "struct ITradingStorage.TradeInfo",
@@ -6434,7 +6459,7 @@
       ],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xb857d386"
+      "signature": "0xd7ec0787"
     },
     {
       "inputs": [
@@ -6613,7 +6638,7 @@
         },
         {
           "internalType": "bool",
-          "name": "_refreshLiquidationParams",
+          "name": "_isPartialIncrease",
           "type": "bool"
         }
       ],
