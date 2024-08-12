@@ -308,3 +308,5 @@ export const delistedPairIxs = new Set([
 export const delistedGroupsIxs = new Set([6, 7]);
 
 export const DEFAULT_PROTECTION_CLOSE_FACTOR = 1;
+
+export const DEFAULT_CUMULATIVE_FACTOR = 1;

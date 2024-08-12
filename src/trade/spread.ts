@@ -5,7 +5,10 @@ import {
   PairDepth,
 } from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
-import { DEFAULT_PROTECTION_CLOSE_FACTOR } from "../constants";
+import {
+  DEFAULT_CUMULATIVE_FACTOR,
+  DEFAULT_PROTECTION_CLOSE_FACTOR,
+} from "../constants";
 import { ContractsVersion } from "../contracts/types";
 
 export type SpreadContext = {
@@ -16,8 +19,8 @@ export type SpreadContext = {
   cumulativeFactor?: number;
   createdBlock?: number;
   liquidationParams?: LiquidationParams | undefined;
-  currentBlock: number | undefined;
-  contractsVersion: ContractsVersion | undefined;
+  currentBlock?: number | undefined;
+  contractsVersion?: ContractsVersion | undefined;
 };
 
 export const getProtectionCloseFactor = (
@@ -46,6 +49,16 @@ export const getProtectionCloseFactor = (
   }
 
   return DEFAULT_PROTECTION_CLOSE_FACTOR;
+};
+
+export const getCumulativeFactor = (
+  spreadCtx: SpreadContext | undefined
+): number => {
+  if (spreadCtx === undefined || spreadCtx.cumulativeFactor === undefined) {
+    return DEFAULT_CUMULATIVE_FACTOR;
+  }
+
+  return spreadCtx.cumulativeFactor;
 };
 
 export const getSpreadWithPriceImpactP = (
@@ -91,13 +104,20 @@ export const getSpreadWithPriceImpactP = (
     );
   }
 
-  if (!onePercentDepth || activeOi === undefined || collateral === undefined || spreadCtx?.cumulativeFactor === undefined) {
+  if (
+    !onePercentDepth ||
+    activeOi === undefined ||
+    collateral === undefined ||
+    spreadCtx?.cumulativeFactor === undefined
+  ) {
     return pairSpreadP / 2;
   }
 
   return (
     getSpreadP(pairSpreadP) +
-    (((activeOi * spreadCtx.cumulativeFactor) + (collateral * leverage) / 2) / onePercentDepth / 100) *
+    ((activeOi * getCumulativeFactor(spreadCtx) + (collateral * leverage) / 2) /
+      onePercentDepth /
+      100) *
       getProtectionCloseFactor(spreadCtx)
   );
 };
