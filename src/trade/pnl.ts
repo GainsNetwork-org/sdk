@@ -7,7 +7,7 @@ import {
   TradeInitialAccFees,
 } from "./types";
 import { getLiqPnlThresholdP } from "./liquidation";
-import { ContractsVersion } from "src/contracts/types";
+import { ContractsVersion } from "../contracts/types";
 
 export type GetPnlContext = GetBorrowingFeeContext & {
   fee: Fee | undefined;
