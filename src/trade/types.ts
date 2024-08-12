@@ -196,6 +196,12 @@ export type TraderFeeTiers = {
   expiredPoints: number[];
 };
 
+export type PairFactor = {
+  cumulativeFactor: number;
+  protectionCloseFactor: number;
+  protectionCloseFactorBlocks: number;
+};
+
 export enum PendingOrderType {
   MARKET_OPEN,
   MARKET_CLOSE,
