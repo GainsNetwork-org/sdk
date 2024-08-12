@@ -5,7 +5,10 @@ import {
   PairDepth,
 } from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
-import { DEFAULT_PROTECTION_CLOSE_FACTOR } from "../constants";
+import {
+  DEFAULT_CUMULATIVE_FACTOR,
+  DEFAULT_PROTECTION_CLOSE_FACTOR,
+} from "../constants";
 import { ContractsVersion } from "../contracts/types";
 
 export type SpreadContext = {
@@ -13,10 +16,11 @@ export type SpreadContext = {
   isPnlPositive?: boolean;
   protectionCloseFactor?: number;
   protectionCloseFactorBlocks?: number;
+  cumulativeFactor?: number;
   createdBlock?: number;
   liquidationParams?: LiquidationParams | undefined;
-  currentBlock: number | undefined;
-  contractsVersion: ContractsVersion | undefined;
+  currentBlock?: number | undefined;
+  contractsVersion?: ContractsVersion | undefined;
 };
 
 export const getProtectionCloseFactor = (
@@ -45,6 +49,22 @@ export const getProtectionCloseFactor = (
   }
 
   return DEFAULT_PROTECTION_CLOSE_FACTOR;
+};
+
+export const getCumulativeFactor = (
+  spreadCtx: SpreadContext | undefined
+): number => {
+  if (spreadCtx === undefined || spreadCtx.cumulativeFactor === undefined) {
+    return DEFAULT_CUMULATIVE_FACTOR;
+  }
+
+  return spreadCtx.cumulativeFactor;
+};
+
+export const getLegacyFactor = (
+  spreadCtx: SpreadContext | undefined
+): number => {
+  return spreadCtx?.contractsVersion === ContractsVersion.BEFORE_V9_2 ? 1 : 2;
 };
 
 export const getSpreadWithPriceImpactP = (
@@ -96,7 +116,10 @@ export const getSpreadWithPriceImpactP = (
 
   return (
     getSpreadP(pairSpreadP) +
-    ((activeOi + (collateral * leverage) / 2) / onePercentDepth / 100 / 2) *
+    ((activeOi * getCumulativeFactor(spreadCtx) + (collateral * leverage) / 2) /
+      onePercentDepth /
+      100 /
+      getLegacyFactor(spreadCtx)) *
       getProtectionCloseFactor(spreadCtx)
   );
 };
