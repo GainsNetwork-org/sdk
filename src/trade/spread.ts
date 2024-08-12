@@ -110,12 +110,7 @@ export const getSpreadWithPriceImpactP = (
     );
   }
 
-  if (
-    !onePercentDepth ||
-    activeOi === undefined ||
-    collateral === undefined ||
-    spreadCtx?.cumulativeFactor === undefined
-  ) {
+  if (!onePercentDepth || activeOi === undefined || collateral === undefined) {
     return pairSpreadP / 2;
   }
 
