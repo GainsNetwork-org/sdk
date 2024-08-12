@@ -6,7 +6,7 @@ import {
 } from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
 import { DEFAULT_PROTECTION_CLOSE_FACTOR } from "../constants";
-import { ContractsVersion } from "src/contracts/types";
+import { ContractsVersion } from "../contracts/types";
 
 export type SpreadContext = {
   isOpen?: boolean;
