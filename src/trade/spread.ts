@@ -6,6 +6,7 @@ import {
 } from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
 import { DEFAULT_PROTECTION_CLOSE_FACTOR } from "../constants";
+import { ContractsVersion } from "src/contracts/types";
 
 export type SpreadContext = {
   isOpen?: boolean;
@@ -15,6 +16,7 @@ export type SpreadContext = {
   createdBlock?: number;
   liquidationParams?: LiquidationParams | undefined;
   currentBlock: number | undefined;
+  contractsVersion: ContractsVersion | undefined;
 };
 
 export const getProtectionCloseFactor = (
@@ -22,6 +24,7 @@ export const getProtectionCloseFactor = (
 ): number => {
   if (
     spreadCtx === undefined ||
+    spreadCtx.contractsVersion === ContractsVersion.BEFORE_V9_2 ||
     spreadCtx.isOpen === undefined ||
     spreadCtx.isPnlPositive === undefined ||
     spreadCtx.protectionCloseFactor === undefined ||
@@ -61,8 +64,7 @@ export const getSpreadWithPriceImpactP = (
   // No spread or price impact when closing pre-v9.2 trades
   if (
     spreadCtx?.isOpen === false &&
-    spreadCtx?.liquidationParams !== undefined &&
-    spreadCtx.liquidationParams.maxLiqSpreadP === 0
+    spreadCtx?.contractsVersion === ContractsVersion.BEFORE_V9_2
   ) {
     return 0;
   }
