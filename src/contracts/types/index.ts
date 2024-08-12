@@ -21,6 +21,11 @@ export enum CollateralTypes {
   USDC = "USDC",
 }
 
+export enum ContractsVersion {
+  BEFORE_V9_2,
+  V9_2
+}
+
 export type ContractAddressList = Record<
   string,
   Partial<Record<CollateralTypes | "global", Partial<ContractAddresses>>>
