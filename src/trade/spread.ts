@@ -13,6 +13,7 @@ export type SpreadContext = {
   isPnlPositive?: boolean;
   protectionCloseFactor?: number;
   protectionCloseFactorBlocks?: number;
+  cumulativeFactor?: number;
   createdBlock?: number;
   liquidationParams?: LiquidationParams | undefined;
   currentBlock: number | undefined;
@@ -90,13 +91,13 @@ export const getSpreadWithPriceImpactP = (
     );
   }
 
-  if (!onePercentDepth || activeOi === undefined || collateral === undefined) {
+  if (!onePercentDepth || activeOi === undefined || collateral === undefined || spreadCtx?.cumulativeFactor === undefined) {
     return pairSpreadP / 2;
   }
 
   return (
     getSpreadP(pairSpreadP) +
-    ((activeOi + (collateral * leverage) / 2) / onePercentDepth / 100 / 2) *
+    (((activeOi * spreadCtx.cumulativeFactor) + (collateral * leverage) / 2) / onePercentDepth / 100) *
       getProtectionCloseFactor(spreadCtx)
   );
 };
