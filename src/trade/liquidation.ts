@@ -6,7 +6,7 @@ import {
 } from "./fees";
 import { Fee, LiquidationParams, Trade } from "./types";
 import { getSpreadP } from "./spread";
-import { ContractsVersion } from "src/contracts/types";
+import { ContractsVersion } from "../contracts/types";
 
 export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
   liquidationParams: LiquidationParams | undefined;
