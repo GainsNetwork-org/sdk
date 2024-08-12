@@ -6,11 +6,13 @@ import {
 } from "./fees";
 import { Fee, LiquidationParams, Trade } from "./types";
 import { getSpreadP } from "./spread";
+import { ContractsVersion } from "src/contracts/types";
 
 export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
   liquidationParams: LiquidationParams | undefined;
   pairSpreadP: number | undefined;
   collateralPriceUsd: number | undefined;
+  contractsVersion: ContractsVersion | undefined;
 };
 
 export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
@@ -38,7 +40,8 @@ export const getLiquidationPrice = (
   );
   const liqThresholdP = getLiqPnlThresholdP(
     context.liquidationParams,
-    trade.leverage
+    trade.leverage,
+    context.contractsVersion
   );
 
   let liqPriceDistance =
@@ -48,6 +51,7 @@ export const getLiquidationPrice = (
     trade.leverage;
 
   if (
+    context?.contractsVersion === ContractsVersion.V9_2 &&
     context?.liquidationParams?.maxLiqSpreadP !== undefined &&
     context.liquidationParams.maxLiqSpreadP > 0
   ) {
@@ -67,11 +71,13 @@ export const getLiquidationPrice = (
 
 export const getLiqPnlThresholdP = (
   liquidationParams: LiquidationParams | undefined,
-  leverage: number | undefined
+  leverage: number | undefined,
+  contractsVersion: ContractsVersion | undefined
 ): number => {
   if (
     liquidationParams === undefined ||
     leverage === undefined ||
+    contractsVersion === ContractsVersion.BEFORE_V9_2 ||
     liquidationParams.maxLiqSpreadP === 0 ||
     liquidationParams.startLiqThresholdP === 0 ||
     liquidationParams.endLiqThresholdP === 0 ||

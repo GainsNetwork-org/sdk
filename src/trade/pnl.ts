@@ -7,11 +7,13 @@ import {
   TradeInitialAccFees,
 } from "./types";
 import { getLiqPnlThresholdP } from "./liquidation";
+import { ContractsVersion } from "src/contracts/types";
 
 export type GetPnlContext = GetBorrowingFeeContext & {
   fee: Fee | undefined;
   maxGainP: number | undefined;
   collateralPriceUsd: number | undefined;
+  contractsVersion: ContractsVersion | undefined;
   feeMultiplier: number | undefined;
 };
 
@@ -54,7 +56,8 @@ export const getPnl = (
   // Can be liquidated
   if (
     pnlPercentage <=
-    getLiqPnlThresholdP(liquidationParams, leverage) * -100
+    getLiqPnlThresholdP(liquidationParams, leverage, context.contractsVersion) *
+      -100
   ) {
     pnlPercentage = -100;
   } else {
