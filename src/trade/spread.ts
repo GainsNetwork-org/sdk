@@ -61,6 +61,12 @@ export const getCumulativeFactor = (
   return spreadCtx.cumulativeFactor;
 };
 
+export const getLegacyFactor = (
+  spreadCtx: SpreadContext | undefined
+): number => {
+  return spreadCtx?.contractsVersion === ContractsVersion.BEFORE_V9_2 ? 1 : 2;
+};
+
 export const getSpreadWithPriceImpactP = (
   pairSpreadP: number,
   buy: boolean,
@@ -117,7 +123,8 @@ export const getSpreadWithPriceImpactP = (
     getSpreadP(pairSpreadP) +
     ((activeOi * getCumulativeFactor(spreadCtx) + (collateral * leverage) / 2) /
       onePercentDepth /
-      100) *
+      100 /
+      getLegacyFactor(spreadCtx)) *
       getProtectionCloseFactor(spreadCtx)
   );
 };
