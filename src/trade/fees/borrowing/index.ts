@@ -6,6 +6,7 @@ export type GetBorrowingFeeContext = {
   groups: BorrowingFee.Group[];
   pairs: BorrowingFee.Pair[];
   openInterest: OpenInterest;
+  feeMultiplier: number | undefined;
 };
 
 export const getBorrowingFee = (

@@ -5,7 +5,8 @@ export const getClosingFee = (
   leverage: number,
   pairIndex: PairIndex,
   pairFee: Fee | undefined,
-  collateralPriceUsd?: number
+  collateralPriceUsd?: number,
+  feeMultiplier: number = 1,
 ): number => {
   if (
     posDai === undefined ||
@@ -19,7 +20,7 @@ export const getClosingFee = (
   const { closeFeeP, triggerOrderFeeP, minPositionSizeUsd } = pairFee;
 
   return (
-    (closeFeeP + triggerOrderFeeP) *
+    (closeFeeP + triggerOrderFeeP) * feeMultiplier *
     Math.max(
       collateralPriceUsd && collateralPriceUsd > 0
         ? minPositionSizeUsd / collateralPriceUsd
