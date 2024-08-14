@@ -15,9 +15,6 @@ export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
   contractsVersion: ContractsVersion | undefined;
 };
 
-export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
-  collateralPriceUsd: number | undefined;
-};
 export const getLiquidationPrice = (
   trade: Trade,
   fee: Fee,
