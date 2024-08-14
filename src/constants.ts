@@ -269,6 +269,7 @@ export const getAssetClassFromGroupIndex = (
 ): string | undefined => {
   switch (groupIndex) {
     case 0:
+    case 10:
       return CRYPTO;
     case 1:
     case 8:

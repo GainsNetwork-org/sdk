@@ -5,6 +5,7 @@ export type GetPnlContext = GetBorrowingFeeContext & {
   fee: Fee | undefined;
   maxGainP: number | undefined;
   collateralPriceUsd: number | undefined;
+  feeMultiplier: number | undefined;
 };
 
 export const getPnl = (
