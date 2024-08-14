@@ -51,8 +51,7 @@ export const getPnl = (
       trade.leverage,
       trade.pairIndex,
       fee,
-      context.collateralPriceUsd,
-      context.feeMultiplier
+      context.collateralPriceUsd
     );
     pnlPercentage = (pnlCollat / posCollat) * 100;
   }

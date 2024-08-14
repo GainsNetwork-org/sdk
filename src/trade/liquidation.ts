@@ -20,8 +20,7 @@ export const getLiquidationPrice = (
     trade.leverage,
     trade.pairIndex,
     fee,
-    context.collateralPriceUsd,
-    context.feeMultiplier
+    context.collateralPriceUsd
   );
   const borrowingFee = getBorrowingFee(
     trade.collateralAmount * trade.leverage,
