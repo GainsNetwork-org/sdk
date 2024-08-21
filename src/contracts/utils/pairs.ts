@@ -395,4 +395,11 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.UXLINKUSD]: "UXLINK to US Dollar",
   [PairIndex.AVAILUSD]: "Avail to US Dollar",
   [PairIndex.BANANAUSD]: "Banana Gun to US Dollar",
+  [PairIndex.RAREUSD]: "SuperRare to US Dollar",
+  [PairIndex.SYSUSD]: "Syscoin to US Dollar",
+  [PairIndex.NMRUSD]: "Numeraire to US Dollar",
+  [PairIndex.RSRUSD]: "Reserve Rights to US Dollar",
+  [PairIndex.SYNUSD]: "Synapse to US Dollar",
+  [PairIndex.AUCTIONUSD]: "Bounce to US Dollar",
+  [PairIndex.ALICEUSD]: "My Neighbor Alice to US Dollar",
 };
