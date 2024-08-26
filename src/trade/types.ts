@@ -499,4 +499,11 @@ export enum PairIndex {
   UXLINKUSD,
   AVAILUSD,
   BANANAUSD,
+  RAREUSD,
+  SYSUSD,
+  NMRUSD,
+  RSRUSD,
+  SYNUSD,
+  AUCTIONUSD,
+  ALICEUSD,
 }
