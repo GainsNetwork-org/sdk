@@ -37,8 +37,7 @@ export const getLiquidationPrice = (
   );
   const liqThresholdP = getLiqPnlThresholdP(
     context.liquidationParams,
-    trade.leverage,
-    context.contractsVersion
+    trade.leverage
   );
 
   let liqPriceDistance =
@@ -48,7 +47,8 @@ export const getLiquidationPrice = (
     trade.leverage;
 
   if (
-    context?.contractsVersion === ContractsVersion.V9_2 &&
+    context?.contractsVersion !== undefined &&
+    context.contractsVersion >= ContractsVersion.V9_2 &&
     context?.liquidationParams?.maxLiqSpreadP !== undefined &&
     context.liquidationParams.maxLiqSpreadP > 0
   ) {
@@ -68,13 +68,11 @@ export const getLiquidationPrice = (
 
 export const getLiqPnlThresholdP = (
   liquidationParams: LiquidationParams | undefined,
-  leverage: number | undefined,
-  contractsVersion: ContractsVersion | undefined
+  leverage: number | undefined
 ): number => {
   if (
     liquidationParams === undefined ||
     leverage === undefined ||
-    contractsVersion === ContractsVersion.BEFORE_V9_2 ||
     liquidationParams.maxLiqSpreadP === 0 ||
     liquidationParams.startLiqThresholdP === 0 ||
     liquidationParams.endLiqThresholdP === 0 ||

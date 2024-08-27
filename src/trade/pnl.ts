@@ -56,8 +56,7 @@ export const getPnl = (
   // Can be liquidated
   if (
     pnlPercentage <=
-    getLiqPnlThresholdP(liquidationParams, leverage, context.contractsVersion) *
-      -100
+    getLiqPnlThresholdP(liquidationParams, leverage) * -100
   ) {
     pnlPercentage = -100;
   } else {
