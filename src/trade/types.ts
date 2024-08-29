@@ -506,4 +506,9 @@ export enum PairIndex {
   SYNUSD,
   AUCTIONUSD,
   ALICEUSD,
+  SUNUSD,
+  TRBUSD,
+  DOGSUSD,
+  SSVUSD,
+  PONKEUSD,
 }

@@ -402,4 +402,9 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.SYNUSD]: "Synapse to US Dollar",
   [PairIndex.AUCTIONUSD]: "Bounce to US Dollar",
   [PairIndex.ALICEUSD]: "My Neighbor Alice to US Dollar",
+  [PairIndex.SUNUSD]: "Sun to US Dollar",
+  [PairIndex.TRBUSD]: "Tellor tributes to US Dollar",
+  [PairIndex.DOGSUSD]: "DOGS to US Dollar",
+  [PairIndex.SSVUSD]: "ssv.network to US Dollar",
+  [PairIndex.PONKEUSD]: "Ponke to US Dollar",
 };

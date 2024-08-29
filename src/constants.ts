@@ -269,6 +269,11 @@ export const pairs = {
   "SYN/USD": CRYPTO,
   "AUCTION/USD": CRYPTO,
   "ALICE/USD": CRYPTO,
+  "SUN/USD": CRYPTO,
+  "TRB/USD": CRYPTO,
+  "DOGS/USD": CRYPTO,
+  "SSV/USD": CRYPTO,
+  "PONKE/USD": CRYPTO,
 };
 
 export const getAssetClassFromGroupIndex = (
