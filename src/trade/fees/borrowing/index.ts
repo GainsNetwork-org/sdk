@@ -5,7 +5,6 @@ export type GetBorrowingFeeContext = {
   currentBlock: number;
   groups: BorrowingFee.Group[];
   pairs: BorrowingFee.Pair[];
-  openInterest: OpenInterest;
 };
 
 export const getBorrowingFee = (
@@ -15,12 +14,7 @@ export const getBorrowingFee = (
   initialAccFees: BorrowingFee.InitialAccFees,
   context: GetBorrowingFeeContext
 ): number => {
-  if (
-    !context.groups ||
-    !context.pairs ||
-    !context.openInterest ||
-    !context.pairs[pairIndex]
-  ) {
+  if (!context.groups || !context.pairs || !context.pairs[pairIndex]) {
     return 0;
   }
 
@@ -30,9 +24,13 @@ export const getBorrowingFee = (
 
   let fee = 0;
   if (!firstPairGroup || firstPairGroup.block > initialAccFees.block) {
+    const openInterest = pairs[pairIndex].oi;
     fee =
       (!firstPairGroup
-        ? getPairPendingAccFee(pairIndex, context.currentBlock, long, context)
+        ? getPairPendingAccFee(pairIndex, context.currentBlock, long, {
+            pairs,
+            openInterest,
+          })
         : long
         ? firstPairGroup.pairAccFeeLong
         : firstPairGroup.pairAccFeeShort) - initialAccFees.accPairFee;
@@ -181,13 +179,14 @@ const getPairGroupAccFeesDeltas = (
 
   let deltaGroup, deltaPair;
   if (i == pairGroups.length - 1) {
-    const { currentBlock, groups, pairs, openInterest } = context;
+    const { currentBlock, groups, pairs } = context;
+    const openInterest = pairs[pairIndex].oi;
     deltaGroup = getGroupPendingAccFee(group.groupIndex, currentBlock, long, {
       groups,
     });
     deltaPair = getPairPendingAccFee(pairIndex, currentBlock, long, {
       pairs,
-      openInterest: openInterest,
+      openInterest,
     });
   } else {
     const nextGroup = pairGroups[i + 1];

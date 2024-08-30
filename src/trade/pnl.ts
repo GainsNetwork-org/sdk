@@ -1,10 +1,19 @@
 import { getBorrowingFee, GetBorrowingFeeContext, getClosingFee } from "./fees";
-import { Fee, Trade, TradeInfo, TradeInitialAccFees } from "./types";
+import {
+  Fee,
+  LiquidationParams,
+  Trade,
+  TradeInfo,
+  TradeInitialAccFees,
+} from "./types";
+import { getLiqPnlThresholdP } from "./liquidation";
+import { ContractsVersion } from "../contracts/types";
 
 export type GetPnlContext = GetBorrowingFeeContext & {
   fee: Fee | undefined;
   maxGainP: number | undefined;
   collateralPriceUsd: number | undefined;
+  contractsVersion: ContractsVersion | undefined;
   feeMultiplier: number | undefined;
 };
 
@@ -13,6 +22,7 @@ export const getPnl = (
   trade: Trade,
   tradeInfo: TradeInfo,
   initialAccFees: TradeInitialAccFees,
+  liquidationParams: LiquidationParams,
   useFees: boolean,
   context: GetPnlContext
 ): number[] | undefined => {
@@ -44,7 +54,10 @@ export const getPnl = (
   let pnlPercentage = (pnlCollat / posCollat) * 100;
 
   // Can be liquidated
-  if (pnlPercentage <= -90) {
+  if (
+    pnlPercentage <=
+    getLiqPnlThresholdP(liquidationParams, leverage) * -100
+  ) {
     pnlPercentage = -100;
   } else {
     pnlCollat -= getClosingFee(
