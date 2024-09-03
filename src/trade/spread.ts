@@ -101,7 +101,7 @@ export const getSpreadWithPriceImpactP = (
 
   let activeOi = undefined;
 
-  if (oiWindowsSettings !== undefined && oiWindowsSettings?.windowsCount > 0) {
+  if (oiWindowsSettings !== undefined) {
     activeOi = getActiveOi(
       getCurrentOiWindowId(oiWindowsSettings),
       oiWindowsSettings.windowsCount,
