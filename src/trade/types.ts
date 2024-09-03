@@ -4,7 +4,7 @@ import {
   IPairsStorage,
 } from "../contracts/types/generated/GNSMultiCollatDiamond";
 import { BorrowingFee } from "./fees/borrowing";
-import { FeeTier, TraderInfo } from "./fees/tiers/types";
+import { FeeTier, TraderEnrollment, TraderInfo } from "./fees/tiers/types";
 
 export type PairIndexes = {
   [key: string]: PairIndex;
@@ -189,6 +189,7 @@ export type FeeTiers = {
 };
 
 export type TraderFeeTiers = {
+  traderEnrollment: TraderEnrollment;
   traderInfo: TraderInfo;
   inboundPoints: number;
   outboundPoints: number;

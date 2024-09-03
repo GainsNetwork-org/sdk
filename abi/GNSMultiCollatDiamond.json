@@ -2713,6 +2713,38 @@
           "type": "address"
         },
         {
+          "components": [
+            {
+              "internalType": "enum IFeeTiers.TraderEnrollmentStatus",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint248",
+              "name": "__placeholder",
+              "type": "uint248"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IFeeTiers.TraderEnrollment",
+          "name": "enrollment",
+          "type": "tuple"
+        }
+      ],
+      "name": "TraderEnrollmentUpdated",
+      "type": "event",
+      "signature": "0x2d222f8a9169a5d38b64fa1a56389af27712a1d7f1743022cdd8b466c27141eb"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "trader",
+          "type": "address"
+        },
+        {
           "indexed": true,
           "internalType": "uint32",
           "name": "day",
@@ -2976,6 +3008,38 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        }
+      ],
+      "name": "getTraderFeeTiersEnrollment",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "enum IFeeTiers.TraderEnrollmentStatus",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint248",
+              "name": "__placeholder",
+              "type": "uint248"
+            }
+          ],
+          "internalType": "struct IFeeTiers.TraderEnrollment",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x508cbfbe"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256[]",
           "name": "_groupIndices",
           "type": "uint256[]"
@@ -3063,6 +3127,37 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x944f577a"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_traders",
+          "type": "address[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum IFeeTiers.TraderEnrollmentStatus",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint248",
+              "name": "__placeholder",
+              "type": "uint248"
+            }
+          ],
+          "internalType": "struct IFeeTiers.TraderEnrollment[]",
+          "name": "_values",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "setTradersFeeTiersEnrollment",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x88f16bd1"
     },
     {
       "inputs": [
@@ -13100,6 +13195,26 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0xc4999547"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "data",
+          "type": "bytes[]"
+        }
+      ],
+      "name": "multicall",
+      "outputs": [
+        {
+          "internalType": "bytes[]",
+          "name": "results",
+          "type": "bytes[]"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xac9650d8"
     }
   ],
   "deployedBytecode": "",
