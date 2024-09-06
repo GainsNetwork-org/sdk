@@ -407,4 +407,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.DOGSUSD]: "DOGS to US Dollar",
   [PairIndex.SSVUSD]: "ssv.network to US Dollar",
   [PairIndex.PONKEUSD]: "Ponke to US Dollar",
+  [PairIndex.POLUSD]: "POL (ex-MATIC) to US Dollar",
+  [PairIndex.RDNTUSD]: "Radiant Capital to US Dollar",
+  [PairIndex.FLUXUSD]: "Flux to US Dollar",
+  [PairIndex.NEIROUSD]: "Neiro on ETH to US Dollar",
 };
