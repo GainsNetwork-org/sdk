@@ -511,4 +511,8 @@ export enum PairIndex {
   DOGSUSD,
   SSVUSD,
   PONKEUSD,
+  POLUSD,
+  RDNTUSD,
+  FLUXUSD,
+  NEIROUSD,
 }
