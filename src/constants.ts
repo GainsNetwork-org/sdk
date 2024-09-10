@@ -274,6 +274,10 @@ export const pairs = {
   "DOGS/USD": CRYPTO,
   "SSV/USD": CRYPTO,
   "PONKE/USD": CRYPTO,
+  "POL/USD": CRYPTO,
+  "RDNT/USD": CRYPTO,
+  "FLUX/USD": CRYPTO,
+  "NEIRO/USD": CRYPTO,
 };
 
 export const getAssetClassFromGroupIndex = (
