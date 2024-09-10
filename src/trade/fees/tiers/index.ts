@@ -1,5 +1,5 @@
 import { FeeTiers, TraderFeeTiers } from "../../types";
-import { FeeTier } from "./types";
+import { FeeTier, TraderEnrollmentStatus } from "./types";
 
 export const TRAILING_PERIOD_DAYS = 30;
 
@@ -42,7 +42,8 @@ export const computeFeeMultiplier = (
   traderFeeTiers: TraderFeeTiers
 ): { feeMultiplier: number; trailingPoints: number } => {
   const { currentDay, tiers } = feeTiers;
-  const { traderInfo, expiredPoints, lastDayUpdatedPoints } = traderFeeTiers;
+  const { traderInfo, expiredPoints, lastDayUpdatedPoints, traderEnrollment } =
+    traderFeeTiers;
   const { lastDayUpdated, trailingPoints } = traderInfo;
 
   let curTrailingPoints = trailingPoints;
@@ -63,7 +64,10 @@ export const computeFeeMultiplier = (
     }
   }
 
-  const feeMultiplier = getFeeMultiplier(curTrailingPoints, tiers);
+  const feeMultiplier =
+    traderEnrollment.status === TraderEnrollmentStatus.EXCLUDED
+      ? FEE_MULTIPLIER_SCALE
+      : getFeeMultiplier(curTrailingPoints, tiers);
 
   return {
     feeMultiplier,
