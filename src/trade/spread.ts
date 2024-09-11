@@ -54,7 +54,7 @@ export const getProtectionCloseFactor = (
 export const getCumulativeFactor = (
   spreadCtx: SpreadContext | undefined
 ): number => {
-  if (spreadCtx === undefined || spreadCtx.cumulativeFactor === undefined) {
+  if (spreadCtx === undefined || spreadCtx.cumulativeFactor === undefined || spreadCtx.cumulativeFactor === 0) {
     return DEFAULT_CUMULATIVE_FACTOR;
   }
 
