@@ -516,4 +516,6 @@ export enum PairIndex {
   RDNTUSD,
   FLUXUSD,
   NEIROUSD,
+  SUNDOGUSD,
+  CATUSD,
 }
