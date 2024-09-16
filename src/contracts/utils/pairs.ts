@@ -413,4 +413,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.NEIROUSD]: "Neiro on ETH to US Dollar",
   [PairIndex.SUNDOGUSD]: "Sundog to US Dollar",
   [PairIndex.CATUSD]: "Simon's Cat to US Dollar",
+  [PairIndex.BABYDOGEUSD]: "Baby Doge Coin to US Dollar",
 };
