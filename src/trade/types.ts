@@ -519,4 +519,9 @@ export enum PairIndex {
   SUNDOGUSD,
   CATUSD,
   BABYDOGEUSD,
+  REEFUSD,
+  CKBUSD,
+  CATIUSD,
+  LOOMUSD,
+  ZETAUSD,
 }
