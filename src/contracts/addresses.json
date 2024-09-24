@@ -49,5 +49,14 @@
       "gTokenOpenPnlFeed": "0x38e6cEFcE96bdB65D64Fce8f4736b3763A5F9eD2",
       "gToken": "0xb0C25646774Ad985B4f9ccD262623bA6D6F64677"
     }
+  },
+  "8453": {
+    "global": {
+      "gnsMultiCollatDiamond": "0x6cD5aC19a07518A8092eEFfDA4f1174C72704eeb"
+    },
+    "USDC": {
+      "gTokenOpenPnlFeed": "0xefA1C2753daD877Bb6531bBa9D9c589B5433Be37",
+      "gToken": "0xad20523A7dC37bAbc1CC74897E4977232b3D02e5"
+    }
   }
 }
