@@ -89,6 +89,7 @@ export type Pair = {
 export type TradeHistoryRecord = {
   action: string;
   address: string;
+  block: number;
   long: number;
   collateralPriceUsd: number;
   collateralIndex: number;
@@ -99,6 +100,7 @@ export type TradeHistoryRecord = {
   price: number;
   size: number;
   tx: string;
+  tradeIndex: number;
   collateralDelta: number | null;
   leverageDelta: number | null;
   marketPrice: number | null;
