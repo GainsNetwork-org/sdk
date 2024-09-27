@@ -526,4 +526,5 @@ export enum PairIndex {
   CATIUSD,
   LOOMUSD,
   ZETAUSD,
+  HMSTRUSD,
 }
