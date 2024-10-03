@@ -529,4 +529,6 @@ export enum PairIndex {
   HMSTRUSD,
   EIGENUSD,
   POLYXUSD,
+  MOODENGUSD,
+  MOTHERUSD,
 }
