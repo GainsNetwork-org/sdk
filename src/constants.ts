@@ -287,6 +287,8 @@ export const pairs = {
   "LOOM/USD": CRYPTO,
   "ZETA/USD": CRYPTO,
   "HMSTR/USD": CRYPTO,
+  "EIGEN/USD": CRYPTO,
+  "POLYX/USD": CRYPTO,
 };
 
 export const getAssetClassFromGroupIndex = (
