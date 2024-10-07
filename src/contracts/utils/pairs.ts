@@ -91,11 +91,13 @@ export const fetchFees = async (
 
     return fees.map(fee => {
       return {
-        openFeeP: parseFloat(fee.openFeeP.toString()) / 1e12,
-        closeFeeP: parseFloat(fee.closeFeeP.toString()) / 1e12,
-        triggerOrderFeeP: parseFloat(fee.triggerOrderFeeP.toString()) / 1e12,
-        minPositionSizeUsd:
-          parseFloat(fee.minPositionSizeUsd.toString()) / 1e18,
+        totalPositionSizeFeeP:
+          parseFloat(fee.totalPositionSizeFeeP.toString()) / 1e12,
+        totalLiqCollateralFeeP:
+          parseFloat(fee.totalLiqCollateralFeeP.toString()) / 1e12,
+        oraclePositionSizeFeeP:
+          parseFloat(fee.oraclePositionSizeFeeP.toString()) / 1e12,
+        minPositionSizeUsd: parseFloat(fee.minPositionSizeUsd.toString()) / 1e3,
       } as Fee;
     });
   } catch (error) {

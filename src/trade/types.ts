@@ -59,10 +59,18 @@ export type TradingGroup = {
 };
 
 export type Fee = {
-  openFeeP: number;
-  closeFeeP: number;
+  totalPositionSizeFeeP: number;
+  totalLiqCollateralFeeP: number;
+  oraclePositionSizeFeeP: number;
   minPositionSizeUsd: number;
+};
+
+export type GlobalTradeFeeParams = {
+  referralFeeP: number;
+  govFeeP: number;
   triggerOrderFeeP: number;
+  gnsOtcFeeP: number;
+  gTokenFeeP: number;
 };
 
 export type PairDepth = {

@@ -17,10 +17,11 @@ export const getClosingFee = (
     return 0;
   }
 
-  const { closeFeeP, triggerOrderFeeP, minPositionSizeUsd } = pairFee;
+  // @todo check
+  const { totalPositionSizeFeeP, minPositionSizeUsd } = pairFee;
 
   return (
-    (closeFeeP + triggerOrderFeeP) *
+    totalPositionSizeFeeP *
     feeMultiplier *
     Math.max(
       collateralPriceUsd && collateralPriceUsd > 0
