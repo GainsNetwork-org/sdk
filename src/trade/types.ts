@@ -205,12 +205,15 @@ export type TraderFeeTiers = {
   outboundPoints: number;
   lastDayUpdatedPoints: number;
   expiredPoints: number[];
+  unclaimedPoints: number;
 };
 
 export type PairFactor = {
   cumulativeFactor: number;
   protectionCloseFactor: number;
   protectionCloseFactorBlocks: number;
+  exemptOnOpen: boolean;
+  exemptAfterProtectionCloseFactor: boolean;
 };
 
 export enum PendingOrderType {

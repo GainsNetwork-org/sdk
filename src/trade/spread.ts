@@ -3,6 +3,7 @@ import {
   OiWindows,
   OiWindowsSettings,
   PairDepth,
+  PairFactor,
 } from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
 import {
@@ -11,17 +12,16 @@ import {
 } from "../constants";
 import { ContractsVersion } from "../contracts/types";
 
+// @todo negPnlCumulVolMultiplier
 export type SpreadContext = {
   isOpen?: boolean;
   isPnlPositive?: boolean;
-  protectionCloseFactor?: number;
-  protectionCloseFactorBlocks?: number;
-  cumulativeFactor?: number;
   createdBlock?: number;
   liquidationParams?: LiquidationParams | undefined;
   currentBlock?: number | undefined;
   contractsVersion?: ContractsVersion | undefined;
-};
+  protectionCloseFactorWhitelist?: boolean;
+} & Partial<PairFactor>;
 
 export const getProtectionCloseFactor = (
   spreadCtx: SpreadContext | undefined
@@ -34,7 +34,8 @@ export const getProtectionCloseFactor = (
     spreadCtx.protectionCloseFactor === undefined ||
     spreadCtx.protectionCloseFactorBlocks === undefined ||
     spreadCtx.createdBlock === undefined ||
-    spreadCtx.currentBlock === undefined
+    spreadCtx.currentBlock === undefined ||
+    spreadCtx.protectionCloseFactorWhitelist === true
   )
     return DEFAULT_PROTECTION_CLOSE_FACTOR;
 
@@ -54,7 +55,11 @@ export const getProtectionCloseFactor = (
 export const getCumulativeFactor = (
   spreadCtx: SpreadContext | undefined
 ): number => {
-  if (spreadCtx === undefined || spreadCtx.cumulativeFactor === undefined || spreadCtx.cumulativeFactor === 0) {
+  if (
+    spreadCtx === undefined ||
+    spreadCtx.cumulativeFactor === undefined ||
+    spreadCtx.cumulativeFactor === 0
+  ) {
     return DEFAULT_CUMULATIVE_FACTOR;
   }
 
@@ -67,6 +72,7 @@ export const getLegacyFactor = (
   return spreadCtx?.contractsVersion === ContractsVersion.BEFORE_V9_2 ? 1 : 2;
 };
 
+// @todo
 export const getSpreadWithPriceImpactP = (
   pairSpreadP: number,
   buy: boolean,
@@ -114,6 +120,7 @@ export const getSpreadWithPriceImpactP = (
     return pairSpreadP / 2;
   }
 
+  // @todo implement exemptOnOpen && exemptAfterProtectionCloseFactor
   return (
     getSpreadP(pairSpreadP) +
     ((activeOi * getCumulativeFactor(spreadCtx) + (collateral * leverage) / 2) /
