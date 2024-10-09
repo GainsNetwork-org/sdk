@@ -12,7 +12,6 @@ import {
 } from "../constants";
 import { ContractsVersion } from "../contracts/types";
 
-// @todo negPnlCumulVolMultiplier
 export type SpreadContext = {
   isOpen?: boolean;
   isPnlPositive?: boolean;
@@ -35,7 +34,7 @@ export const getProtectionCloseFactor = (
     spreadCtx.protectionCloseFactorBlocks === undefined ||
     spreadCtx.createdBlock === undefined ||
     spreadCtx.currentBlock === undefined ||
-    spreadCtx.protectionCloseFactorWhitelist === true
+    spreadCtx.protectionCloseFactorWhitelist === true // if trader is whitelisted, protection close factor is always 1
   )
     return DEFAULT_PROTECTION_CLOSE_FACTOR;
 
@@ -43,13 +42,30 @@ export const getProtectionCloseFactor = (
     spreadCtx.isPnlPositive &&
     !spreadCtx.isOpen &&
     spreadCtx.protectionCloseFactor > 0 &&
-    spreadCtx.currentBlock <=
-      spreadCtx.createdBlock + spreadCtx.protectionCloseFactorBlocks
+    isProtectionCloseFactorActive(spreadCtx) === true
   ) {
     return spreadCtx.protectionCloseFactor;
   }
 
   return DEFAULT_PROTECTION_CLOSE_FACTOR;
+};
+
+export const isProtectionCloseFactorActive = (
+  spreadCtx: SpreadContext | undefined
+): boolean | undefined => {
+  if (
+    spreadCtx === undefined ||
+    spreadCtx.currentBlock === undefined ||
+    spreadCtx.createdBlock === undefined ||
+    spreadCtx.protectionCloseFactorBlocks === undefined
+  ) {
+    return undefined;
+  }
+
+  return (
+    spreadCtx.currentBlock <=
+    spreadCtx.createdBlock + spreadCtx.protectionCloseFactorBlocks
+  );
 };
 
 export const getCumulativeFactor = (
@@ -72,7 +88,6 @@ export const getLegacyFactor = (
   return spreadCtx?.contractsVersion === ContractsVersion.BEFORE_V9_2 ? 1 : 2;
 };
 
-// @todo
 export const getSpreadWithPriceImpactP = (
   pairSpreadP: number,
   buy: boolean,
@@ -87,10 +102,17 @@ export const getSpreadWithPriceImpactP = (
     return 0;
   }
 
-  // No spread or price impact when closing pre-v9.2 trades
   if (
-    spreadCtx?.isOpen === false &&
-    spreadCtx?.contractsVersion === ContractsVersion.BEFORE_V9_2
+    // No spread or price impact when closing pre-v9.2 trades
+    (spreadCtx?.isOpen === false &&
+      spreadCtx?.contractsVersion === ContractsVersion.BEFORE_V9_2) ||
+    // No spread or price impact for opens when `pair.exemptOnOpen` is true
+    (spreadCtx?.isOpen === true && spreadCtx?.exemptOnOpen === true) ||
+    // No spread or price impact for closes after `protectionCloseFactor` has expired
+    // when `pair.exemptAfterProtectionCloseFactor` is true
+    (spreadCtx?.isOpen === false &&
+      spreadCtx?.exemptAfterProtectionCloseFactor === true &&
+      isProtectionCloseFactorActive(spreadCtx) === false)
   ) {
     return 0;
   }
@@ -120,7 +142,6 @@ export const getSpreadWithPriceImpactP = (
     return pairSpreadP / 2;
   }
 
-  // @todo implement exemptOnOpen && exemptAfterProtectionCloseFactor
   return (
     getSpreadP(pairSpreadP) +
     ((activeOi * getCumulativeFactor(spreadCtx) + (collateral * leverage) / 2) /

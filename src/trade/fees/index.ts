@@ -17,7 +17,6 @@ export const getClosingFee = (
     return 0;
   }
 
-  // @todo check
   const { totalPositionSizeFeeP, minPositionSizeUsd } = pairFee;
 
   return (
