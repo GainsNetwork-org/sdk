@@ -59,10 +59,18 @@ export type TradingGroup = {
 };
 
 export type Fee = {
-  openFeeP: number;
-  closeFeeP: number;
+  totalPositionSizeFeeP: number;
+  totalLiqCollateralFeeP: number;
+  oraclePositionSizeFeeP: number;
   minPositionSizeUsd: number;
+};
+
+export type GlobalTradeFeeParams = {
+  referralFeeP: number;
+  govFeeP: number;
   triggerOrderFeeP: number;
+  gnsOtcFeeP: number;
+  gTokenFeeP: number;
 };
 
 export type PairDepth = {
@@ -197,12 +205,15 @@ export type TraderFeeTiers = {
   outboundPoints: number;
   lastDayUpdatedPoints: number;
   expiredPoints: number[];
+  unclaimedPoints: number;
 };
 
 export type PairFactor = {
   cumulativeFactor: number;
   protectionCloseFactor: number;
   protectionCloseFactorBlocks: number;
+  exemptOnOpen: boolean;
+  exemptAfterProtectionCloseFactor: boolean;
 };
 
 export enum PendingOrderType {
