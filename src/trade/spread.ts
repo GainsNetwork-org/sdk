@@ -30,24 +30,12 @@ export const getProtectionCloseFactor = (
     spreadCtx.contractsVersion === ContractsVersion.BEFORE_V9_2 ||
     spreadCtx.isOpen === undefined ||
     spreadCtx.isPnlPositive === undefined ||
-    spreadCtx.protectionCloseFactor === undefined ||
-    spreadCtx.protectionCloseFactorBlocks === undefined ||
-    spreadCtx.createdBlock === undefined ||
-    spreadCtx.currentBlock === undefined ||
-    spreadCtx.protectionCloseFactorWhitelist === true // if trader is whitelisted, protection close factor is always 1
+    isProtectionCloseFactorActive(spreadCtx) !== true
   )
     return DEFAULT_PROTECTION_CLOSE_FACTOR;
 
-  if (
-    spreadCtx.isPnlPositive &&
-    !spreadCtx.isOpen &&
-    spreadCtx.protectionCloseFactor > 0 &&
-    isProtectionCloseFactorActive(spreadCtx) === true
-  ) {
-    return spreadCtx.protectionCloseFactor;
-  }
-
-  return DEFAULT_PROTECTION_CLOSE_FACTOR;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return spreadCtx.protectionCloseFactor!;
 };
 
 export const isProtectionCloseFactorActive = (
@@ -57,12 +45,16 @@ export const isProtectionCloseFactorActive = (
     spreadCtx === undefined ||
     spreadCtx.currentBlock === undefined ||
     spreadCtx.createdBlock === undefined ||
-    spreadCtx.protectionCloseFactorBlocks === undefined
+    spreadCtx.protectionCloseFactorBlocks === undefined ||
+    spreadCtx.protectionCloseFactor === undefined
   ) {
     return undefined;
   }
 
   return (
+    spreadCtx.isPnlPositive === true &&
+    spreadCtx.isOpen === false &&
+    spreadCtx.protectionCloseFactor > 0 &&
     spreadCtx.currentBlock <=
       spreadCtx.createdBlock + spreadCtx.protectionCloseFactorBlocks &&
     spreadCtx.protectionCloseFactorWhitelist !== true
