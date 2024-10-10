@@ -64,7 +64,8 @@ export const isProtectionCloseFactorActive = (
 
   return (
     spreadCtx.currentBlock <=
-    spreadCtx.createdBlock + spreadCtx.protectionCloseFactorBlocks
+      spreadCtx.createdBlock + spreadCtx.protectionCloseFactorBlocks &&
+    spreadCtx.protectionCloseFactorWhitelist !== true
   );
 };
 
