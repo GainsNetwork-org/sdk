@@ -105,7 +105,7 @@ export const getSpreadWithPriceImpactP = (
     // when `pair.exemptAfterProtectionCloseFactor` is true
     (spreadCtx?.isOpen === false &&
       spreadCtx?.exemptAfterProtectionCloseFactor === true &&
-      isProtectionCloseFactorActive(spreadCtx) === false)
+      isProtectionCloseFactorActive(spreadCtx) !== true)
   ) {
     return 0;
   }
