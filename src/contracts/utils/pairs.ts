@@ -426,4 +426,12 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.POLYXUSD]: "Polymesh to US Dollar",
   [PairIndex.MOODENGUSD]: "Moo Deng to US Dollar",
   [PairIndex.MOTHERUSD]: "Mother Iggy to US Dollar",
+  [PairIndex.AEROUSD]: "Aerodrome Finance to US Dollar",
+  [PairIndex.CVCUSD]: "Civic to US Dollar",
+  [PairIndex.NEIROCTOUSD]: "Neiro CTO to US Dollar",
+  [PairIndex.ARKUSD]: "Ark to US Dollar",
+  [PairIndex.NPCUSD]: "Non-Playable Coin to US Dollar",
+  [PairIndex.ORBSUSD]: "ORBS to US Dollar",
+  [PairIndex.APUUSD]: "Apu Apustaja to US Dollar",
+  [PairIndex.BSVUSD]: "Bitcoin SV to US Dollar",
 };
