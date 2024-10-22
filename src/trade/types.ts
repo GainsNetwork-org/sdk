@@ -550,4 +550,10 @@ export enum PairIndex {
   ORBSUSD,
   APUUSD,
   BSVUSD,
+  HIPPOUSD,
+  GOATUSD,
+  DOGUSD,
+  HOTUSD,
+  STORJUSD,
+  RAYUSD,
 }
