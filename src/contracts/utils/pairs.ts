@@ -434,4 +434,10 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.ORBSUSD]: "ORBS to US Dollar",
   [PairIndex.APUUSD]: "Apu Apustaja to US Dollar",
   [PairIndex.BSVUSD]: "Bitcoin SV to US Dollar",
+  [PairIndex.HIPPOUSD]: "sudeng to US Dollar",
+  [PairIndex.GOATUSD]: "Goatseus Maximus to US Dollar",
+  [PairIndex.DOGUSD]: "DOG GO TO THE MOON (Runes) to US Dollar",
+  [PairIndex.HOTUSD]: "Holo to US Dollar",
+  [PairIndex.STORJUSD]: "Storj to US Dollar",
+  [PairIndex.RAYUSD]: "Raydium to US Dollar",
 };
