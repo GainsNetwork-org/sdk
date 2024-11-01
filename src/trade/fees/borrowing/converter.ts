@@ -1,10 +1,12 @@
 import { IBorrowingFees } from "../../../contracts/types/generated/GNSMultiCollatDiamond";
 import { BorrowingFee } from ".";
+import { getBorrowingGroupName } from "../../../contracts/utils/borrowingFees";
 
 export const convertPairGroupBorrowingFee = (
   pairGroup: IBorrowingFees.BorrowingPairGroupStructOutput
 ): BorrowingFee.PairGroup => ({
   groupIndex: pairGroup.groupIndex,
+  name: getBorrowingGroupName(pairGroup.groupIndex),
   initialAccFeeLong: parseFloat(pairGroup.initialAccFeeLong.toString()) / 1e10,
   initialAccFeeShort:
     parseFloat(pairGroup.initialAccFeeShort.toString()) / 1e10,
