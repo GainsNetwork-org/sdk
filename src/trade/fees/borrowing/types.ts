@@ -10,7 +10,7 @@ export type BorrowingData = {
 
 export type PairGroup = {
   groupIndex: number;
-  name: string;
+  name?: string;
   block: number;
   initialAccFeeLong: number;
   initialAccFeeShort: number;
