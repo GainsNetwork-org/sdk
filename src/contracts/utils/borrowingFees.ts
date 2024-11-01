@@ -21,7 +21,7 @@ export const getBorrowingGroupName = (groupIndex: number): string => {
     "Forex AUD",
     "Forex NZD",
   ];
-  return groupNamesByIndex[groupIndex] || "Unknown";
+  return groupNamesByIndex[groupIndex - 1] || "Unknown";
 };
 
 export const fetchAllPairBorrowingFees = async (
