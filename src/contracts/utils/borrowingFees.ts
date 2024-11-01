@@ -5,6 +5,25 @@ import {
   convertPairBorrowingFees,
 } from "../../trade";
 
+export const getBorrowingGroupName = (groupIndex: number): string => {
+  const groupNamesByIndex = [
+    "Crypto Core",
+    "Crypto Altcoins",
+    "Forex USD Majors",
+    "Forex USD-Quoted Majors",
+    "Forex EUR Majors",
+    "",
+    "",
+    "Commodities",
+    "Forex USD Minors",
+    "Forex Nordic",
+    "Forex GBP Majors",
+    "Forex AUD",
+    "Forex NZD",
+  ];
+  return groupNamesByIndex[groupIndex] || "Unknown";
+};
+
 export const fetchAllPairBorrowingFees = async (
   contract: GNSMultiCollatDiamond,
   collateralIndex: number
