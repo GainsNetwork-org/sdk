@@ -556,4 +556,10 @@ export enum PairIndex {
   HOTUSD,
   STORJUSD,
   RAYUSD,
+  PNUTUSD,
+  ACTUSD,
+  GRASSUSD,
+  ZENUSD,
+  LUMIAUSD,
+  ALPHUSD,
 }
