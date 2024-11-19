@@ -61,6 +61,11 @@
     },
     {
       "inputs": [],
+      "name": "InvalidAddress",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "InvalidAddresses",
       "type": "error"
     },
@@ -7906,6 +7911,11 @@
     },
     {
       "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "WaitTimeout",
       "type": "error"
     },
@@ -8960,6 +8970,40 @@
     {
       "inputs": [
         {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint120",
+          "name": "_collateralDelta",
+          "type": "uint120"
+        },
+        {
+          "internalType": "uint24",
+          "name": "_leverageDelta",
+          "type": "uint24"
+        },
+        {
+          "internalType": "uint64",
+          "name": "_expectedPrice",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint16",
+          "name": "_maxSlippageP",
+          "type": "uint16"
+        }
+      ],
+      "name": "increasePositionSizeNative",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function",
+      "signature": "0x731104ba"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint16",
           "name": "_marketOrdersTimeoutBlocks",
           "type": "uint16"
@@ -9251,6 +9295,25 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x0bce9aaa"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint24",
+          "name": "_newLeverage",
+          "type": "uint24"
+        }
+      ],
+      "name": "updateLeverageNative",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function",
+      "signature": "0x0065efc8"
     },
     {
       "inputs": [
@@ -14125,6 +14188,123 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0xac9650d8"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "name": "NativeTransferEnabledUpdated",
+      "type": "event",
+      "signature": "0x2cc920a9e8bbfc19b048a3db4be815c4211e93faa33e0b1e97def344aac8aaa3"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint16",
+          "name": "newLimit",
+          "type": "uint16"
+        }
+      ],
+      "name": "NativeTransferGasLimitUpdated",
+      "type": "event",
+      "signature": "0xfbfcf05095de3956a64c56736502dd8e0280a6050ab0de536ce23c8725b61408"
+    },
+    {
+      "inputs": [],
+      "name": "getNativeTransferEnabled",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x3bfab75c"
+    },
+    {
+      "inputs": [],
+      "name": "getNativeTransferGasLimit",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "",
+          "type": "uint16"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x7a5c9d1e"
+    },
+    {
+      "inputs": [],
+      "name": "getReentrancyLock",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x40ee2847"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "_nativeTransferGasLimit",
+          "type": "uint16"
+        },
+        {
+          "internalType": "bool",
+          "name": "_nativeTransferEnabled",
+          "type": "bool"
+        }
+      ],
+      "name": "initializeChainConfig",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x885af326"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "_nativeTransferEnabled",
+          "type": "bool"
+        }
+      ],
+      "name": "updateNativeTransferEnabled",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x7644f242"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "_nativeTransferGasLimit",
+          "type": "uint16"
+        }
+      ],
+      "name": "updateNativeTransferGasLimit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xe085d2a7"
     }
   ],
   "deployedBytecode": "",
