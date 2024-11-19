@@ -305,7 +305,11 @@ export const pairs = {
   "HOT/USD": CRYPTO,
   "STORJ/USD": CRYPTO,
   "RAY/USD": CRYPTO,
+  "BTCDEGEN/USD": CRYPTO,
 };
+
+export const syntheticPairs = new Set(["BTCDEGEN/USD"]);
+export const parentToSyntheticPairMap = new Map([["BTC/USD", "BTCDEGEN/USD"]]);
 
 export const getAssetClassFromGroupIndex = (
   groupIndex: number
