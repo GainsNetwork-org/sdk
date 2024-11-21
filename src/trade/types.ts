@@ -556,4 +556,5 @@ export enum PairIndex {
   HOTUSD,
   STORJUSD,
   RAYUSD,
+  BTCDEGEN,
 }

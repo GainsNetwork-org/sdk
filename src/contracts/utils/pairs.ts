@@ -440,4 +440,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.HOTUSD]: "Holo to US Dollar",
   [PairIndex.STORJUSD]: "Storj to US Dollar",
   [PairIndex.RAYUSD]: "Raydium to US Dollar",
+  [PairIndex.BTCDEGEN]: "Bitcoin to US Dollar",
 };
