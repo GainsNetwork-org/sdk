@@ -19,14 +19,23 @@ export enum CollateralTypes {
   ETH = "ETH",
   ARB = "ARB",
   USDC = "USDC",
+  APE = "APE",
 }
 
 export enum ContractsVersion {
   BEFORE_V9_2,
-  V9_2
+  V9_2,
 }
 
 export type ContractAddressList = Record<
   string,
   Partial<Record<CollateralTypes | "global", Partial<ContractAddresses>>>
 >;
+
+export enum ChainId {
+  POLYGON = 137,
+  ARBITRUM = 42161,
+  ARBITRUM_SEPOLIA = 421614,
+  BASE = 8453,
+  APECHAIN = 33139,
+}
