@@ -90,6 +90,12 @@ export const getLiqPnlThresholdP = (
     return liquidationParams.endLiqThresholdP;
   }
 
+  if (
+    liquidationParams.startLiqThresholdP === liquidationParams.endLiqThresholdP
+  ) {
+    return liquidationParams.endLiqThresholdP;
+  }
+
   return (
     liquidationParams.startLiqThresholdP -
     ((leverage - liquidationParams.startLeverage) *
