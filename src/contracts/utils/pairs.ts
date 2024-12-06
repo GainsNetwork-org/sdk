@@ -447,4 +447,10 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.ZENUSD]: "Horizen to US Dollar",
   [PairIndex.LUMIAUSD]: "Lumia to US Dollar",
   [PairIndex.ALPHUSD]: "Alephium to US Dollar",
+  [PairIndex.VIRTUALUSD]: "Virtuals Protocol to US Dollar",
+  [PairIndex.SPXUSD]: "SPX6900 to US Dollar",
+  [PairIndex.ACXUSD]: "Across Protocol to US Dollar",
+  [PairIndex.CHILLGUYUSD]: "Just a chill guy to US Dollar",
+  [PairIndex.CHEXUSD]: "CHEX to US Dollar",
+  [PairIndex.BITCOINUSD]: "HarryPotterObamaSonic10Inu to US Dollar",
 };
