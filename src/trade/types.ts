@@ -563,4 +563,10 @@ export enum PairIndex {
   ZENUSD,
   LUMIAUSD,
   ALPHUSD,
+  VIRTUALUSD,
+  SPXUSD,
+  ACXUSD,
+  CHILLGUYUSD,
+  CHEXUSD,
+  BITCOINUSD,
 }
