@@ -318,10 +318,20 @@ export const pairs = {
   "CHILLGUY/USD": CRYPTO,
   "CHEX/USD": CRYPTO,
   "BITCOIN/USD": CRYPTO,
+  "ETHDEGEN/USD": CRYPTO,
+  "SOLDEGEN/USD": CRYPTO,
 };
 
-export const syntheticPairs = new Set(["BTCDEGEN/USD"]);
-export const parentToSyntheticPairMap = new Map([["BTC/USD", "BTCDEGEN/USD"]]);
+export const syntheticPairs = new Set([
+  "BTCDEGEN/USD",
+  "ETHDEGEN/USD",
+  "SOLDEGEN/USD",
+]);
+export const parentToSyntheticPairMap = new Map([
+  ["BTC/USD", "BTCDEGEN/USD"],
+  ["ETH/USD", "ETHDEGEN/USD"],
+  ["SOL/USD", "SOLDEGEN/USD"],
+]);
 
 export const getAssetClassFromGroupIndex = (
   groupIndex: number

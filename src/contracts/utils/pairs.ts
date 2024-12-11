@@ -453,4 +453,6 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.CHILLGUYUSD]: "Just a chill guy to US Dollar",
   [PairIndex.CHEXUSD]: "CHEX to US Dollar",
   [PairIndex.BITCOINUSD]: "HarryPotterObamaSonic10Inu to US Dollar",
+  [PairIndex.ETHDEGEN]: "Ethereum to US Dollar",
+  [PairIndex.SOLDEGEN]: "Solana to US Dollar",
 };

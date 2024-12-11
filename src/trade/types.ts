@@ -569,4 +569,6 @@ export enum PairIndex {
   CHILLGUYUSD,
   CHEXUSD,
   BITCOINUSD,
+  ETHDEGEN,
+  SOLDEGEN,
 }
