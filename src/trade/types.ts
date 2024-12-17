@@ -571,4 +571,9 @@ export enum PairIndex {
   BITCOINUSD,
   ETHDEGEN,
   SOLDEGEN,
+  MOVEUSD,
+  MEUSD,
+  COWUSD,
+  AVAUSD,
+  USUALUSD,
 }

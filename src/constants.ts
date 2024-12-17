@@ -320,6 +320,11 @@ export const pairs = {
   "BITCOIN/USD": CRYPTO,
   "ETHDEGEN/USD": CRYPTO,
   "SOLDEGEN/USD": CRYPTO,
+  "MOVE/USD": CRYPTO,
+  "ME/USD": CRYPTO,
+  "COW/USD": CRYPTO,
+  "AVA/USD": CRYPTO,
+  "USUAL/USD": CRYPTO,
 };
 
 export const syntheticPairs = new Set([
@@ -372,7 +377,7 @@ export const delistedPairIxs = new Set([
   6, 31, 36, 48, 51, 54, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71,
   72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 97,
   99, 101, 106, 108, 52, 131, 147, 160, 179, 182, 183, 190, 229, 163, 15, 170,
-  239, 254, 230, 4, 275, 290, 296, 311,
+  239, 254, 230, 4, 275, 290, 296, 311, 315, 316, 317, 318, 319,
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);
