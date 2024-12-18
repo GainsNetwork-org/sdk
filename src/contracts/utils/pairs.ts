@@ -459,5 +459,4 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.MEUSD]: "Magic Eden to US Dollar",
   [PairIndex.COWUSD]: "CoW Protocol to US Dollar",
   [PairIndex.AVAUSD]: "Travala to US Dollar",
-  [PairIndex.USUALUSD]: "Usual to US Dollar",
 };

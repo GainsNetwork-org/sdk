@@ -575,5 +575,4 @@ export enum PairIndex {
   MEUSD,
   COWUSD,
   AVAUSD,
-  USUALUSD,
 }
