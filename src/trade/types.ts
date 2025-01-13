@@ -576,4 +576,10 @@ export enum PairIndex {
   COWUSD,
   AVAUSD,
   USUALUSD,
+  PENGUUSD,
+  FARTCOINUSD,
+  ZEREBROUSD,
+  AI16ZUSD,
+  AIXBTUSD,
+  BIOUSD,
 }
