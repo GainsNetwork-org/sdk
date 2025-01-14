@@ -460,4 +460,10 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.COWUSD]: "CoW Protocol to US Dollar",
   [PairIndex.AVAUSD]: "Travala to US Dollar",
   [PairIndex.USUALUSD]: "Usual to US Dollar",
+  [PairIndex.PENGUUSD]: "Pudgy Penguins to US Dollar",
+  [PairIndex.FARTCOINUSD]: "Fartcoin to US Dollar",
+  [PairIndex.ZEREBROUSD]: "Zerebro to US Dollar",
+  [PairIndex.AI16ZUSD]: "ai16z to US Dollar",
+  [PairIndex.AIXBTUSD]: "aixbt by Virtuals to US Dollar",
+  [PairIndex.BIOUSD]: "Bio Protocol to US Dollar",
 };
