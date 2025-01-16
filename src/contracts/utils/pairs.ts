@@ -466,4 +466,6 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.AI16ZUSD]: "ai16z to US Dollar",
   [PairIndex.AIXBTUSD]: "aixbt by Virtuals to US Dollar",
   [PairIndex.BIOUSD]: "Bio Protocol to US Dollar",
+  [PairIndex.XRPDEGEN]: "Ripple to US Dollar",
+  [PairIndex.BNBDEGEN]: "Binance Coin to US Dollar",
 };

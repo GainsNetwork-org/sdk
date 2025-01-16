@@ -331,17 +331,23 @@ export const pairs = {
   "AI16Z/USD": CRYPTO,
   "AIXBT/USD": CRYPTO,
   "BIO/USD": CRYPTO,
+  "XRPDEGEN/USD": CRYPTO,
+  "BNBDEGEN/USD": CRYPTO,
 };
 
 export const syntheticPairs = new Set([
   "BTCDEGEN/USD",
   "ETHDEGEN/USD",
   "SOLDEGEN/USD",
+  "XRPDEGEN/USD",
+  "BNBDEGEN/USD",
 ]);
 export const parentToSyntheticPairMap = new Map([
   ["BTC/USD", "BTCDEGEN/USD"],
   ["ETH/USD", "ETHDEGEN/USD"],
   ["SOL/USD", "SOLDEGEN/USD"],
+  ["XRP/USD", "XRPDEGEN/USD"],
+  ["BNB/USD", "BNBDEGEN/USD"],
 ]);
 
 export const getAssetClassFromGroupIndex = (
@@ -384,6 +390,7 @@ export const delistedPairIxs = new Set([
   71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
   97, 99, 101, 106, 108, 52, 131, 147, 152, 160, 179, 182, 183, 190, 229, 163,
   15, 170, 239, 254, 230, 4, 275, 290, 296, 311, 320, 321, 322, 323, 324, 325,
+  326, 327,
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);
