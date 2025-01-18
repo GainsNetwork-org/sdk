@@ -584,4 +584,5 @@ export enum PairIndex {
   BIOUSD,
   XRPDEGEN,
   BNBDEGEN,
+  TRUMPUSD,
 }

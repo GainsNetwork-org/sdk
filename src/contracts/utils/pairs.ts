@@ -468,4 +468,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.BIOUSD]: "Bio Protocol to US Dollar",
   [PairIndex.XRPDEGEN]: "Ripple to US Dollar",
   [PairIndex.BNBDEGEN]: "Binance Coin to US Dollar",
+  [PairIndex.TRUMPUSD]: "Official Trump to US Dollar",
 };
