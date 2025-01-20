@@ -585,4 +585,5 @@ export enum PairIndex {
   XRPDEGEN,
   BNBDEGEN,
   TRUMPUSD,
+  MELANIAUSD,
 }
