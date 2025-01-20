@@ -469,4 +469,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.XRPDEGEN]: "Ripple to US Dollar",
   [PairIndex.BNBDEGEN]: "Binance Coin to US Dollar",
   [PairIndex.TRUMPUSD]: "Official Trump to US Dollar",
+  [PairIndex.MELANIAUSD]: "Melania Meme to US Dollar",
 };
