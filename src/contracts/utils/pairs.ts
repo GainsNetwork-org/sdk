@@ -470,4 +470,12 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.BNBDEGEN]: "Binance Coin to US Dollar",
   [PairIndex.TRUMPUSD]: "Official Trump to US Dollar",
   [PairIndex.MELANIAUSD]: "Melania Meme to US Dollar",
+  [PairIndex.MODEUSD]: "Mode to US Dollar",
+  [PairIndex.HYPEUSD]: "Hyperliquid to US Dollar",
+  [PairIndex.SUSD]: "Sonic (prev. FTM) to US Dollar",
+  [PairIndex.ARCUSD]: "AI Rig Complex to US Dollar",
+  [PairIndex.ARKMUSD]: "Arkham to US Dollar",
+  [PairIndex.GRIFFAINUSD]: "GRIFFAIN to US Dollar",
+  [PairIndex.SWARMSUSD]: "Swarms to US Dollar",
+  [PairIndex.ANIMEUSD]: "Animecoin to US Dollar",
 };
