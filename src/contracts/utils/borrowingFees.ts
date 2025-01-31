@@ -20,7 +20,6 @@ export const getBorrowingGroupName = (groupIndex: number): string => {
     "Forex GBP Majors",
     "Forex AUD",
     "Forex NZD",
-    "",
     "Crypto Degen",
   ];
   return groupNamesByIndex[groupIndex - 1] || "Unknown";
