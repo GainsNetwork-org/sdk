@@ -478,4 +478,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.GRIFFAINUSD]: "GRIFFAIN to US Dollar",
   [PairIndex.SWARMSUSD]: "Swarms to US Dollar",
   [PairIndex.ANIMEUSD]: "Animecoin to US Dollar",
+  [PairIndex.PLUMEUSD]: "Plume to US Dollar",
+  [PairIndex.VVVUSD]: "Venice Token to US Dollar",
+  [PairIndex.VINEUSD]: "Vine coin to US Dollar",
+  [PairIndex.TOSHIUSD]: "Toshi to US Dollar",
 };

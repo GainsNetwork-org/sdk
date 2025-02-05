@@ -594,4 +594,8 @@ export enum PairIndex {
   GRIFFAINUSD,
   SWARMSUSD,
   ANIMEUSD,
+  PLUMEUSD,
+  VVVUSD,
+  VINEUSD,
+  TOSHIUSD,
 }
