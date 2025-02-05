@@ -598,4 +598,5 @@ export enum PairIndex {
   VVVUSD,
   VINEUSD,
   TOSHIUSD,
+  BERAUSD,
 }

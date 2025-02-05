@@ -347,6 +347,7 @@ export const pairs = {
   "VVV/USD": CRYPTO,
   "VINE/USD": CRYPTO,
   "TOSHI/USD": CRYPTO,
+  "BERA/USD": CRYPTO,
 };
 
 export const syntheticPairs = new Set([
