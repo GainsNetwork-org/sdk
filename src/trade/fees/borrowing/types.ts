@@ -24,9 +24,15 @@ export type BorrowingOi = {
   oi: OpenInterest;
 };
 
+export type BorrowingFeePerBlockCap = {
+  minP: number;
+  maxP: number;
+};
+
 export type Pair = BorrowingData &
   BorrowingOi & {
     groups: PairGroup[];
+    feePerBlockCap?: BorrowingFeePerBlockCap;
   };
 
 export type Group = BorrowingData & BorrowingOi;

@@ -22,19 +22,22 @@ export const convertPairGroupBorrowingFee = (
 export const convertPairBorrowingFee = (
   pair: IBorrowingFees.BorrowingDataStructOutput,
   pairOi: IBorrowingFees.OpenInterestStructOutput,
-  pairGroup: IBorrowingFees.BorrowingPairGroupStructOutput[]
+  pairGroup: IBorrowingFees.BorrowingPairGroupStructOutput[],
+  feeCap: IBorrowingFees.BorrowingFeePerBlockCapStructOutput
 ): BorrowingFee.Pair => ({
   ...convertGroupBorrowingData(pair, pairOi),
   groups: pairGroup.map(value => convertPairGroupBorrowingFee(value)),
+  feePerBlockCap: convertFeePerBlockCap(feeCap),
 });
 
-export const convertPairBorrowingFees = ([pairs, pairOi, pairGroups]: [
+export const convertPairBorrowingFees = ([pairs, pairOi, pairGroups, feeCaps]: [
   IBorrowingFees.BorrowingDataStructOutput[],
   IBorrowingFees.OpenInterestStructOutput[],
-  IBorrowingFees.BorrowingPairGroupStructOutput[][]
+  IBorrowingFees.BorrowingPairGroupStructOutput[][],
+  IBorrowingFees.BorrowingFeePerBlockCapStructOutput[]
 ]): BorrowingFee.Pair[] =>
   pairs.map((value, ix) =>
-    convertPairBorrowingFee(value, pairOi[ix], pairGroups[ix])
+    convertPairBorrowingFee(value, pairOi[ix], pairGroups[ix], feeCaps[ix])
   );
 
 export const convertGroupBorrowingFee = (
@@ -63,3 +66,10 @@ export const convertGroupBorrowingFees = ([groups, groupOis]: [
   IBorrowingFees.OpenInterestStructOutput[]
 ]): BorrowingFee.Group[] =>
   groups.map((value, ix) => convertGroupBorrowingFee(value, groupOis[ix]));
+
+export const convertFeePerBlockCap = (
+  feeCap: IBorrowingFees.BorrowingFeePerBlockCapStructOutput
+): BorrowingFee.BorrowingFeePerBlockCap => ({
+  minP: feeCap.minP ? parseFloat(feeCap.minP.toString()) / 1e3 / 100 : 0,
+  maxP: feeCap.maxP ? parseFloat(feeCap.maxP.toString()) / 1e3 / 100 : 1,
+});
