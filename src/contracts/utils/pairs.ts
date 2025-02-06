@@ -482,4 +482,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.VVVUSD]: "Venice Token to US Dollar",
   [PairIndex.VINEUSD]: "Vine coin to US Dollar",
   [PairIndex.TOSHIUSD]: "Toshi to US Dollar",
+  [PairIndex.BERAUSD]: "Berachain to US Dollar",
 };
