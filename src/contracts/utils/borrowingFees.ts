@@ -28,10 +28,17 @@ export const getBorrowingGroupName = (groupIndex: number): string => {
 export const fetchAllPairBorrowingFees = async (
   contract: GNSMultiCollatDiamond,
   collateralIndex: number
-): Promise<BorrowingFee.Pair[]> =>
-  convertPairBorrowingFees(
-    await contract.getAllBorrowingPairs(collateralIndex)
+): Promise<BorrowingFee.Pair[]> => {
+  const [pairs, pairOi, pairGroups] = await contract.getAllBorrowingPairs(
+    collateralIndex
   );
+  const feeCaps = await contract.getBorrowingPairFeePerBlockCaps(
+    collateralIndex,
+    [...Array(pairs.length).keys()]
+  );
+
+  return convertPairBorrowingFees([pairs, pairOi, pairGroups, feeCaps]);
+};
 
 export const fetchGroupBorrowingFees = async (
   contract: GNSMultiCollatDiamond,

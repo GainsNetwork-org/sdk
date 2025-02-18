@@ -94,7 +94,12 @@ const getPairPendingAccFees = (
     pairs: BorrowingFee.Pair[];
     openInterest: OpenInterest;
   }
-): { accFeeLong: number; accFeeShort: number; delta: number } => {
+): {
+  accFeeLong: number;
+  accFeeShort: number;
+  deltaLong: number;
+  deltaShort: number;
+} => {
   const {
     pairs,
     openInterest: { long, short },
@@ -111,7 +116,8 @@ const getPairPendingAccFees = (
     currentBlock,
     pair.accLastUpdatedBlock,
     pair.oi.max,
-    pair.feeExponent
+    pair.feeExponent,
+    pair.feePerBlockCap
   );
 };
 
@@ -136,7 +142,12 @@ const getGroupPendingAccFees = (
   groupIndex: number,
   currentBlock: number,
   context: { groups: BorrowingFee.Group[] }
-): { accFeeLong: number; accFeeShort: number; delta: number } => {
+): {
+  accFeeLong: number;
+  accFeeShort: number;
+  deltaLong: number;
+  deltaShort: number;
+} => {
   const { groups } = context;
   const group = groups[groupIndex];
   return getPendingAccFees(
@@ -220,30 +231,109 @@ const getPendingAccFees = (
   currentBlock: number,
   accLastUpdatedBlock: number,
   maxOi: number,
-  feeExponent: number
-): { accFeeLong: number; accFeeShort: number; delta: number } => {
+  feeExponent: number,
+  feeCaps?: BorrowingFee.BorrowingFeePerBlockCap // as percentage: eg minP: 0.1 = 10%, maxP: 0.5 = 50%
+): {
+  accFeeLong: number;
+  accFeeShort: number;
+  deltaLong: number;
+  deltaShort: number;
+} => {
   const moreShorts = oiLong < oiShort;
+  const blockDistance =
+    currentBlock > accLastUpdatedBlock ? currentBlock - accLastUpdatedBlock : 0;
+
+  // If block distance is zero nothing changes
+  if (blockDistance === 0) {
+    return {
+      accFeeLong,
+      accFeeShort,
+      deltaLong: 0,
+      deltaShort: 0,
+    };
+  }
+
   const netOi = Math.abs(oiLong - oiShort);
-  const delta =
-    maxOi > 0 && feeExponent > 0
-      ? feePerBlock *
-        (currentBlock - accLastUpdatedBlock) *
-        (netOi / maxOi) ** feeExponent
+
+  // Calculate minimum and maximum effective oi
+  const { minP, maxP } = getFeePerBlockCaps(feeCaps);
+  const minNetOi = maxOi * minP;
+  const maxNetOi = maxOi * maxP;
+
+  // Calculate the minimum acc fee delta (applies to both sides)
+  const minDelta =
+    minNetOi > 0
+      ? getPendingAccFeesDelta(
+          blockDistance,
+          feePerBlock,
+          netOi,
+          maxOi,
+          feeExponent
+        )
       : 0;
 
-  const newAccFeeLong = moreShorts ? accFeeLong : accFeeLong + delta;
-  const newAccFeeShort = moreShorts ? accFeeShort + delta : accFeeShort;
+  // Calculate the actual acc fee (using capped oi of 100% or less)
+  const delta =
+    netOi > minNetOi
+      ? getPendingAccFeesDelta(
+          blockDistance,
+          feePerBlock,
+          Math.min(netOi, maxNetOi), // if netOi > cap, use cap
+          maxOi,
+          feeExponent
+        )
+      : minDelta;
 
-  return { accFeeLong: newAccFeeLong, accFeeShort: newAccFeeShort, delta };
+  const [deltaLong, deltaShort] = moreShorts
+    ? [minDelta, delta]
+    : [delta, minDelta];
+
+  return {
+    accFeeLong: accFeeLong + deltaLong,
+    accFeeShort: accFeeShort + deltaShort,
+    deltaLong,
+    deltaShort,
+  };
+};
+
+const getPendingAccFeesDelta = (
+  blockDistance: number,
+  feePerBlock: number,
+  netOi: number,
+  maxOi: number,
+  feeExponent: number
+): number => {
+  return maxOi > 0 && feeExponent > 0
+    ? feePerBlock * blockDistance * (netOi / maxOi) ** feeExponent
+    : 0;
+};
+
+const getFeePerBlockCaps = (
+  cap?: BorrowingFee.BorrowingFeePerBlockCap
+): BorrowingFee.BorrowingFeePerBlockCap => {
+  return {
+    minP: cap?.minP || 0,
+    maxP: cap?.maxP && cap.maxP > 0 ? cap.maxP : 1,
+  };
 };
 
 const getBorrowingDataActiveFeePerBlock = (
   val: BorrowingFee.Pair | BorrowingFee.Group
 ): number => {
   const { long, short, max } = val.oi;
-  const netOi = Math.abs(long - short);
+  const { minP, maxP } = getFeePerBlockCaps(
+    "feePerBlockCap" in val ? val.feePerBlockCap : undefined
+  );
 
-  return val.feePerBlock * (netOi / max) ** val.feeExponent;
+  // Calculate the effective open interest
+  // If minP > 0 then netOi has to be at least minP * maxOi
+  // If maxP > 0 then netOi cannot be more than maxP * maxOi
+  const effectiveOi = Math.min(
+    Math.max(Math.abs(long - short), max * minP),
+    max * maxP
+  );
+
+  return val.feePerBlock * (effectiveOi / max) ** val.feeExponent;
 };
 
 const getActiveFeePerBlock = (
@@ -271,6 +361,8 @@ export const borrowingFeeUtils = {
   getActiveFeePerBlock,
   getBorrowingDataActiveFeePerBlock,
   getPairGroupIndex,
+  getPendingAccFeesDelta,
+  getFeePerBlockCaps,
 };
 
 export * as BorrowingFee from "./types";
