@@ -599,4 +599,8 @@ export enum PairIndex {
   VINEUSD,
   TOSHIUSD,
   BERAUSD,
+  LAYERUSD,
+  CHEEMSUSD,
+  SOLVUSD,
+  TSTUSD,
 }
