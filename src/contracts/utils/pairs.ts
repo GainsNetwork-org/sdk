@@ -487,4 +487,6 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.CHEEMSUSD]: "Cheems Token to US Dollar",
   [PairIndex.SOLVUSD]: "Solv Protocol to US Dollar",
   [PairIndex.TSTUSD]: "Test to US Dollar",
+  [PairIndex.IPUSD]: "Story to US Dollar",
+  [PairIndex.KAITOUSD]: "KAITO to US Dollar",
 };

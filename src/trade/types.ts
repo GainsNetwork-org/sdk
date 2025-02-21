@@ -603,4 +603,6 @@ export enum PairIndex {
   CHEEMSUSD,
   SOLVUSD,
   TSTUSD,
+  IPUSD,
+  KAITOUSD,
 }
