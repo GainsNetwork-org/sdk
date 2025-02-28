@@ -11,7 +11,6 @@ import { ContractsVersion } from "../contracts/types";
 
 export type GetPnlContext = GetBorrowingFeeContext & {
   fee: Fee | undefined;
-  maxGainP: number | undefined;
   collateralPriceUsd: number | undefined;
   contractsVersion: ContractsVersion | undefined;
   feeMultiplier: number | undefined;
@@ -31,15 +30,11 @@ export const getPnl = (
   }
   const posCollat = trade.collateralAmount;
   const { openPrice, leverage } = trade;
-  const { maxGainP, fee } = context;
-  const maxGain =
-    maxGainP === undefined ? Infinity : (maxGainP / 100) * posCollat;
+  const { fee } = context;
 
   let pnlCollat = trade.long
     ? ((price - openPrice) / openPrice) * leverage * posCollat
     : ((openPrice - price) / openPrice) * leverage * posCollat;
-
-  pnlCollat = pnlCollat > maxGain ? maxGain : pnlCollat;
 
   if (useFees) {
     pnlCollat -= getBorrowingFee(
