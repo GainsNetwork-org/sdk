@@ -20,6 +20,7 @@ export enum CollateralTypes {
   ARB = "ARB",
   USDC = "USDC",
   APE = "APE",
+  GNS = "GNS",
 }
 
 export enum ContractsVersion {
