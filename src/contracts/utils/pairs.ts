@@ -489,4 +489,7 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.TSTUSD]: "Test to US Dollar",
   [PairIndex.IPUSD]: "Story to US Dollar",
   [PairIndex.KAITOUSD]: "KAITO to US Dollar",
+  [PairIndex.ELXUSD]: "Elixir to US Dollar",
+  [PairIndex.PIUSD]: "Pi Network to US Dollar",
+  [PairIndex.SHELLUSD]: "MyShell to US Dollar",
 };
