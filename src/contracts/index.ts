@@ -76,11 +76,13 @@ export const COLLATERAL_TO_CHAIN_COLLATERAL_INDEX: Record<
     [CollateralTypes.DAI]: 1,
     [CollateralTypes.ETH]: 2,
     [CollateralTypes.USDC]: 3,
+    [CollateralTypes.GNS]: 4,
   },
   [ChainId.ARBITRUM_SEPOLIA]: {
     [CollateralTypes.DAI]: 1,
     [CollateralTypes.ETH]: 2,
     [CollateralTypes.USDC]: 3,
+    [CollateralTypes.GNS]: 4,
   },
   [ChainId.BASE]: {
     [CollateralTypes.USDC]: 1,
@@ -97,6 +99,7 @@ export const COLLATERAL_TO_COLLATERAL_INDEX: Record<CollateralTypes, number> = {
   [CollateralTypes.USDC]: 3,
   [CollateralTypes.ARB]: 0, // not in use
   [CollateralTypes.APE]: 0, // not in use
+  [CollateralTypes.GNS]: 0, // not in use
 };
 
 export * from "./utils";
