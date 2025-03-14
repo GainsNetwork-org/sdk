@@ -492,4 +492,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.ELXUSD]: "Elixir to US Dollar",
   [PairIndex.PIUSD]: "Pi Network to US Dollar",
   [PairIndex.SHELLUSD]: "MyShell to US Dollar",
+  [PairIndex.BMTUSD]: "Bubblemaps to US Dollar",
 };

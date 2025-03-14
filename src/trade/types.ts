@@ -608,4 +608,5 @@ export enum PairIndex {
   ELXUSD,
   PIUSD,
   SHELLUSD,
+  BMTUSD,
 }
