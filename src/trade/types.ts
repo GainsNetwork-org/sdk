@@ -216,6 +216,11 @@ export type PairFactor = {
   exemptAfterProtectionCloseFactor: boolean;
 };
 
+export type UserPriceImpact = {
+  cumulVolPriceImpactMultiplier: number;
+  fixedSpreadP: number;
+};
+
 export enum PendingOrderType {
   MARKET_OPEN,
   MARKET_CLOSE,
