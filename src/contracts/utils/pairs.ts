@@ -493,4 +493,10 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.PIUSD]: "Pi Network to US Dollar",
   [PairIndex.SHELLUSD]: "MyShell to US Dollar",
   [PairIndex.BMTUSD]: "Bubblemaps to US Dollar",
+  [PairIndex.BROCCOLIUSD]: "CZ'S Dog to US Dollar",
+  [PairIndex.TUTUSD]: "Tutorial to US Dollar",
+  [PairIndex.GPSUSD]: "GoPlus Security to US Dollar",
+  [PairIndex.REDUSD]: "RedStone to US Dollar",
+  [PairIndex.MUBARAKUSD]: "Mubarak to US Dollar",
+  [PairIndex.FORMUSD]: "Four to US Dollar",
 };

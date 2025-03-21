@@ -609,4 +609,10 @@ export enum PairIndex {
   PIUSD,
   SHELLUSD,
   BMTUSD,
+  BROCCOLIUSD,
+  TUTUSD,
+  GPSUSD,
+  REDUSD,
+  MUBARAKUSD,
+  FORMUSD,
 }
