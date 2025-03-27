@@ -615,4 +615,9 @@ export enum PairIndex {
   REDUSD,
   MUBARAKUSD,
   FORMUSD,
+  WALUSD,
+  NILUSD,
+  PARTIUSD,
+  SIRENUSD,
+  BANANAS31,
 }
