@@ -499,4 +499,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.REDUSD]: "RedStone to US Dollar",
   [PairIndex.MUBARAKUSD]: "Mubarak to US Dollar",
   [PairIndex.FORMUSD]: "Four to US Dollar",
+  [PairIndex.WALUSD]: "Walrus to US Dollar",
+  [PairIndex.NILUSD]: "Nillion to US Dollar",
+  [PairIndex.PARTIUSD]: "Particle Network to US Dollar",
+  [PairIndex.SIRENUSD]: "Siren to US Dollar",
 };
