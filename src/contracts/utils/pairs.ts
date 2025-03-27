@@ -503,4 +503,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.NILUSD]: "Nillion to US Dollar",
   [PairIndex.PARTIUSD]: "Particle Network to US Dollar",
   [PairIndex.SIRENUSD]: "Siren to US Dollar",
+  [PairIndex.BANANAS31]: "Banana For Scale to US Dollar",
 };
