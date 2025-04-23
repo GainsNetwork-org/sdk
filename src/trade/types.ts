@@ -620,4 +620,10 @@ export enum PairIndex {
   PARTIUSD,
   SIRENUSD,
   BANANAS31,
+  HYPERUSD,
+  PROMPTUSD,
+  RFCUSD,
+  WCTUSD,
+  BIGTIMEUSD,
+  BABYUSD,
 }
