@@ -504,4 +504,10 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.PARTIUSD]: "Particle Network to US Dollar",
   [PairIndex.SIRENUSD]: "Siren to US Dollar",
   [PairIndex.BANANAS31]: "Banana For Scale to US Dollar",
+  [PairIndex.HYPERUSD]: "Hyperlane to US Dollar",
+  [PairIndex.PROMPTUSD]: "Wayfinder to US Dollar",
+  [PairIndex.RFCUSD]: "Retard Finder Coin to US Dollar",
+  [PairIndex.WCTUSD]: "WalletConnect Token to US Dollar",
+  [PairIndex.BIGTIMEUSD]: "Big Time to US Dollar",
+  [PairIndex.BABYUSD]: "Babylon to US Dollar",
 };
