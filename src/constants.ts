@@ -358,6 +358,23 @@ export const pairs = {
   "PI/USD": CRYPTO,
   "SHELL/USD": CRYPTO,
   "BMT/USD": CRYPTO,
+  "BROCCOLI/USD": CRYPTO,
+  "TUT/USD": CRYPTO,
+  "GPS/USD": CRYPTO,
+  "RED/USD": CRYPTO,
+  "MUBARAK/USD": CRYPTO,
+  "FORM/USD": CRYPTO,
+  "WAL/USD": CRYPTO,
+  "NIL/USD": CRYPTO,
+  "PARTI/USD": CRYPTO,
+  "SIREN/USD": CRYPTO,
+  "BANANAS31/USD": CRYPTO,
+  "HYPER/USD": CRYPTO,
+  "PROMPT/USD": CRYPTO,
+  "RFC/USD": CRYPTO,
+  "WCT/USD": CRYPTO,
+  "BIGTIME/USD": CRYPTO,
+  "BABY/USD": CRYPTO,
 };
 
 export const syntheticPairs = new Set([
@@ -414,7 +431,9 @@ export const delistedPairIxs = new Set([
   4, 6, 31, 36, 48, 51, 54, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
   71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
   97, 99, 101, 106, 52, 147, 152, 160, 179, 182, 183, 190, 229, 163, 15, 170,
-  239, 254, 230, 4, 275, 290, 296, 311, 330, 250, 276,
+  239, 254, 230, 275, 290, 296, 311, 330, 250, 276, 282, 253, 53, 56, 130, 209,
+  208, 231, 285, 279, 225, 305, 270, 294, 349, 278, 364, 365, 366, 367, 368,
+  369,
 ]);
 
 export const delistedGroupsIxs = new Set([6, 7]);
