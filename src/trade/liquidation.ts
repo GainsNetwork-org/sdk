@@ -4,7 +4,7 @@ import {
   BorrowingFee,
   getClosingFee,
 } from "./fees";
-import { Fee, LiquidationParams, Trade } from "./types";
+import { Fee, LiquidationParams, Trade, UserPriceImpact } from "./types";
 import { getSpreadP } from "./spread";
 import { ContractsVersion } from "../contracts/types";
 
@@ -13,6 +13,7 @@ export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
   pairSpreadP: number | undefined;
   collateralPriceUsd: number | undefined;
   contractsVersion: ContractsVersion | undefined;
+  userPriceImpact?: UserPriceImpact | undefined;
 };
 
 export const getLiquidationPrice = (
@@ -49,13 +50,16 @@ export const getLiquidationPrice = (
   if (
     context?.contractsVersion !== undefined &&
     context.contractsVersion >= ContractsVersion.V9_2 &&
-    context?.liquidationParams?.maxLiqSpreadP !== undefined &&
-    context.liquidationParams.maxLiqSpreadP > 0
+    ((context?.liquidationParams?.maxLiqSpreadP !== undefined &&
+      context.liquidationParams.maxLiqSpreadP > 0) ||
+      (context?.userPriceImpact?.fixedSpreadP !== undefined &&
+        context.userPriceImpact.fixedSpreadP > 0))
   ) {
     const closingSpreadP = getSpreadP(
       context.pairSpreadP,
       true,
-      context.liquidationParams
+      context.liquidationParams,
+      context.userPriceImpact
     );
 
     liqPriceDistance -= trade.openPrice * closingSpreadP;

@@ -1373,6 +1373,14 @@
       "signature": "0xc85ac748"
     },
     {
+      "inputs": [],
+      "name": "initializeReferralFeeChange",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xe4d0c552"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
@@ -1565,6 +1573,11 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
           "internalType": "uint256",
           "name": "_pairIndex",
           "type": "uint256"
@@ -1580,7 +1593,32 @@
       ],
       "stateMutability": "view",
       "type": "function",
-      "signature": "0xa1d54e9b"
+      "signature": "0xd6bfb055"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_trader",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_pairIndex",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "pairSpreadPArray",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x842a91d6"
     },
     {
       "inputs": [
@@ -2093,6 +2131,46 @@
         {
           "indexed": true,
           "internalType": "address",
+          "name": "ally",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint24",
+          "name": "allyFeeP",
+          "type": "uint24"
+        }
+      ],
+      "name": "OverrodeAllyFeeP",
+      "type": "event",
+      "signature": "0xb5c3fde8238e94bb4bbaa413be4d5b14d90e9a399db8d4f405d791ccd383ec9d"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "referrer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint24",
+          "name": "referralFeeP",
+          "type": "uint24"
+        }
+      ],
+      "name": "OverrodeReferralFeeP",
+      "type": "event",
+      "signature": "0x69b632ab0d5becac42ff599f05530699f7bafe35d60010b9f45122e921eb7496"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
           "name": "trader",
           "type": "address"
         },
@@ -2353,6 +2431,43 @@
       "signature": "0x92e67406"
     },
     {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "getReferralSettingsOverrides",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint24",
+              "name": "referralFeeOverrideP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "allyFeeOverrideP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint208",
+              "name": "__placeholder",
+              "type": "uint208"
+            }
+          ],
+          "internalType": "struct IReferrals.ReferralSettingsOverrides",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xa1ed4611"
+    },
+    {
       "inputs": [],
       "name": "getReferralsAllyFeeP",
       "outputs": [
@@ -2574,6 +2689,44 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x38fb18c7"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_allies",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint24[]",
+          "name": "_allyFeeP",
+          "type": "uint24[]"
+        }
+      ],
+      "name": "overrideAllyFeeP",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x9397053b"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_referrers",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint24[]",
+          "name": "_referralFeeP",
+          "type": "uint24[]"
+        }
+      ],
+      "name": "overrideReferralFeeP",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xdaeb463b"
     },
     {
       "inputs": [
@@ -3711,6 +3864,38 @@
       "signature": "0xb97e27f523fc23750f9d24f12010b9c513c301db9022d0ce8e27a50d9f426383"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "trader",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint16",
+          "name": "pairIndex",
+          "type": "uint16"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint16",
+          "name": "cumulVolPriceImpactMultiplier",
+          "type": "uint16"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint16",
+          "name": "fixedSpreadP",
+          "type": "uint16"
+        }
+      ],
+      "name": "UserPriceImpactUpdated",
+      "type": "event",
+      "signature": "0x8f9f4768797359d22361c80641b41261863e9ad2f362291570d7386478f4135b"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -4102,6 +4287,48 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_pairIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getUserPriceImpact",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint16",
+              "name": "cumulVolPriceImpactMultiplier",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "fixedSpreadP",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint224",
+              "name": "__placeholder",
+              "type": "uint224"
+            }
+          ],
+          "internalType": "struct IPriceImpact.UserPriceImpact",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x5a1449ab"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint40",
           "name": "_negPnlCumulVolMultiplier",
           "type": "uint40"
@@ -4340,6 +4567,35 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0xef0243dc"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_traders",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "_pairIndices",
+          "type": "uint16[]"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "_cumulVolPriceImpactMultipliers",
+          "type": "uint16[]"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "_fixedSpreadPs",
+          "type": "uint16[]"
+        }
+      ],
+      "name": "setUserPriceImpact",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x9a8c610e"
     },
     {
       "inputs": [],
@@ -6077,6 +6333,20 @@
       "signature": "0x6a0aff41"
     },
     {
+      "inputs": [],
+      "name": "getGnsCollateralIndex",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x78a70ec6"
+    },
+    {
       "inputs": [
         {
           "components": [
@@ -6911,6 +7181,26 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0x4d140218"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_index",
+          "type": "uint8"
+        }
+      ],
+      "name": "isCollateralGns",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x8db9390d"
     },
     {
       "inputs": [
@@ -9419,6 +9709,11 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0xf401f2bb"
+    },
+    {
+      "inputs": [],
+      "name": "PendingOrderNotOpen",
+      "type": "error"
     },
     {
       "anonymous": false,
@@ -13008,6 +13303,34 @@
       "inputs": [
         {
           "indexed": false,
+          "internalType": "uint24",
+          "name": "maxLookbackDeviationP",
+          "type": "uint24"
+        }
+      ],
+      "name": "MaxLookbackDeviationPUpdated",
+      "type": "event",
+      "signature": "0xa043df067b559e4e84d85e6607cd6524f12547f7d22dcb2bbcdc03c74886688c"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint24",
+          "name": "maxMarketDeviationP",
+          "type": "uint24"
+        }
+      ],
+      "name": "MaxMarketDeviationPUpdated",
+      "type": "event",
+      "signature": "0x93bd5e01958edd4eb2e0dfd8da8773f075b8f8ae0ef6823bc12703cc2e546df0"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
           "internalType": "uint8",
           "name": "value",
           "type": "uint8"
@@ -13133,11 +13456,79 @@
           "internalType": "bool",
           "name": "usedInMedian",
           "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "minAnswersReached",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "minFilteredAnswersReached",
+          "type": "bool"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "open",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "high",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "low",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ts",
+              "type": "uint64"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IPriceAggregator.OrderAnswer[]",
+          "name": "unfilteredAnswers",
+          "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "open",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "high",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "low",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ts",
+              "type": "uint64"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IPriceAggregator.OrderAnswer[]",
+          "name": "filteredAnswers",
+          "type": "tuple[]"
         }
       ],
       "name": "PriceReceived",
       "type": "event",
-      "signature": "0x1d01fcc0e82c93f463da710266800aff752bf7da2435090b30616276602eb75a"
+      "signature": "0xa412cea1596decdadbb4b2b716e8efe35b7d319fbda462bd9c37b9d46a001dee"
     },
     {
       "anonymous": false,
@@ -13157,6 +13548,78 @@
         {
           "components": [
             {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "user",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "index",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint16",
+                  "name": "pairIndex",
+                  "type": "uint16"
+                },
+                {
+                  "internalType": "uint24",
+                  "name": "leverage",
+                  "type": "uint24"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "long",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isOpen",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "collateralIndex",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum ITradingStorage.TradeType",
+                  "name": "tradeType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint120",
+                  "name": "collateralAmount",
+                  "type": "uint120"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "openPrice",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "tp",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "sl",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint192",
+                  "name": "__placeholder",
+                  "type": "uint192"
+                }
+              ],
+              "internalType": "struct ITradingStorage.Trade",
+              "name": "trade",
+              "type": "tuple"
+            },
+            {
               "internalType": "address",
               "name": "user",
               "type": "address"
@@ -13165,36 +13628,32 @@
               "internalType": "uint32",
               "name": "index",
               "type": "uint32"
-            }
-          ],
-          "indexed": false,
-          "internalType": "struct ITradingStorage.Id",
-          "name": "tradeId",
-          "type": "tuple"
-        },
-        {
-          "components": [
+            },
             {
-              "internalType": "address",
-              "name": "user",
-              "type": "address"
+              "internalType": "bool",
+              "name": "isOpen",
+              "type": "bool"
+            },
+            {
+              "internalType": "enum ITradingStorage.PendingOrderType",
+              "name": "orderType",
+              "type": "uint8"
             },
             {
               "internalType": "uint32",
-              "name": "index",
+              "name": "createdBlock",
               "type": "uint32"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxSlippageP",
+              "type": "uint16"
             }
           ],
           "indexed": false,
-          "internalType": "struct ITradingStorage.Id",
-          "name": "pendingOrderId",
+          "internalType": "struct ITradingStorage.PendingOrder",
+          "name": "pendingOrder",
           "type": "tuple"
-        },
-        {
-          "indexed": false,
-          "internalType": "enum ITradingStorage.PendingOrderType",
-          "name": "orderType",
-          "type": "uint8"
         },
         {
           "indexed": false,
@@ -13229,7 +13688,7 @@
       ],
       "name": "PriceRequested",
       "type": "event",
-      "signature": "0x59fd16e7bbed6457d473d57a799cffde3ff43e27a3a87479a5a431b4801f754f"
+      "signature": "0xbf65a2efd7b0d6f18e30be9668d59e0bb7092d6fa0f20587e40330e5f9147f8e"
     },
     {
       "anonymous": false,
@@ -13638,6 +14097,34 @@
     },
     {
       "inputs": [],
+      "name": "getMaxLookbackDeviationP",
+      "outputs": [
+        {
+          "internalType": "uint24",
+          "name": "",
+          "type": "uint24"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xda381eb3"
+    },
+    {
+      "inputs": [],
+      "name": "getMaxMarketDeviationP",
+      "outputs": [
+        {
+          "internalType": "uint24",
+          "name": "",
+          "type": "uint24"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x8550092e"
+    },
+    {
+      "inputs": [],
       "name": "getMinAnswers",
       "outputs": [
         {
@@ -13719,6 +14206,78 @@
         {
           "components": [
             {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "user",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "index",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint16",
+                  "name": "pairIndex",
+                  "type": "uint16"
+                },
+                {
+                  "internalType": "uint24",
+                  "name": "leverage",
+                  "type": "uint24"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "long",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "isOpen",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "collateralIndex",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum ITradingStorage.TradeType",
+                  "name": "tradeType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint120",
+                  "name": "collateralAmount",
+                  "type": "uint120"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "openPrice",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "tp",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "sl",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint192",
+                  "name": "__placeholder",
+                  "type": "uint192"
+                }
+              ],
+              "internalType": "struct ITradingStorage.Trade",
+              "name": "trade",
+              "type": "tuple"
+            },
+            {
               "internalType": "address",
               "name": "user",
               "type": "address"
@@ -13727,12 +14286,45 @@
               "internalType": "uint32",
               "name": "index",
               "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isOpen",
+              "type": "bool"
+            },
+            {
+              "internalType": "enum ITradingStorage.PendingOrderType",
+              "name": "orderType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "createdBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxSlippageP",
+              "type": "uint16"
             }
           ],
-          "internalType": "struct ITradingStorage.Id",
-          "name": "_tradeId",
+          "internalType": "struct ITradingStorage.PendingOrder",
+          "name": "_pendingOrder",
           "type": "tuple"
         },
+        {
+          "internalType": "uint256",
+          "name": "_positionSizeCollateral",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_fromBlock",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPrice",
+      "outputs": [
         {
           "components": [
             {
@@ -13747,30 +14339,13 @@
             }
           ],
           "internalType": "struct ITradingStorage.Id",
-          "name": "_orderId",
+          "name": "",
           "type": "tuple"
-        },
-        {
-          "internalType": "enum ITradingStorage.PendingOrderType",
-          "name": "_orderType",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_positionSizeCollateral",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_fromBlock",
-          "type": "uint256"
         }
       ],
-      "name": "getPrice",
-      "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x7e156b8c"
+      "signature": "0x18fc5876"
     },
     {
       "inputs": [
@@ -13948,6 +14523,25 @@
     {
       "inputs": [
         {
+          "internalType": "uint24",
+          "name": "_maxMarketDeviationP",
+          "type": "uint24"
+        },
+        {
+          "internalType": "uint24",
+          "name": "_maxLookbackDeviationP",
+          "type": "uint24"
+        }
+      ],
+      "name": "initializeMaxDeviationsP",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x94db9ef7"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "_linkToken",
           "type": "address"
@@ -14085,6 +14679,34 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x85f276b8"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint24",
+          "name": "_maxLookbackDeviationP",
+          "type": "uint24"
+        }
+      ],
+      "name": "setMaxLookbackDeviationP",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xd2029399"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint24",
+          "name": "_maxMarketDeviationP",
+          "type": "uint24"
+        }
+      ],
+      "name": "setMaxMarketDeviationP",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xaa564b10"
     },
     {
       "inputs": [

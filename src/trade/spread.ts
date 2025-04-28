@@ -4,6 +4,7 @@ import {
   OiWindowsSettings,
   PairDepth,
   PairFactor,
+  UserPriceImpact,
 } from "./types";
 import { getActiveOi, getCurrentOiWindowId } from "./oiWindows";
 import {
@@ -20,22 +21,29 @@ export type SpreadContext = {
   currentBlock?: number | undefined;
   contractsVersion?: ContractsVersion | undefined;
   protectionCloseFactorWhitelist?: boolean;
+  userPriceImpact?: UserPriceImpact | undefined;
 } & Partial<PairFactor>;
 
 export const getProtectionCloseFactor = (
   spreadCtx: SpreadContext | undefined
 ): number => {
-  if (
+  const protectionCloseFactor =
     spreadCtx === undefined ||
     spreadCtx.contractsVersion === ContractsVersion.BEFORE_V9_2 ||
     spreadCtx.isOpen === undefined ||
     spreadCtx.isPnlPositive === undefined ||
+    spreadCtx.protectionCloseFactor === undefined ||
     isProtectionCloseFactorActive(spreadCtx) !== true
-  )
-    return DEFAULT_PROTECTION_CLOSE_FACTOR;
+      ? DEFAULT_PROTECTION_CLOSE_FACTOR
+      : spreadCtx.protectionCloseFactor;
 
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return spreadCtx.protectionCloseFactor!;
+  const protectionCloseFactorMultiplier =
+    spreadCtx?.userPriceImpact?.cumulVolPriceImpactMultiplier !== undefined &&
+    spreadCtx.userPriceImpact.cumulVolPriceImpactMultiplier > 0
+      ? spreadCtx.userPriceImpact.cumulVolPriceImpactMultiplier
+      : 1;
+
+  return protectionCloseFactor * protectionCloseFactorMultiplier;
 };
 
 export const isProtectionCloseFactorActive = (
@@ -136,7 +144,7 @@ export const getSpreadWithPriceImpactP = (
   }
 
   return (
-    getSpreadP(pairSpreadP) +
+    getSpreadP(pairSpreadP, undefined, undefined, spreadCtx?.userPriceImpact) +
     ((activeOi * getCumulativeFactor(spreadCtx) + (collateral * leverage) / 2) /
       onePercentDepth /
       100 /
@@ -148,13 +156,16 @@ export const getSpreadWithPriceImpactP = (
 export const getSpreadP = (
   pairSpreadP: number | undefined,
   isLiquidation?: boolean | undefined,
-  liquidationParams?: LiquidationParams | undefined
+  liquidationParams?: LiquidationParams | undefined,
+  userPriceImpact?: UserPriceImpact | undefined
 ): number => {
-  if (pairSpreadP === undefined || pairSpreadP === 0) {
+  const fixedSpreadP = userPriceImpact?.fixedSpreadP ?? 0;
+
+  if (pairSpreadP === undefined || (pairSpreadP === 0 && fixedSpreadP === 0)) {
     return 0;
   }
 
-  const spreadP = pairSpreadP / 2;
+  const spreadP = pairSpreadP / 2 + fixedSpreadP;
 
   return isLiquidation === true &&
     liquidationParams !== undefined &&
