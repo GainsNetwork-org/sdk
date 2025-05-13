@@ -436,7 +436,7 @@ export const delistedPairIxs = new Set([
   290, 294, 296, 305, 330, 349, 352, 353, 354, 355, 357, 365, 366,
 ]);
 
-export const delistedGroupsIxs = new Set([6, 7]);
+export const delistedGroupsIxs = new Set([]);
 
 export const DEFAULT_PROTECTION_CLOSE_FACTOR = 1;
 
