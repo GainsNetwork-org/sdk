@@ -516,4 +516,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.SYRUPUSD]: "Maple Finance to US Dollar",
   [PairIndex.SIGNUSD]: "Sign to US Dollar",
   [PairIndex.ZORAUSD]: "ZORA to US Dollar",
+  [PairIndex.COINUSD]: "Coinbase to US Dollar",
 };
