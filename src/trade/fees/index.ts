@@ -64,7 +64,6 @@ export {
   fetchBorrowingFeeParamsV2,
   fetchPairBorrowingFeeDataV2,
   fetchTradeBorrowingFeesCollateralV2,
-  fetchTradeFeesDataV2,
   fetchPairPendingAccBorrowingFeesV2,
   fetchAllBorrowingV2Data,
   createBorrowingV2ContextFromContract,

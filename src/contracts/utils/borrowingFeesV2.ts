@@ -3,7 +3,6 @@ import { BorrowingFeeV2 } from "../../trade/fees/borrowingV2";
 import {
   convertBorrowingFeeParamsArray as convertBorrowingFeeParamsArrayV2,
   convertPairBorrowingFeeDataArray as convertPairBorrowingFeeDataArrayV2,
-  convertTradeInitialAccFeesArray as convertTradeInitialAccFeesArrayV2,
 } from "../../trade/fees/borrowingV2/converter";
 
 /**
@@ -94,35 +93,6 @@ export const fetchTradeBorrowingFeesCollateralV2 = async (
     return parseFloat(feesCollateral.toString());
   } catch (error) {
     console.error("Error fetching trade borrowing fees collateral v2:", error);
-    throw error;
-  }
-};
-
-/**
- * @dev Fetches trade fees data for multiple trades (to extract initial acc fees)
- * @param contract GNSMultiCollatDiamond contract instance
- * @param traders Array of trader addresses
- * @param indices Array of trade indices
- * @returns Promise resolving to array of trade initial accumulated fees
- */
-export const fetchTradeFeesDataV2 = async (
-  contract: GNSMultiCollatDiamond,
-  traders: string[],
-  indices: number[]
-): Promise<BorrowingFeeV2.TradeInitialAccFees[]> => {
-  if (traders.length !== indices.length) {
-    throw new Error("Traders and indices arrays must have the same length");
-  }
-
-  try {
-    const contractTradeData = await contract.getTradeFeesDataArray(
-      traders,
-      indices
-    );
-
-    return convertTradeInitialAccFeesArrayV2(contractTradeData);
-  } catch (error) {
-    console.error("Error fetching trade fees data v2:", error);
     throw error;
   }
 };
