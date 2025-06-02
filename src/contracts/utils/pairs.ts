@@ -510,4 +510,11 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.WCTUSD]: "WalletConnect Token to US Dollar",
   [PairIndex.BIGTIMEUSD]: "Big Time to US Dollar",
   [PairIndex.BABYUSD]: "Babylon to US Dollar",
+  [PairIndex.COOKIEUSD]: "Cookie DAO to US Dollar",
+  [PairIndex.KMNOUSD]: "Kamino to US Dollar",
+  [PairIndex.INITUSD]: "Initia to US Dollar",
+  [PairIndex.SYRUPUSD]: "Maple Finance to US Dollar",
+  [PairIndex.SIGNUSD]: "Sign to US Dollar",
+  [PairIndex.ZORAUSD]: "ZORA to US Dollar",
+  [PairIndex.COINUSD]: "Coinbase to US Dollar",
 };
