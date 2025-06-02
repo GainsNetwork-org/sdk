@@ -44,7 +44,7 @@ export {
   getPairBorrowingFees as getPairBorrowingFeesV2,
   MAX_BORROWING_RATE_PER_SECOND as MAX_BORROWING_RATE_PER_SECOND_V2,
   BORROWING_V2_PRECISION,
-} from "./borrowing_v2";
+} from "./borrowingV2";
 
 export {
   convertBorrowingFeeParams as convertBorrowingFeeParamsV2,
@@ -57,4 +57,17 @@ export {
   isValidBorrowingRate as isValidBorrowingRateV2,
   borrowingRateToAPR as borrowingRateToAPRV2,
   aprToBorrowingRate as aprToBorrowingRateV2,
-} from "./borrowing_v2/converter";
+} from "./borrowingV2/converter";
+
+// Contract utilities re-exported for convenience
+export {
+  fetchBorrowingFeeParamsV2,
+  fetchPairBorrowingFeeDataV2,
+  fetchTradeBorrowingFeesCollateralV2,
+  fetchTradeFeesDataV2,
+  fetchPairPendingAccBorrowingFeesV2,
+  fetchAllBorrowingV2Data,
+  createBorrowingV2ContextFromContract,
+  createBorrowingV2ContextFromArrays,
+  fetchBorrowingV2DataForPairs,
+} from "../../contracts/utils/borrowingFeesV2";

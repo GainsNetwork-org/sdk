@@ -29,21 +29,21 @@ export const getPairPendingAccBorrowingFees = (
   currentTimestamp?: number
 ): number => {
   const timestamp = currentTimestamp ?? Math.floor(Date.now() / 1000);
-  
+
   // Calculate time elapsed since last update
   const timeElapsed = Math.max(0, timestamp - data.lastBorrowingUpdateTs);
-  
+
   // If no time elapsed, return current accumulated fee
   if (timeElapsed === 0) {
     return data.accBorrowingFeeP;
   }
-  
+
   // Calculate accumulated borrowing fee delta
   // Formula: borrowingRatePerSecondP * timeElapsed * currentPairPrice
   // This gives us the delta in normalized float precision
-  const accBorrowingFeeDeltaP = 
+  const accBorrowingFeeDeltaP =
     params.borrowingRatePerSecondP * timeElapsed * currentPairPrice;
-  
+
   return data.accBorrowingFeeP + accBorrowingFeeDeltaP;
 };
 
@@ -57,24 +57,24 @@ export const getTradeBorrowingFeesCollateral = (
   input: BorrowingFeeV2.TradeBorrowingFeeInput,
   context: BorrowingFeeV2.GetBorrowingFeeV2Context
 ): number => {
-  const { 
-    positionSizeCollateral, 
-    openPrice, 
-    collateralIndex, 
-    pairIndex, 
-    currentPairPrice, 
+  const {
+    positionSizeCollateral,
+    openPrice,
+    collateralIndex,
+    pairIndex,
+    currentPairPrice,
     initialAccBorrowingFeeP,
-    currentTimestamp 
+    currentTimestamp,
   } = input;
-  
+
   // Get borrowing parameters and data for the pair
   const params = context.borrowingParams[collateralIndex]?.[pairIndex];
   const data = context.borrowingData[collateralIndex]?.[pairIndex];
-  
+
   if (!params || !data) {
     return 0;
   }
-  
+
   // Calculate current accumulated borrowing fees
   const currentAccBorrowingFeeP = getPairPendingAccBorrowingFees(
     params,
@@ -82,15 +82,17 @@ export const getTradeBorrowingFeesCollateral = (
     currentPairPrice,
     currentTimestamp
   );
-  
+
   // Calculate borrowing fees for this trade
   // Formula: (positionSizeCollateral * (currentAccFee - initialAccFee)) / openPrice / 100
   // Note: No precision division needed since we work with normalized floats
   const feeDeltaP = currentAccBorrowingFeeP - initialAccBorrowingFeeP;
-  
-  return (positionSizeCollateral * feeDeltaP) / 
-         openPrice / 
-         BORROWING_V2_PRECISION.PERCENTAGE;
+
+  return (
+    (positionSizeCollateral * feeDeltaP) /
+    openPrice /
+    BORROWING_V2_PRECISION.PERCENTAGE
+  );
 };
 
 /**
@@ -113,15 +115,18 @@ export const getBorrowingFee = (
   initialAccBorrowingFeeP: number,
   context: BorrowingFeeV2.GetBorrowingFeeV2Context
 ): number => {
-  return getTradeBorrowingFeesCollateral({
-    positionSizeCollateral,
-    openPrice,
-    collateralIndex,
-    pairIndex,
-    currentPairPrice,
-    initialAccBorrowingFeeP,
-    currentTimestamp: context.currentTimestamp,
-  }, context);
+  return getTradeBorrowingFeesCollateral(
+    {
+      positionSizeCollateral,
+      openPrice,
+      collateralIndex,
+      pairIndex,
+      currentPairPrice,
+      initialAccBorrowingFeeP,
+      currentTimestamp: context.currentTimestamp,
+    },
+    context
+  );
 };
 
 /**
@@ -134,11 +139,12 @@ export const getPairBorrowingFees = (
   input: BorrowingFeeV2.PairBorrowingFeeInput,
   context: BorrowingFeeV2.GetBorrowingFeeV2Context
 ): number => {
-  const { collateralIndex, pairIndex, currentPairPrice, currentTimestamp } = input;
-  
+  const { collateralIndex, pairIndex, currentPairPrice, currentTimestamp } =
+    input;
+
   const params = context.borrowingParams[collateralIndex]?.[pairIndex];
   const data = context.borrowingData[collateralIndex]?.[pairIndex];
-  
+
   if (!params || !data) {
     return 0;
   }
