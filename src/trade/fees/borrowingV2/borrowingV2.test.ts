@@ -1,11 +1,10 @@
-import { 
+import {
   getPairPendingAccBorrowingFees,
   getTradeBorrowingFeesCollateral,
   getBorrowingFee,
   borrowingRateToAPR,
   aprToBorrowingRate,
   MAX_BORROWING_RATE_PER_SECOND,
-  BORROWING_V2_PRECISION
 } from "./index";
 import { BorrowingFeeV2 } from "./index";
 
@@ -21,12 +20,14 @@ describe("Borrowing V2 Fees", () => {
 
   const mockContext: BorrowingFeeV2.GetBorrowingFeeV2Context = {
     borrowingParams: {
-      0: { // collateralIndex 0
+      0: {
+        // collateralIndex 0
         1: mockParams, // pairIndex 1
       },
     },
     borrowingData: {
-      0: { // collateralIndex 0
+      0: {
+        // collateralIndex 0
         1: mockData, // pairIndex 1
       },
     },
@@ -56,7 +57,8 @@ describe("Borrowing V2 Fees", () => {
       );
 
       // Expected delta: (31710/1e10) * 3600 * 1000000 = 0.114156
-      const expectedDelta = mockParams.borrowingRatePerSecondP * 3600 * currentPairPrice;
+      const expectedDelta =
+        mockParams.borrowingRatePerSecondP * 3600 * currentPairPrice;
       const expected = mockData.accBorrowingFeeP + expectedDelta;
 
       expect(result).toBe(expected);
@@ -64,7 +66,7 @@ describe("Borrowing V2 Fees", () => {
 
     it("should handle negative time gracefully", () => {
       const pastTimestamp = mockData.lastBorrowingUpdateTs - 3600; // 1 hour before
-      
+
       const result = getPairPendingAccBorrowingFees(
         mockParams,
         mockData,
@@ -93,9 +95,9 @@ describe("Borrowing V2 Fees", () => {
 
       // Calculate expected:
       // 1. Current acc fee = initial + (31710/1e10 * 3600 * 1200000) = 10 + 0.136987200
-      // 2. Fee delta = 0.136987200  
+      // 2. Fee delta = 0.136987200
       // 3. Trade fee = (1000000000 * 0.136987200) / 1000000 / 100 = 136,987.2 collateral tokens
-      
+
       expect(result).toBeCloseTo(136987.2, 3);
     });
 
@@ -147,7 +149,10 @@ describe("Borrowing V2 Fees", () => {
         currentTimestamp: timestamp,
       };
 
-      const result2 = getTradeBorrowingFeesCollateral(input, contextWithTimestamp);
+      const result2 = getTradeBorrowingFeesCollateral(
+        input,
+        contextWithTimestamp
+      );
 
       expect(result1).toBe(result2);
     });

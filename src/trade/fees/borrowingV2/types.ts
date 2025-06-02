@@ -56,7 +56,7 @@ export type GetBorrowingFeeV2Context = {
    */
   borrowingParams: Record<number, Record<number, BorrowingFeeParams>>;
   /**
-   * @dev Borrowing fee data for pairs  
+   * @dev Borrowing fee data for pairs
    * @dev Indexed by: data[collateralIndex][pairIndex]
    */
   borrowingData: Record<number, Record<number, PairBorrowingFeeData>>;

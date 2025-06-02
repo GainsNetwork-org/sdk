@@ -70,3 +70,31 @@ export {
   createBorrowingV2ContextFromArrays,
   fetchBorrowingV2DataForPairs,
 } from "../../contracts/utils/borrowingFeesV2";
+
+// Funding Fees exports
+export {
+  FundingFees,
+  getCurrentFundingVelocityPerYear,
+  getSecondsToReachZeroRate,
+  getAvgFundingRatePerSecondP,
+  getLongShortAprMultiplier,
+  getPairPendingAccFundingFees,
+  getTradeFundingFeesCollateral,
+  getTradeFundingFees,
+} from "./fundingFees";
+
+export {
+  convertFundingFeeParams,
+  convertFundingFeeParamsArray,
+  convertPairFundingFeeData,
+  convertPairFundingFeeDataArray,
+  convertPairGlobalParams,
+  convertPairGlobalParamsArray,
+  convertTradeInitialAccFundingFees,
+  createFundingFeeContext,
+  isValidFundingRate,
+  fundingRateToAPR,
+  aprToFundingRate,
+  calculateVelocityFromSkew,
+  FUNDING_FEES_PRECISION,
+} from "./fundingFees/converter";

@@ -10,7 +10,9 @@ import { BORROWING_V2_PRECISION } from "./index";
 export const convertBorrowingFeeParams = (
   contractParams: IFundingFees.BorrowingFeeParamsStructOutput
 ): BorrowingFeeV2.BorrowingFeeParams => ({
-  borrowingRatePerSecondP: contractParams.borrowingRatePerSecondP / BORROWING_V2_PRECISION.RATE_PER_SECOND,
+  borrowingRatePerSecondP:
+    contractParams.borrowingRatePerSecondP /
+    BORROWING_V2_PRECISION.RATE_PER_SECOND,
 });
 
 /**
@@ -31,7 +33,9 @@ export const convertBorrowingFeeParamsArray = (
 export const convertPairBorrowingFeeData = (
   contractData: IFundingFees.PairBorrowingFeeDataStructOutput
 ): BorrowingFeeV2.PairBorrowingFeeData => ({
-  accBorrowingFeeP: parseFloat(contractData.accBorrowingFeeP.toString()) / BORROWING_V2_PRECISION.ACC_FEE,
+  accBorrowingFeeP:
+    parseFloat(contractData.accBorrowingFeeP.toString()) /
+    BORROWING_V2_PRECISION.ACC_FEE,
   lastBorrowingUpdateTs: contractData.lastBorrowingUpdateTs,
 });
 
@@ -53,7 +57,9 @@ export const convertPairBorrowingFeeDataArray = (
 export const convertTradeInitialAccFees = (
   contractTradeData: IFundingFees.TradeFeesDataStructOutput
 ): BorrowingFeeV2.TradeInitialAccFees => ({
-  initialAccBorrowingFeeP: parseFloat(contractTradeData.initialAccBorrowingFeeP.toString()) / BORROWING_V2_PRECISION.ACC_FEE,
+  initialAccBorrowingFeeP:
+    parseFloat(contractTradeData.initialAccBorrowingFeeP.toString()) /
+    BORROWING_V2_PRECISION.ACC_FEE,
 });
 
 /**
@@ -102,9 +108,9 @@ export const createBorrowingV2Context = (
     }
 
     // Store converted data
-    context.borrowingParams[collateralIndex][pairIndex] = 
+    context.borrowingParams[collateralIndex][pairIndex] =
       convertBorrowingFeeParams(borrowingParams[i]);
-    context.borrowingData[collateralIndex][pairIndex] = 
+    context.borrowingData[collateralIndex][pairIndex] =
       convertPairBorrowingFeeData(borrowingData[i]);
   }
 
@@ -116,8 +122,13 @@ export const createBorrowingV2Context = (
  * @param borrowingRatePerSecondP Borrowing rate per second (normalized float)
  * @returns True if rate is within valid bounds
  */
-export const isValidBorrowingRate = (borrowingRatePerSecondP: number): boolean => {
-  return borrowingRatePerSecondP >= 0 && borrowingRatePerSecondP <= (317097 / BORROWING_V2_PRECISION.RATE_PER_SECOND); // Max 1,000% APR
+export const isValidBorrowingRate = (
+  borrowingRatePerSecondP: number
+): boolean => {
+  return (
+    borrowingRatePerSecondP >= 0 &&
+    borrowingRatePerSecondP <= 317097 / BORROWING_V2_PRECISION.RATE_PER_SECOND
+  ); // Max 1,000% APR
 };
 
 /**
