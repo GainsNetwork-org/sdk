@@ -447,3 +447,18 @@ export const getTradeFundingFees = (
 
 // Export namespace for types
 export * as FundingFees from "./types";
+
+// Re-export specific types for convenience
+export type {
+  FundingFeeParams,
+  PairFundingFeeData,
+  PairGlobalParams,
+  TradeInitialAccFundingFees,
+  PairOiAfterV10,
+  FundingRateCalculation,
+  GetFundingFeeContext,
+  TradeFundingFeeResult,
+  PairPendingAccFundingFeesResult,
+  PairAccumulatedFees,
+  TradeInitialAccFees,
+} from "./types";

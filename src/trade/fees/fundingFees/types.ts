@@ -34,6 +34,20 @@ export type TradeInitialAccFundingFees = {
   initialAccFundingFeeP: number; // Initial accumulated funding fee when trade opened (normalized %)
 };
 
+// Pair accumulated fees (from contract)
+export type PairAccumulatedFees = {
+  accPerOiLong: number; // Accumulated funding per OI for longs
+  accPerOiShort: number; // Accumulated funding per OI for shorts
+  lastUpdateBlock: number; // Last block when fees were updated
+};
+
+// Trade initial accumulated fees (from contract)
+export type TradeInitialAccFees = {
+  accPerOiLong: number; // Accumulated funding per OI for longs at trade open
+  accPerOiShort: number; // Accumulated funding per OI for shorts at trade open
+  openBlock: number; // Block when trade was opened
+};
+
 // OI (Open Interest) information for funding calculations
 export type PairOiAfterV10 = {
   oiLongToken: number; // Long OI in tokens (v10+)

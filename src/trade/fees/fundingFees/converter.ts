@@ -227,3 +227,20 @@ export const calculateVelocityFromSkew = (
 ): number => {
   return Math.abs(skewRatio) * skewCoefficientPerYear;
 };
+
+/**
+ * @dev Creates a GetFundingFeeContext from arrays (alias for consistency)
+ * @param collateralIndices Array of collateral indices
+ * @param pairIndices Array of pair indices
+ * @param params Array of funding fee parameters
+ * @param data Array of pair funding fee data
+ * @returns Complete funding fee context
+ */
+export const createGetFundingFeeContext = (
+  collateralIndices: number[],
+  pairIndices: number[],
+  params: FundingFeeParams[],
+  data: PairFundingFeeData[]
+): GetFundingFeeContext => {
+  return createFundingFeeContext(collateralIndices, pairIndices, params, data);
+};
