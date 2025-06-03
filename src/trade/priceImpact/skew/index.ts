@@ -1,0 +1,232 @@
+/**
+ * @dev Skew price impact calculations for v10+ trades
+ * @dev Based on formula: (existingSkew + tradeSize/2) / skewDepth
+ */
+
+import {
+  PairOiToken,
+  SkewPriceImpactInput,
+  SkewPriceImpactResult,
+  SkewPriceImpactContext,
+  TradeSkewParams,
+} from "./types";
+
+// Constants
+const PRICE_IMPACT_DIVIDER = 2; // Half price impact to match cumulative volume impact scale
+
+/**
+ * @dev Calculates net skew in tokens (long - short)
+ * @param pairOi Pair OI data with long and short token amounts
+ * @returns Net skew in tokens (positive = long heavy, negative = short heavy)
+ */
+export const getNetSkewToken = (pairOi: PairOiToken): number => {
+  return pairOi.oiLongToken - pairOi.oiShortToken;
+};
+
+/**
+ * @dev Calculates net skew in collateral tokens
+ * @param netSkewToken Net skew in tokens
+ * @param currentPrice Current pair price
+ * @returns Net skew in collateral tokens
+ */
+export const getNetSkewCollateral = (
+  netSkewToken: number,
+  currentPrice: number
+): number => {
+  return netSkewToken * currentPrice;
+};
+
+/**
+ * @dev Converts position size from collateral to tokens
+ * @param positionSizeCollateral Position size in collateral tokens
+ * @param currentPrice Current pair price
+ * @returns Position size in tokens
+ */
+export const calculatePositionSizeToken = (
+  positionSizeCollateral: number,
+  currentPrice: number
+): number => {
+  if (currentPrice === 0) {
+    throw new Error("Current price cannot be zero");
+  }
+  return positionSizeCollateral / currentPrice;
+};
+
+/**
+ * @dev Converts position size from tokens to collateral
+ * @param positionSizeToken Position size in tokens
+ * @param currentPrice Current pair price
+ * @returns Position size in collateral tokens
+ */
+export const calculatePositionSizeCollateral = (
+  positionSizeToken: number,
+  currentPrice: number
+): number => {
+  return positionSizeToken * currentPrice;
+};
+
+/**
+ * @dev Determines trade direction impact on skew
+ * @param long Is long position
+ * @param open Is opening (true) or closing (false)
+ * @returns Whether trade increases or decreases skew
+ */
+export const getTradeSkewDirection = (
+  long: boolean,
+  open: boolean
+): boolean => {
+  // Opening long or closing short increases positive skew
+  // Opening short or closing long increases negative skew
+  return (long && open) || (!long && !open);
+};
+
+/**
+ * @dev Core skew price impact calculation
+ * @param existingSkewToken Current net skew in tokens (signed)
+ * @param tradeSizeToken Trade size in tokens (always positive)
+ * @param skewDepth Skew depth in collateral tokens
+ * @param tradeIncreasesSkew Whether trade increases skew in its direction
+ * @returns Price impact percentage (can be positive or negative)
+ */
+export const calculateSkewPriceImpactP = (
+  existingSkewToken: number,
+  tradeSizeToken: number,
+  skewDepth: number,
+  tradeIncreasesSkew: boolean
+): number => {
+  if (skewDepth === 0) {
+    return 0; // No impact if depth is 0
+  }
+
+  // Convert signed values based on trade direction
+  const tradeSkewMultiplier = tradeIncreasesSkew ? 1 : -1;
+  const signedExistingSkew = existingSkewToken;
+  const signedTradeSize = tradeSizeToken * tradeSkewMultiplier;
+
+  // Formula: (existingSkew + tradeSize/2) / skewDepth
+  const numerator = signedExistingSkew + signedTradeSize / 2;
+  const priceImpactP = (numerator / skewDepth) * 100; // Convert to percentage
+
+  // Apply divider to match cumulative volume impact scale
+  return priceImpactP / PRICE_IMPACT_DIVIDER;
+};
+
+/**
+ * @dev Main function to calculate skew price impact for a trade
+ * @param context Skew price impact context with depths and OI data
+ * @param input Trade parameters
+ * @returns Skew price impact result
+ */
+export const getTradeSkewPriceImpact = (
+  context: SkewPriceImpactContext,
+  input: SkewPriceImpactInput
+): SkewPriceImpactResult => {
+  // Get skew depth for the pair
+  const skewDepth =
+    context.skewDepths[input.collateralIndex]?.[input.pairIndex];
+  if (skewDepth === undefined) {
+    throw new Error(
+      `Missing skew depth for collateral ${input.collateralIndex} pair ${input.pairIndex}`
+    );
+  }
+
+  // Get pair OI data
+  const pairOi = context.pairOiTokens[input.collateralIndex]?.[input.pairIndex];
+  if (!pairOi) {
+    throw new Error(
+      `Missing pair OI data for collateral ${input.collateralIndex} pair ${input.pairIndex}`
+    );
+  }
+
+  // Calculate net skew
+  const netSkewToken = getNetSkewToken(pairOi);
+
+  // Determine trade direction impact
+  const tradeIncreasesSkew = getTradeSkewDirection(input.long, input.open);
+
+  // Calculate price impact
+  const priceImpactP = calculateSkewPriceImpactP(
+    netSkewToken,
+    input.positionSizeToken,
+    skewDepth,
+    tradeIncreasesSkew
+  );
+
+  // Determine trade direction relative to skew
+  let tradeDirection: "increase" | "decrease" | "neutral";
+  if (priceImpactP > 0) {
+    tradeDirection = "increase";
+  } else if (priceImpactP < 0) {
+    tradeDirection = "decrease";
+  } else {
+    tradeDirection = "neutral";
+  }
+
+  return {
+    priceImpactP,
+    netSkewToken,
+    netSkewCollateral: 0, // To be calculated with price if needed
+    tradeDirection,
+  };
+};
+
+/**
+ * @dev Calculate skew price impact for a trade with all parameters
+ * @param params Trade parameters including price and version checks
+ * @param context Skew price impact context
+ * @returns Price impact percentage or 0 if not applicable
+ */
+export const getTradeSkewPriceImpactWithChecks = (
+  params: TradeSkewParams,
+  context: SkewPriceImpactContext
+): number => {
+  // v10+ trades only
+  if (params.contractsVersion < 10) {
+    return 0;
+  }
+
+  // Counter trades don't pay skew impact
+  if (params.isCounterTrade) {
+    return 0;
+  }
+
+  // Calculate position size in tokens
+  const positionSizeToken = calculatePositionSizeToken(
+    params.positionSizeCollateral,
+    params.currentPrice
+  );
+
+  // Get skew price impact
+  const result = getTradeSkewPriceImpact(context, {
+    collateralIndex: params.collateralIndex,
+    pairIndex: params.pairIndex,
+    long: params.long,
+    open: params.open,
+    positionSizeToken,
+  });
+
+  return result.priceImpactP;
+};
+
+/**
+ * @dev Calculate position sizes for partial operations
+ * @param originalSizeCollateral Original position size in collateral
+ * @param deltaCollateral Position size delta in collateral
+ * @param originalSizeToken Original position size in tokens
+ * @returns Delta in tokens proportional to collateral delta
+ */
+export const calculatePartialSizeToken = (
+  originalSizeCollateral: number,
+  deltaCollateral: number,
+  originalSizeToken: number
+): number => {
+  if (originalSizeCollateral === 0) {
+    return 0;
+  }
+
+  // For partial close/add, token delta is proportional to collateral delta
+  return (deltaCollateral * originalSizeToken) / originalSizeCollateral;
+};
+
+// Export namespace for types
+export * as SkewPriceImpact from "./types";
