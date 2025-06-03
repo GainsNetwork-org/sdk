@@ -636,4 +636,11 @@ export enum PairIndex {
   WCTUSD,
   BIGTIMEUSD,
   BABYUSD,
+  COOKIEUSD,
+  KMNOUSD,
+  INITUSD,
+  SYRUPUSD,
+  SIGNUSD,
+  ZORAUSD,
+  COINUSD,
 }

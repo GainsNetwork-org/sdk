@@ -375,6 +375,13 @@ export const pairs = {
   "WCT/USD": CRYPTO,
   "BIGTIME/USD": CRYPTO,
   "BABY/USD": CRYPTO,
+  "COOKIE/USD": CRYPTO,
+  "KMNO/USD": CRYPTO,
+  "INIT/USD": CRYPTO,
+  "SYRUP/USD": CRYPTO,
+  "SIGN/USD": CRYPTO,
+  "ZORA/USD": CRYPTO,
+  "COIN/USD": STOCKS,
 };
 
 export const syntheticPairs = new Set([
@@ -436,7 +443,7 @@ export const delistedPairIxs = new Set([
   290, 294, 296, 305, 330, 349, 352, 353, 354, 355, 357, 365, 366,
 ]);
 
-export const delistedGroupsIxs = new Set([6, 7]);
+export const delistedGroupsIxs = new Set([]);
 
 export const DEFAULT_PROTECTION_CLOSE_FACTOR = 1;
 
