@@ -1,13 +1,15 @@
 import {
   getNetSkewToken,
-  calculatePositionSizeToken,
-  calculatePositionSizeCollateral,
   getTradeSkewDirection,
   calculateSkewPriceImpactP,
   getTradeSkewPriceImpact,
   getTradeSkewPriceImpactWithChecks,
   calculatePartialSizeToken,
 } from "./index";
+import {
+  calculatePositionSizeToken,
+  calculatePositionSizeCollateral,
+} from "../../utils";
 import {
   convertPairOiToken,
   convertPairOiCollateral,

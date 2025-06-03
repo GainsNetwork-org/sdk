@@ -9,8 +9,6 @@ export {
   // Core functions
   getNetSkewToken,
   getNetSkewCollateral,
-  calculatePositionSizeToken,
-  calculatePositionSizeCollateral,
   getTradeSkewDirection,
   calculateSkewPriceImpactP,
   getTradeSkewPriceImpact,
