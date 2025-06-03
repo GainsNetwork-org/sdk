@@ -502,6 +502,20 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_govEmergencyTimelock",
+          "type": "address"
+        }
+      ],
+      "name": "initializeGovEmergencyTimelock",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x52b3aaca"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address[]",
           "name": "_accounts",
           "type": "address[]"
@@ -9604,7 +9618,7 @@
             },
             {
               "internalType": "int256",
-              "name": "existingNetPnlCollateral",
+              "name": "partialNetPnlCollateral",
               "type": "int256"
             },
             {
@@ -14344,11 +14358,6 @@
             },
             {
               "internalType": "uint256",
-              "name": "openPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
               "name": "currentPairPrice",
               "type": "uint256"
             }
@@ -14368,7 +14377,7 @@
       ],
       "stateMutability": "view",
       "type": "function",
-      "signature": "0x2f020075"
+      "signature": "0x19e31460"
     },
     {
       "inputs": [
@@ -19314,8 +19323,7 @@
       "type": "function",
       "signature": "0x86d43b8a"
     }
-  ]
-,
+  ],
   "deployedBytecode": "",
   "bytecode": "",
   "linkReferences": {},

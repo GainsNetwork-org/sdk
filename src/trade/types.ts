@@ -2,6 +2,7 @@ import {
   ITradingStorage,
   IBorrowingFees,
   IPairsStorage,
+  IFundingFees,
 } from "../contracts/types/generated/GNSMultiCollatDiamond";
 import { BorrowingFee } from "./fees/borrowing";
 import { FeeTier, TraderEnrollment, TraderInfo } from "./fees/tiers/types";
@@ -31,6 +32,8 @@ export type Trade = {
   openPrice: number;
   sl: number;
   tp: number;
+  isCounterTrade?: boolean;
+  positionSizeToken?: number;
 };
 
 export type TradeInfo = {
@@ -165,6 +168,8 @@ export type TradeContainerRaw = {
   tradeInfo: ITradingStorage.TradeInfoStruct;
   liquidationParams: IPairsStorage.GroupLiquidationParamsStruct;
   initialAccFees: IBorrowingFees.BorrowingInitialAccFeesStruct;
+  tradeFeesData: IFundingFees.TradeFeesDataStruct;
+  uiRealizedPnlData?: IFundingFees.UiRealizedPnlDataStruct;
 };
 
 export type OiWindowsSettings = {
