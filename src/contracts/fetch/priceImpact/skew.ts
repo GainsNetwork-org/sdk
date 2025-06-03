@@ -8,7 +8,6 @@ import {
   normalizeSkewDepth,
   createSkewPriceImpactContext,
 } from "../../../trade/priceImpact";
-import { getCollateralDecimalsForChain } from "../../utils/collateral";
 
 /**
  * @dev Fetches pair open interest in tokens for a specific pair
