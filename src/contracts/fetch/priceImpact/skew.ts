@@ -8,6 +8,7 @@ import {
   normalizeSkewDepth,
   createSkewPriceImpactContext,
 } from "../../../trade/priceImpact";
+import { getCollateralDecimalsForChain } from "../../utils/collateral";
 
 /**
  * @dev Fetches pair open interest in tokens for a specific pair
@@ -201,29 +202,6 @@ export const fetchCollateralDecimals = async (
     console.error("Error fetching collateral decimals:", error);
     throw error;
   }
-};
-
-/**
- * @dev Helper to get collateral decimals for a chain
- * @param chainId Chain ID
- * @param collateralIndices Array of collateral indices
- * @returns Array of decimals (can be hardcoded for known chains)
- */
-export const getCollateralDecimalsForChain = (
-  chainId: number,
-  collateralIndices: number[]
-): number[] => {
-  // Known decimals by chain and collateral index
-  const chainDecimals: Record<number, Record<number, number>> = {
-    137: { 1: 18, 2: 18, 3: 6 }, // Polygon: DAI=18, ETH=18, USDC=6
-    42161: { 1: 18, 2: 18, 3: 6, 4: 18 }, // Arbitrum: DAI=18, ETH=18, USDC=6, GNS=18
-    8453: { 1: 6 }, // Base: USDC=6
-    33139: { 1: 18 }, // ApeChain: APE=18
-  };
-
-  const decimalsForChain = chainDecimals[chainId] || {};
-
-  return collateralIndices.map(index => decimalsForChain[index] || 18);
 };
 
 /**
