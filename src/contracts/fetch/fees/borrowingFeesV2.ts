@@ -1,9 +1,9 @@
-import type { GNSMultiCollatDiamond } from "../types/generated";
-import { BorrowingFeeV2 } from "../../trade/fees/borrowingV2";
+import type { GNSMultiCollatDiamond } from "../../types/generated";
+import { BorrowingFeeV2 } from "../../../trade/fees/borrowingV2";
 import {
   convertBorrowingFeeParamsArray as convertBorrowingFeeParamsArrayV2,
   convertPairBorrowingFeeDataArray as convertPairBorrowingFeeDataArrayV2,
-} from "../../trade/fees/borrowingV2/converter";
+} from "../../../trade/fees/borrowingV2/converter";
 
 /**
  * @dev Fetches borrowing fee parameters v2 for specific pairs

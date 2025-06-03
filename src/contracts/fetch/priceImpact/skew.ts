@@ -1,13 +1,13 @@
-import type { GNSMultiCollatDiamond } from "../types/generated";
+import type { GNSMultiCollatDiamond } from "../../types/generated";
 import type {
   PairOiToken,
   SkewPriceImpactContext,
-} from "../../trade/priceImpact";
+} from "../../../trade/priceImpact";
 import {
   convertPairOiToken,
   normalizeSkewDepth,
   createSkewPriceImpactContext,
-} from "../../trade/priceImpact";
+} from "../../../trade/priceImpact";
 
 /**
  * @dev Fetches pair open interest in tokens for a specific pair
