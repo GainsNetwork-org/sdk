@@ -5,16 +5,18 @@ export type GetBorrowingFeeContext = {
   currentBlock: number;
   groups: BorrowingFee.Group[];
   pairs: BorrowingFee.Pair[];
+  collateralPriceUsd: number;
 };
 
 /**
  * @dev Calculates borrowing fees using v1 model (block-based with groups)
  * @dev Still actively used by markets that haven't migrated to v2
+ * @dev Uses dynamic collateral OI - converts OI to USD for fee calculations
  * @param posDai Position size in collateral
  * @param pairIndex Trading pair index
  * @param long Whether position is long
  * @param initialAccFees Initial accumulated fees when trade was opened
- * @param context Context with current block and fee data
+ * @param context Context with current block, fee data, and collateral price
  * @returns Borrowing fee in collateral tokens
  */
 export const getBorrowingFee = (
@@ -40,6 +42,7 @@ export const getBorrowingFee = (
         ? getPairPendingAccFee(pairIndex, context.currentBlock, long, {
             pairs,
             openInterest,
+            collateralPriceUsd: context.collateralPriceUsd,
           })
         : long
         ? firstPairGroup.pairAccFeeLong
@@ -103,6 +106,7 @@ const getPairPendingAccFees = (
   context: {
     pairs: BorrowingFee.Pair[];
     openInterest: OpenInterest;
+    collateralPriceUsd: number;
   }
 ): {
   accFeeLong: number;
@@ -113,6 +117,7 @@ const getPairPendingAccFees = (
   const {
     pairs,
     openInterest: { long, short },
+    collateralPriceUsd,
   } = context;
 
   const pair = pairs[pairIndex];
@@ -127,7 +132,8 @@ const getPairPendingAccFees = (
     pair.accLastUpdatedBlock,
     pair.oi.max,
     pair.feeExponent,
-    pair.feePerBlockCap
+    pair.feePerBlockCap,
+    collateralPriceUsd
   );
 };
 
@@ -138,6 +144,7 @@ const getPairPendingAccFee = (
   context: {
     pairs: BorrowingFee.Pair[];
     openInterest: OpenInterest;
+    collateralPriceUsd: number;
   }
 ): number => {
   const { accFeeLong, accFeeShort } = getPairPendingAccFees(
@@ -151,14 +158,14 @@ const getPairPendingAccFee = (
 const getGroupPendingAccFees = (
   groupIndex: number,
   currentBlock: number,
-  context: { groups: BorrowingFee.Group[] }
+  context: { groups: BorrowingFee.Group[]; collateralPriceUsd: number }
 ): {
   accFeeLong: number;
   accFeeShort: number;
   deltaLong: number;
   deltaShort: number;
 } => {
-  const { groups } = context;
+  const { groups, collateralPriceUsd } = context;
   const group = groups[groupIndex];
   return getPendingAccFees(
     group.accFeeLong,
@@ -169,7 +176,9 @@ const getGroupPendingAccFees = (
     currentBlock,
     group.accLastUpdatedBlock,
     group.oi.max,
-    group.feeExponent
+    group.feeExponent,
+    undefined, // no fee caps for groups
+    collateralPriceUsd
   );
 };
 
@@ -177,7 +186,7 @@ const getGroupPendingAccFee = (
   groupIndex: number,
   currentBlock: number,
   long: boolean,
-  context: { groups: BorrowingFee.Group[] }
+  context: { groups: BorrowingFee.Group[]; collateralPriceUsd: number }
 ): number => {
   const { accFeeLong, accFeeShort } = getGroupPendingAccFees(
     groupIndex,
@@ -200,14 +209,16 @@ const getPairGroupAccFeesDeltas = (
 
   let deltaGroup, deltaPair;
   if (i == pairGroups.length - 1) {
-    const { currentBlock, groups, pairs } = context;
+    const { currentBlock, groups, pairs, collateralPriceUsd } = context;
     const openInterest = pairs[pairIndex].oi;
     deltaGroup = getGroupPendingAccFee(group.groupIndex, currentBlock, long, {
       groups,
+      collateralPriceUsd,
     });
     deltaPair = getPairPendingAccFee(pairIndex, currentBlock, long, {
       pairs,
       openInterest,
+      collateralPriceUsd,
     });
   } else {
     const nextGroup = pairGroups[i + 1];
@@ -242,7 +253,8 @@ const getPendingAccFees = (
   accLastUpdatedBlock: number,
   maxOi: number,
   feeExponent: number,
-  feeCaps?: BorrowingFee.BorrowingFeePerBlockCap // as percentage: eg minP: 0.1 = 10%, maxP: 0.5 = 50%
+  feeCaps?: BorrowingFee.BorrowingFeePerBlockCap, // as percentage: eg minP: 0.1 = 10%, maxP: 0.5 = 50%
+  collateralPriceUsd?: number
 ): {
   accFeeLong: number;
   accFeeShort: number;
@@ -263,12 +275,17 @@ const getPendingAccFees = (
     };
   }
 
-  const netOi = Math.abs(oiLong - oiShort);
+  // Convert OI to USD if collateral price is provided (dynamic collateral OI)
+  const oiLongUsd = collateralPriceUsd ? oiLong * collateralPriceUsd : oiLong;
+  const oiShortUsd = collateralPriceUsd ? oiShort * collateralPriceUsd : oiShort;
+  const maxOiUsd = collateralPriceUsd ? maxOi * collateralPriceUsd : maxOi;
 
-  // Calculate minimum and maximum effective oi
+  const netOi = Math.abs(oiLongUsd - oiShortUsd);
+
+  // Calculate minimum and maximum effective oi (using USD values if available)
   const { minP, maxP } = getFeePerBlockCaps(feeCaps);
-  const minNetOi = maxOi * minP;
-  const maxNetOi = maxOi * maxP;
+  const minNetOi = maxOiUsd * minP;
+  const maxNetOi = maxOiUsd * maxP;
 
   // Calculate the minimum acc fee delta (applies to both sides)
   const minDelta =
@@ -277,7 +294,7 @@ const getPendingAccFees = (
           blockDistance,
           feePerBlock,
           netOi,
-          maxOi,
+          maxOiUsd,
           feeExponent
         )
       : 0;
@@ -289,7 +306,7 @@ const getPendingAccFees = (
           blockDistance,
           feePerBlock,
           Math.min(netOi, maxNetOi), // if netOi > cap, use cap
-          maxOi,
+          maxOiUsd,
           feeExponent
         )
       : minDelta;
