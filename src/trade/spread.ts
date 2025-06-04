@@ -6,7 +6,9 @@
 // Re-export from priceImpact/cumulVol for backward compatibility
 export {
   getSpreadWithPriceImpactP,
+  getSpreadWithCumulVolPriceImpactP,
   getTradeCumulVolPriceImpactP,
+  getCumulVolPriceImpact,
   getProtectionCloseFactor,
   isProtectionCloseFactorActive,
   getCumulativeFactor,

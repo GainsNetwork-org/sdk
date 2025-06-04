@@ -1,12 +1,25 @@
 /**
  * @dev Main price impact module
- * @dev Exports both cumulative volume and skew price impact functionality
+ * @dev Exports cumulative volume, skew, and combined opening price impact functionality
  */
+
+// Export trade opening price impact functionality
+export {
+  // Core functions
+  getTradeOpeningPriceImpact,
+  getTradeOpeningPriceImpactAtMarket,
+  // Types
+  TradeOpeningPriceImpactInput,
+  TradeOpeningPriceImpactContext,
+  TradeOpeningPriceImpactResult,
+} from "./open";
 
 // Export cumulative volume price impact functionality
 export {
   // Core functions
   getTradeCumulVolPriceImpactP,
+  getCumulVolPriceImpact, // Convenience function
+  getSpreadWithCumulVolPriceImpactP,
   getSpreadWithPriceImpactP, // Legacy alias
   getProtectionCloseFactor,
   isProtectionCloseFactorActive,

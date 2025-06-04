@@ -19,14 +19,25 @@ import {
 import { ContractsVersion } from "../../../contracts/types";
 
 export type CumulVolContext = {
+  // Trade state
   isOpen?: boolean;
   isPnlPositive?: boolean;
   createdBlock?: number;
+
+  // Protection factors
   liquidationParams?: LiquidationParams | undefined;
   currentBlock?: number | undefined;
   contractsVersion?: ContractsVersion | undefined;
   protectionCloseFactorWhitelist?: boolean;
+
+  // Price impact data
+  pairDepth?: PairDepth | undefined;
+  oiWindowsSettings?: OiWindowsSettings | undefined;
+  oiWindows?: OiWindows | undefined;
+
+  // User/collateral specific
   userPriceImpact?: UserPriceImpact | undefined;
+  collateralPriceUsd?: number;
 } & Partial<PairFactor>;
 
 /**
@@ -117,77 +128,80 @@ export const getLegacyFactor = (
 /**
  * @dev Calculates cumulative volume price impact percentage
  * @dev Mirrors contract's getTradeCumulVolPriceImpactP function
- * @param pairSpreadP Base pair spread percentage
- * @param buy True for long, false for short
- * @param collateral Collateral amount
- * @param leverage Position leverage
- * @param pairDepth 1% depth values for the pair
- * @param oiWindowsSettings OI windows configuration
- * @param oiWindows Current OI windows data
- * @param context Additional context for the calculation
- * @returns Total spread + cumulative volume price impact percentage
+ * @param trader Trader address
+ * @param pairIndex Trading pair index
+ * @param long True for long, false for short
+ * @param tradeOpenInterestUsd Position size in USD
+ * @param isPnlPositive Whether PnL is positive (only relevant when closing)
+ * @param open True for opening, false for closing
+ * @param lastPosIncreaseBlock Last block when position was increased (only relevant when closing)
+ * @param context Additional context with depths, OI data, and factors
+ * @returns Cumulative volume price impact percentage (not including spread)
  */
 export const getTradeCumulVolPriceImpactP = (
-  pairSpreadP: number,
-  buy: boolean,
-  collateral: number,
-  leverage: number,
-  pairDepth: PairDepth | undefined,
-  oiWindowsSettings?: OiWindowsSettings | undefined,
-  oiWindows?: OiWindows | undefined,
-  context?: CumulVolContext | undefined
+  trader: string,
+  pairIndex: number,
+  long: boolean,
+  tradeOpenInterestUsd: number,
+  isPnlPositive: boolean,
+  open: boolean,
+  lastPosIncreaseBlock: number,
+  context: CumulVolContext
 ): number => {
-  if (pairSpreadP === undefined) {
-    return 0;
-  }
+  // Update context with passed parameters
+  const updatedContext = {
+    ...context,
+    isOpen: open,
+    isPnlPositive: isPnlPositive,
+    createdBlock: context.createdBlock || lastPosIncreaseBlock,
+  };
 
   if (
-    // No spread or price impact when closing pre-v9.2 trades
-    (context?.isOpen === false &&
-      context?.contractsVersion === ContractsVersion.BEFORE_V9_2) ||
-    // No spread or price impact for opens when `pair.exemptOnOpen` is true
-    (context?.isOpen === true && context?.exemptOnOpen === true) ||
-    // No spread or price impact for closes after `protectionCloseFactor` has expired
+    // No price impact when closing pre-v9.2 trades
+    (!open && context?.contractsVersion === ContractsVersion.BEFORE_V9_2) ||
+    // No price impact for opens when `pair.exemptOnOpen` is true
+    (open && context?.exemptOnOpen === true) ||
+    // No price impact for closes after `protectionCloseFactor` has expired
     // when `pair.exemptAfterProtectionCloseFactor` is true
-    (context?.isOpen === false &&
+    (!open &&
       context?.exemptAfterProtectionCloseFactor === true &&
-      isProtectionCloseFactorActive(context) !== true)
+      isProtectionCloseFactorActive(updatedContext) !== true)
   ) {
     return 0;
   }
 
-  const onePercentDepth = buy
+  const onePercentDepth = long
     ? // if `long`
-      context?.isOpen !== false // assumes it's an open unless it's explicitly false
-      ? pairDepth?.onePercentDepthAboveUsd
-      : pairDepth?.onePercentDepthBelowUsd
+      open
+      ? context.pairDepth?.onePercentDepthAboveUsd
+      : context.pairDepth?.onePercentDepthBelowUsd
     : // if `short`
-    context?.isOpen !== false
-    ? pairDepth?.onePercentDepthBelowUsd
-    : pairDepth?.onePercentDepthAboveUsd;
+    open
+    ? context.pairDepth?.onePercentDepthBelowUsd
+    : context.pairDepth?.onePercentDepthAboveUsd;
 
   let activeOi = undefined;
 
-  if (oiWindowsSettings !== undefined) {
+  if (context.oiWindowsSettings !== undefined) {
     activeOi = getActiveOi(
-      getCurrentOiWindowId(oiWindowsSettings),
-      oiWindowsSettings.windowsCount,
-      oiWindows,
-      context?.isOpen !== false ? buy : !buy
+      getCurrentOiWindowId(context.oiWindowsSettings),
+      context.oiWindowsSettings.windowsCount,
+      context.oiWindows,
+      open ? long : !long
     );
   }
 
-  if (!onePercentDepth || activeOi === undefined || collateral === undefined) {
-    return pairSpreadP / 2;
+  if (!onePercentDepth || activeOi === undefined) {
+    return 0;
   }
 
   return (
-    getSpreadP(pairSpreadP, undefined, undefined, context?.userPriceImpact) +
-    ((activeOi * getCumulativeFactor(context) + (collateral * leverage) / 2) /
+    ((activeOi * getCumulativeFactor(updatedContext) +
+      tradeOpenInterestUsd / 2) /
       onePercentDepth /
       100 /
-      getLegacyFactor(context)) *
-      getProtectionCloseFactor(context)
+      getLegacyFactor(updatedContext)) *
+    getProtectionCloseFactor(updatedContext)
   );
 };
 
@@ -221,5 +235,100 @@ export const getSpreadP = (
     : spreadP;
 };
 
+/**
+ * @dev Gets spread with cumulative volume price impact
+ * @dev This combines base spread + cumulative volume impact
+ * @param pairSpreadP Base pair spread percentage
+ * @param buy True for long, false for short
+ * @param collateral Collateral amount
+ * @param leverage Position leverage
+ * @param pairDepth 1% depth values for the pair
+ * @param oiWindowsSettings OI windows configuration
+ * @param oiWindows Current OI windows data
+ * @param context Additional context for the calculation
+ * @returns Total spread + cumulative volume price impact percentage
+ */
+export const getSpreadWithCumulVolPriceImpactP = (
+  pairSpreadP: number,
+  buy: boolean,
+  collateral: number,
+  leverage: number,
+  pairDepth: PairDepth | undefined,
+  oiWindowsSettings?: OiWindowsSettings | undefined,
+  oiWindows?: OiWindows | undefined,
+  context?: CumulVolContext | undefined
+): number => {
+  if (pairSpreadP === undefined) {
+    return 0;
+  }
+
+  const baseSpread = getSpreadP(
+    pairSpreadP,
+    undefined,
+    undefined,
+    context?.userPriceImpact
+  );
+
+  // Calculate position size in USD
+  const positionSizeUsd =
+    collateral * leverage * (context?.collateralPriceUsd || 1);
+
+  const cumulVolImpact = getTradeCumulVolPriceImpactP(
+    "", // trader - not used in calculation
+    0, // pairIndex - not used in calculation
+    buy,
+    positionSizeUsd,
+    context?.isPnlPositive || false,
+    context?.isOpen !== false,
+    context?.createdBlock || 0,
+    {
+      ...context,
+      pairDepth,
+      oiWindowsSettings,
+      oiWindows,
+    }
+  );
+
+  // If no depth or OI data, return just half spread
+  if (cumulVolImpact === 0 && (!pairDepth || !oiWindowsSettings)) {
+    return pairSpreadP / 2;
+  }
+
+  return baseSpread + cumulVolImpact;
+};
+
+/**
+ * @dev Convenience function for calculating cumulative volume price impact
+ * @dev Uses collateral and leverage instead of USD position size
+ * @param buy True for long, false for short
+ * @param collateral Collateral amount
+ * @param leverage Position leverage
+ * @param open True for opening, false for closing
+ * @param context Full context including depths, OI data, and collateral price
+ * @returns Cumulative volume price impact percentage
+ */
+export const getCumulVolPriceImpact = (
+  buy: boolean,
+  collateral: number,
+  leverage: number,
+  open: boolean,
+  context: CumulVolContext & {
+    collateralPriceUsd: number; // This is required for USD conversion
+  }
+): number => {
+  const positionSizeUsd = collateral * leverage * context.collateralPriceUsd;
+
+  return getTradeCumulVolPriceImpactP(
+    "", // trader - not used in calculation
+    0, // pairIndex - not used in calculation
+    buy,
+    positionSizeUsd,
+    context.isPnlPositive || false,
+    open,
+    context.createdBlock || 0,
+    context
+  );
+};
+
 // Legacy export for backward compatibility
-export const getSpreadWithPriceImpactP = getTradeCumulVolPriceImpactP;
+export const getSpreadWithPriceImpactP = getSpreadWithCumulVolPriceImpactP;
