@@ -638,4 +638,17 @@ export enum PairIndex {
   SIGNUSD,
   ZORAUSD,
   COINUSD,
+
+  USD,
+  HOODUSD,
+  MSTRUSD,
+  NIKUSD,
+  NFLXUSD,
+  MCDUSD,
+  NDXUSD,
+  DAXUSD,
+  FTSEUSD,
+  LAUNCHCOINUSD,
+  NXPCUSD,
+  SOPHUSD,
 }

@@ -138,8 +138,7 @@ export const getPairDescription = (pairIndex: PairIndex): string => {
   return PAIR_INDEX_TO_DESCRIPTION[pairIndex] || "";
 };
 
-const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
-  [PairIndex.BTCUSD]: "Bitcoin to US Dollar",
+const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {[PairIndex.BTCUSD]: "Bitcoin to US Dollar",
   [PairIndex.ETHUSD]: "Ethereum to US Dollar",
   [PairIndex.LINKUSD]: "Chainlink to US Dollar",
   [PairIndex.DOGEUSD]: "Dogecoin to US Dollar",
@@ -517,4 +516,16 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.SIGNUSD]: "Sign to US Dollar",
   [PairIndex.ZORAUSD]: "ZORA to US Dollar",
   [PairIndex.COINUSD]: "Coinbase to US Dollar",
+  [PairIndex.USD]: " to US Dollar",
+  [PairIndex.HOODUSD]: "Robinhood Markets to US Dollar",
+  [PairIndex.MSTRUSD]: "MicroStrategy Inc  to US Dollar",
+  [PairIndex.NIKUSD]: "Nike to US Dollar",
+  [PairIndex.NFLXUSD]: "Netflix to US Dollar",
+  [PairIndex.MCDUSD]: "McDonald's Corp to US Dollar",
+  [PairIndex.NDXUSD]: "NASDAQ 100 to US Dollar",
+  [PairIndex.DAXUSD]: "DAX to US Dollar",
+  [PairIndex.FTSEUSD]: "FTSE 100 to US Dollar",
+  [PairIndex.LAUNCHCOINUSD]: "Launch Coin on Believe to US Dollar",
+  [PairIndex.NXPCUSD]: "NEXPACE to US Dollar",
+  [PairIndex.SOPHUSD]: "Sophon to US Dollar",
 };
