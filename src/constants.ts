@@ -392,6 +392,17 @@ export const pairs = {
   'LAUNCHCOIN/USD': CRYPTO,
   'NXPC/USD': CRYPTO,
   'SOPH/USD': CRYPTO,
+
+  "HOOD/USD": STOCKS,
+  "MSTR/USD": STOCKS,
+  "NIK/USD": STOCKS,
+  "NFLX/USD": STOCKS,
+  "NDX/USD": INDICES,
+  "DAX/USD": INDICES,
+  "FTSE/USD": INDICES,
+  "LAUNCHCOIN/USD": CRYPTO,
+  "NXPC/USD": CRYPTO,
+  "SOPH/USD": CRYPTO,
 };
 
 export const syntheticPairs = new Set([
@@ -449,6 +460,17 @@ export const delistedPairIxs = new Set([
   209, 225, 229, 230, 231, 238, 239, 241, 250, 253, 254, 258, 270, 275, 276, 278, 279, 282, 285,
   290, 294, 296, 305, 330, 349, 352, 353, 354, 355, 357, 365, 366, 377, 378, 379, 380, 382, 383,
   384, 385, 386, 387,
+
+377,
+378,
+379,
+380,
+382,
+383,
+384,
+385,
+386,
+387
 ]);
 
 export const delistedGroupsIxs = new Set([]);
