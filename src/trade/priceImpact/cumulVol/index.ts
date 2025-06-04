@@ -357,3 +357,11 @@ export const getCumulVolPriceImpact = (
 
 // Legacy export for backward compatibility
 export const getSpreadWithPriceImpactP = getSpreadWithCumulVolPriceImpactP;
+
+// Export converters
+export {
+  convertOiWindowsSettings,
+  convertOiWindow,
+  convertOiWindows,
+  convertOiWindowsSettingsArray,
+} from "./converter";

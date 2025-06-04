@@ -38,6 +38,11 @@ export {
   getLegacyFactor,
   getFixedSpreadP,
   getSpreadP,
+  // Converters
+  convertOiWindowsSettings,
+  convertOiWindow,
+  convertOiWindows,
+  convertOiWindowsSettingsArray,
   // Types
   CumulVolContext,
 } from "./cumulVol";
