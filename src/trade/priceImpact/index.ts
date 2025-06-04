@@ -1,8 +1,21 @@
 /**
  * @dev Main price impact module
- * @dev Exports skew price impact functionality (v10+)
- * @dev Cumulative volume price impact remains in spread.ts for now
+ * @dev Exports both cumulative volume and skew price impact functionality
  */
+
+// Export cumulative volume price impact functionality
+export {
+  // Core functions
+  getTradeCumulVolPriceImpactP,
+  getSpreadWithPriceImpactP, // Legacy alias
+  getProtectionCloseFactor,
+  isProtectionCloseFactorActive,
+  getCumulativeFactor,
+  getLegacyFactor,
+  getSpreadP,
+  // Types
+  CumulVolContext,
+} from "./cumulVol";
 
 // Export skew price impact functionality
 export {
