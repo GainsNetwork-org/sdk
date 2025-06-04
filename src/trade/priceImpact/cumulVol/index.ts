@@ -206,12 +206,37 @@ export const getTradeCumulVolPriceImpactP = (
 };
 
 /**
+ * @dev Gets the fixed spread percentage with direction
+ * @dev Mirrors contract's getFixedSpreadP function
+ * @param spreadP Total spread percentage (includes base + user spread)
+ * @param long True for long position
+ * @param open True for opening, false for closing
+ * @returns Signed spread percentage (positive or negative based on direction)
+ */
+export const getFixedSpreadP = (
+  spreadP: number,
+  long: boolean,
+  open: boolean
+): number => {
+  // Reverse spread direction on close
+  const effectiveLong = open ? long : !long;
+
+  // Calculate half spread
+  const fixedSpreadP = spreadP / 2;
+
+  // Apply direction
+  return effectiveLong ? fixedSpreadP : -fixedSpreadP;
+};
+
+/**
  * @dev Gets the base spread percentage
  * @param pairSpreadP Pair spread percentage
  * @param isLiquidation True if liquidation
  * @param liquidationParams Liquidation parameters
  * @param userPriceImpact User-specific price impact settings
  * @returns Base spread percentage
+ * @todo Review if this function still makes sense or should use getFixedSpreadP pattern
+ *       Currently it may double-count user fixed spread if pairSpreadP already includes it
  */
 export const getSpreadP = (
   pairSpreadP: number | undefined,

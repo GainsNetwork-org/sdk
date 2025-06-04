@@ -1,6 +1,6 @@
 /**
  * @dev Main price impact module
- * @dev Exports cumulative volume, skew, and combined opening price impact functionality
+ * @dev Exports cumulative volume, skew, and combined opening/closing price impact functionality
  */
 
 // Export trade opening price impact functionality
@@ -14,6 +14,17 @@ export {
   TradeOpeningPriceImpactResult,
 } from "./open";
 
+// Export trade closing price impact functionality
+export {
+  // Core functions
+  getTradeClosingPriceImpact,
+  getTradeClosingPriceImpactAtOracle,
+  // Types
+  TradeClosingPriceImpactInput,
+  TradeClosingPriceImpactContext,
+  TradeClosingPriceImpactResult,
+} from "./close";
+
 // Export cumulative volume price impact functionality
 export {
   // Core functions
@@ -25,6 +36,7 @@ export {
   isProtectionCloseFactorActive,
   getCumulativeFactor,
   getLegacyFactor,
+  getFixedSpreadP,
   getSpreadP,
   // Types
   CumulVolContext,

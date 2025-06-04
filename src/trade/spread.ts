@@ -13,6 +13,7 @@ export {
   isProtectionCloseFactorActive,
   getCumulativeFactor,
   getLegacyFactor,
+  getFixedSpreadP,
   getSpreadP,
   CumulVolContext as SpreadContext,
 } from "./priceImpact/cumulVol";

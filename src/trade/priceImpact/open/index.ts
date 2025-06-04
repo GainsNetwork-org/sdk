@@ -8,7 +8,7 @@ import {
   TradeOpeningPriceImpactContext,
   TradeOpeningPriceImpactResult,
 } from "./types";
-import { getSpreadP, getTradeCumulVolPriceImpactP } from "../cumulVol";
+import { getFixedSpreadP, getTradeCumulVolPriceImpactP } from "../cumulVol";
 import { getTradeSkewPriceImpactWithChecks } from "../skew";
 
 // Re-export types
@@ -31,12 +31,11 @@ export const getTradeOpeningPriceImpact = (
 ): TradeOpeningPriceImpactResult => {
   const positionSizeCollateral = input.collateralAmount * input.leverage;
 
-  // Calculate base spread (always positive)
-  const spreadP = getSpreadP(
+  // Calculate fixed spread
+  const spreadP = getFixedSpreadP(
     input.pairSpreadP,
-    false, // Not liquidation
-    undefined,
-    context.userPriceImpact
+    input.long,
+    true // opening
   );
 
   // Calculate position size in USD
