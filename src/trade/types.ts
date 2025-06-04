@@ -2,9 +2,9 @@ import {
   ITradingStorage,
   IBorrowingFees,
   IPairsStorage,
-} from "../contracts/types/generated/GNSMultiCollatDiamond";
-import { BorrowingFee } from "./fees/borrowing";
-import { FeeTier, TraderEnrollment, TraderInfo } from "./fees/tiers/types";
+} from '../contracts/types/generated/GNSMultiCollatDiamond';
+import { BorrowingFee } from './fees/borrowing';
+import { FeeTier, TraderEnrollment, TraderInfo } from './fees/tiers/types';
 
 export type PairIndexes = {
   [key: string]: PairIndex;
@@ -152,12 +152,12 @@ export type OpenTradeParams = [
   buy: boolean,
   leverage: number,
   takeProfit: string,
-  stopLoss: string
+  stopLoss: string,
 ];
 
 export enum PositionType {
-  LONG = "LONG",
-  SHORT = "SHORT",
+  LONG = 'LONG',
+  SHORT = 'SHORT',
 }
 
 export type TradeContainerRaw = {
@@ -638,4 +638,15 @@ export enum PairIndex {
   SIGNUSD,
   ZORAUSD,
   COINUSD,
+
+  HOODUSD,
+  MSTRUSD,
+  NIKUSD,
+  NFLXUSD,
+  NDXUSD,
+  DAXUSD,
+  FTSEUSD,
+  LAUNCHCOINUSD,
+  NXPCUSD,
+  SOPHUSD,
 }

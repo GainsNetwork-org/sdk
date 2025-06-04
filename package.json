@@ -1,11 +1,9 @@
 {
   "name": "@gainsnetwork/sdk",
-  "version": "0.2.66-rc2",
+  "version": "0.2.67-rc1",
   "description": "Gains Network SDK",
   "main": "./lib/index.js",
-  "files": [
-    "lib/**/*"
-  ],
+  "files": ["lib/**/*"],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "clean": "rm -rf ./lib/",
@@ -52,9 +50,7 @@
     "*.ts": "eslint --cache --cache-location .eslintcache --fix"
   },
   "release": {
-    "branches": [
-      "main"
-    ],
+    "branches": ["main"],
     "plugins": [
       [
         "@semantic-release/commit-analyzer",
