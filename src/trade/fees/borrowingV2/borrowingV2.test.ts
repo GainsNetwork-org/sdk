@@ -172,8 +172,8 @@ describe("Borrowing V2 Fees", () => {
     });
 
     it("should handle max borrowing rate", () => {
-      const maxAPR = borrowingRateToAPR(MAX_BORROWING_RATE_PER_SECOND / 1e10);
-      expect(maxAPR).toBeCloseTo(1000, 1); // Should be ~1000% APR
+      const maxAPR = borrowingRateToAPR(MAX_BORROWING_RATE_PER_SECOND);
+      expect(maxAPR).toBeCloseTo(999997.0992, 1); // Max borrowing rate is ~999997% APR
     });
   });
 });

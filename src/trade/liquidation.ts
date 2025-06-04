@@ -2,10 +2,12 @@ import {
   getBorrowingFee,
   GetBorrowingFeeContext,
   BorrowingFee,
-  getTotalTradeLiqFeesCollateral,
-  GetLiquidationFeesContext,
   getTradeFundingFeesCollateral,
 } from "./fees";
+import {
+  getTotalTradeLiqFeesCollateral,
+  GetLiquidationFeesContext,
+} from "./fees/trading";
 import { getTradeBorrowingFeesCollateral as getTradeBorrowingFeesCollateralV2 } from "./fees/borrowingV2";
 import { BorrowingFeeV2 } from "./fees/borrowingV2";
 import {

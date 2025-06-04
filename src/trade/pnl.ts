@@ -1,9 +1,8 @@
+import { getBorrowingFee, GetBorrowingFeeContext } from "./fees";
 import {
-  getBorrowingFee,
-  GetBorrowingFeeContext,
   getTotalTradeFeesCollateral,
   GetTradeFeesContext,
-} from "./fees";
+} from "./fees/trading";
 import {
   LiquidationParams,
   Trade,
