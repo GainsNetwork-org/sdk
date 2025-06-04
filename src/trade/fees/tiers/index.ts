@@ -2,6 +2,7 @@ import { FeeTiers, TraderFeeTiers } from "../../types";
 import { FeeTier, TraderEnrollmentStatus } from "./types";
 
 export * from "./types";
+export * from "./converter";
 
 export const TRAILING_PERIOD_DAYS = 30;
 
