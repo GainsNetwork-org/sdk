@@ -7,6 +7,16 @@ export type GetBorrowingFeeContext = {
   pairs: BorrowingFee.Pair[];
 };
 
+/**
+ * @dev Calculates borrowing fees using v1 model (block-based with groups)
+ * @dev Still actively used by markets that haven't migrated to v2
+ * @param posDai Position size in collateral
+ * @param pairIndex Trading pair index
+ * @param long Whether position is long
+ * @param initialAccFees Initial accumulated fees when trade was opened
+ * @param context Context with current block and fee data
+ * @returns Borrowing fee in collateral tokens
+ */
 export const getBorrowingFee = (
   posDai: number,
   pairIndex: PairIndex,

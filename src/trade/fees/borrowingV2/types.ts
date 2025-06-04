@@ -7,7 +7,7 @@
  */
 export type BorrowingFeeParams = {
   /**
-   * @dev Borrowing rate % per second (normalized float)
+   * @dev Borrowing rate % per second
    * @dev Raw contract value divided by 1e10
    * @dev Max: ~0.0000317097 => 1,000% APR
    */
@@ -19,8 +19,7 @@ export type BorrowingFeeParams = {
  */
 export type PairBorrowingFeeData = {
   /**
-   * @dev Accumulated borrowing fees % weighted by pair price (normalized float)
-   * @dev Raw contract value divided by 1e20
+   * @dev Accumulated borrowing fees % weighted by pair price
    * @dev Unit: fee collateral per 100 units of OI in pair amount
    */
   accBorrowingFeeP: number;

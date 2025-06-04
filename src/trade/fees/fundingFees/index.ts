@@ -331,11 +331,12 @@ export const getPairPendingAccFundingFees = (
 };
 
 /**
- * @dev Calculates funding fees for a specific trade
- * @param trade Trade parameters (collateral amount, leverage, open price, long/short)
+ * @dev Calculates funding fees for a specific trade (SDK version following contract pattern)
+ * @param trade Trade parameters (collateral amount, leverage, open price, long/short, collateralIndex, pairIndex)
  * @param tradeInfo Trade info (contracts version)
- * @param initialAccFundingFeeP Initial accumulated funding fee when trade opened
- * @param currentAccFundingFeeP Current accumulated funding fee (long or short)
+ * @param tradeFeesData Trade fees data containing initial acc funding fee
+ * @param currentPairPrice Current pair price
+ * @param context Optional context with funding fee data (if not provided, uses simple calculation)
  * @returns Funding fee in collateral tokens
  */
 export const getTradeFundingFeesCollateral = (
@@ -344,12 +345,27 @@ export const getTradeFundingFeesCollateral = (
     leverage: number;
     openPrice: number;
     long: boolean;
+    collateralIndex?: number;
+    pairIndex?: number;
   },
   tradeInfo: {
     contractsVersion: number;
   },
-  initialAccFundingFeeP: number,
-  currentAccFundingFeeP: number
+  tradeFeesData: {
+    initialAccFundingFeeP: number;
+  },
+  currentPairPrice: number,
+  context?: GetFundingFeeContext & {
+    pairOiAfterV10?: {
+      [collateralIndex: number]: { [pairIndex: number]: PairOiAfterV10 };
+    };
+    netExposureToken?: {
+      [collateralIndex: number]: { [pairIndex: number]: number };
+    };
+    netExposureUsd?: {
+      [collateralIndex: number]: { [pairIndex: number]: number };
+    };
+  }
 ): number => {
   // Funding fees are only charged on post-v10 trades
   if (tradeInfo.contractsVersion < 10) {
@@ -357,11 +373,47 @@ export const getTradeFundingFeesCollateral = (
   }
 
   const positionSizeCollateral = trade.collateralAmount * trade.leverage;
-  const fundingFeeDelta = currentAccFundingFeeP - initialAccFundingFeeP;
 
-  // Formula: (positionSize × (currentAccFee - initialAccFee)) / openPrice / 1e10 / 100
-  // Note: The 1e10 and 100 factors are from the contract's precision handling
-  return (positionSizeCollateral * fundingFeeDelta) / trade.openPrice;
+  // If we have full context, calculate current accumulated funding fee
+  if (
+    context &&
+    trade.collateralIndex !== undefined &&
+    trade.pairIndex !== undefined
+  ) {
+    const params =
+      context.fundingParams[trade.collateralIndex]?.[trade.pairIndex];
+    const data = context.fundingData[trade.collateralIndex]?.[trade.pairIndex];
+    const pairOi =
+      context.pairOiAfterV10?.[trade.collateralIndex]?.[trade.pairIndex];
+    const netExposureToken =
+      context.netExposureToken?.[trade.collateralIndex]?.[trade.pairIndex] || 0;
+    const netExposureUsd =
+      context.netExposureUsd?.[trade.collateralIndex]?.[trade.pairIndex] || 0;
+
+    if (params && data && pairOi) {
+      // Calculate pending accumulated fees
+      const { accFundingFeeLongP, accFundingFeeShortP } =
+        getPairPendingAccFundingFees(
+          params,
+          data,
+          currentPairPrice,
+          pairOi,
+          netExposureToken,
+          netExposureUsd,
+          context.currentTimestamp
+        );
+
+      const currentAccFundingFeeP = trade.long
+        ? accFundingFeeLongP
+        : accFundingFeeShortP;
+      const fundingFeeDelta =
+        currentAccFundingFeeP - tradeFeesData.initialAccFundingFeeP;
+
+      return (positionSizeCollateral * fundingFeeDelta) / trade.openPrice;
+    }
+  }
+
+  return 0; // Cannot calculate without proper context
 };
 
 /**
@@ -424,7 +476,7 @@ export const getTradeFundingFees = (
     : accFundingFeeShortP;
 
   // Calculate funding fee in collateral
-  const fundingFeeCollateral = getTradeFundingFeesCollateral(
+  const fundingFeeCollateral = getTradeFundingFeesCollateralSimple(
     trade,
     tradeInfo,
     initialAccFundingFeeP,
@@ -443,6 +495,38 @@ export const getTradeFundingFees = (
     currentAccFundingFeeP,
     initialAccFundingFeeP,
   };
+};
+
+/**
+ * @dev Simple version of getTradeFundingFeesCollateral for backward compatibility
+ * @param trade Trade parameters
+ * @param tradeInfo Trade info with contracts version
+ * @param initialAccFundingFeeP Initial accumulated funding fee
+ * @param currentAccFundingFeeP Current accumulated funding fee
+ * @returns Funding fee in collateral tokens
+ */
+export const getTradeFundingFeesCollateralSimple = (
+  trade: {
+    collateralAmount: number;
+    leverage: number;
+    openPrice: number;
+    long: boolean;
+  },
+  tradeInfo: {
+    contractsVersion: number;
+  },
+  initialAccFundingFeeP: number,
+  currentAccFundingFeeP: number
+): number => {
+  // Funding fees are only charged on post-v10 trades
+  if (tradeInfo.contractsVersion < 10) {
+    return 0;
+  }
+
+  const positionSizeCollateral = trade.collateralAmount * trade.leverage;
+  const fundingFeeDelta = currentAccFundingFeeP - initialAccFundingFeeP;
+
+  return (positionSizeCollateral * fundingFeeDelta) / trade.openPrice;
 };
 
 // Export namespace for types

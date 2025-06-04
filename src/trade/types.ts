@@ -11,11 +11,27 @@ export type PairIndexes = {
   [key: string]: PairIndex;
 };
 
+export type TradeFeesData = {
+  realizedTradingFeesCollateral: number;
+  realizedPnlCollateral: number;
+  manuallyRealizedNegativePnlCollateral: number;
+  alreadyTransferredNegativePnlCollateral: number;
+  virtualAvailableCollateralInDiamond: number;
+  initialAccFundingFeeP: number;
+  initialAccBorrowingFeeP: number;
+};
+
+export type CounterTradeSettings = {
+  maxLeverage: number; // e.g., 10 = 10x
+  feeRateMultiplier: number; // e.g., 0.1 = 10% of normal fee, 1 = 100%
+};
+
 export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
   liquidationParams: LiquidationParams;
   initialAccFees: TradeInitialAccFees;
+  tradeFeesData?: TradeFeesData;
   receivedAt?: number;
 };
 

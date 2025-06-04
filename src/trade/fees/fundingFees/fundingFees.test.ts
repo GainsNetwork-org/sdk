@@ -4,7 +4,7 @@ import {
   getAvgFundingRatePerSecondP,
   getLongShortAprMultiplier,
   getPairPendingAccFundingFees,
-  getTradeFundingFeesCollateral,
+  getTradeFundingFeesCollateralSimple,
   getTradeFundingFees,
 } from "./index";
 import {
@@ -314,7 +314,12 @@ describe("Funding Fees", () => {
       };
       const tradeInfo = { contractsVersion: 9 };
 
-      const result = getTradeFundingFeesCollateral(trade, tradeInfo, 0.1, 0.2);
+      const result = getTradeFundingFeesCollateralSimple(
+        trade,
+        tradeInfo,
+        0.1,
+        0.2
+      );
       expect(result).toBe(0);
     });
 
@@ -329,7 +334,7 @@ describe("Funding Fees", () => {
       const initialAccFee = 0.1;
       const currentAccFee = 0.15;
 
-      const result = getTradeFundingFeesCollateral(
+      const result = getTradeFundingFeesCollateralSimple(
         trade,
         tradeInfo,
         initialAccFee,

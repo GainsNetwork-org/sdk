@@ -2,18 +2,119 @@ import {
   getBorrowingFee,
   GetBorrowingFeeContext,
   BorrowingFee,
-  getClosingFee,
+  getTotalTradeLiqFeesCollateral,
+  GetLiquidationFeesContext,
+  getTradeFundingFeesCollateral,
 } from "./fees";
-import { Fee, LiquidationParams, Trade, UserPriceImpact } from "./types";
+import { getTradeBorrowingFeesCollateral as getTradeBorrowingFeesCollateralV2 } from "./fees/borrowingV2";
+import { BorrowingFeeV2 } from "./fees/borrowingV2";
+import {
+  Fee,
+  LiquidationParams,
+  Trade,
+  TradeInfo,
+  UserPriceImpact,
+  TradeFeesData,
+} from "./types";
 import { getSpreadP } from "./spread";
 import { ContractsVersion } from "../contracts/types";
 
-export type GetLiquidationPriceContext = GetBorrowingFeeContext & {
-  liquidationParams: LiquidationParams | undefined;
-  pairSpreadP: number | undefined;
-  collateralPriceUsd: number | undefined;
-  contractsVersion: ContractsVersion | undefined;
-  userPriceImpact?: UserPriceImpact | undefined;
+export type GetLiquidationPriceContext = GetBorrowingFeeContext &
+  BorrowingFeeV2.GetBorrowingFeeV2Context &
+  GetLiquidationFeesContext & {
+    liquidationParams: LiquidationParams | undefined;
+    pairSpreadP: number | undefined;
+    collateralPriceUsd: number | undefined;
+    contractsVersion: ContractsVersion | undefined;
+    userPriceImpact?: UserPriceImpact | undefined;
+
+    // V10 additions
+    currentPairPrice?: number;
+    isCounterTrade?: boolean;
+    tradeFeesData?: TradeFeesData;
+    partialCloseMultiplier?: number;
+    additionalFeeCollateral?: number;
+    beforeOpened?: boolean;
+
+    // V1 borrowing fees data
+    initialAccFees?: BorrowingFee.InitialAccFees;
+
+    // Optional funding fees context for v10
+    fundingParams?: Record<number, Record<number, any>>;
+    fundingData?: Record<number, Record<number, any>>;
+    pairOiAfterV10?: Record<number, Record<number, any>>;
+    netExposureToken?: Record<number, Record<number, number>>;
+    netExposureUsd?: Record<number, Record<number, number>>;
+  };
+
+export type TradeHoldingFees = {
+  fundingFeeCollateral: number;
+  borrowingFeeCollateral: number;
+  borrowingFeeCollateral_old: number;
+  totalFeeCollateral: number;
+};
+
+/**
+ * @dev Calculates total holding fees for a trade (funding + borrowing fees)
+ * @param trade The trade to calculate fees for
+ * @param tradeInfo Trade info containing contracts version
+ * @param tradeFeesData Trade fees data containing initial acc fees
+ * @param currentPairPrice Current pair price
+ * @param context Context with fee parameters
+ * @returns Object containing all holding fee components
+ */
+export const getTradePendingHoldingFeesCollateral = (
+  trade: Trade,
+  tradeInfo: TradeInfo,
+  tradeFeesData: TradeFeesData,
+  currentPairPrice: number,
+  context: GetLiquidationPriceContext
+): TradeHoldingFees => {
+  // Calculate funding fees (v10+ only)
+  const fundingFeeCollateral =
+    (context.contractsVersion ?? tradeInfo.contractsVersion) >=
+    ContractsVersion.V10
+      ? getTradeFundingFeesCollateral(
+          trade,
+          tradeInfo,
+          tradeFeesData,
+          currentPairPrice,
+          context as any
+        )
+      : 0;
+
+  // Calculate borrowing fees v2
+  const borrowingFeeCollateral = getTradeBorrowingFeesCollateralV2(
+    {
+      positionSizeCollateral: trade.collateralAmount * trade.leverage,
+      openPrice: trade.openPrice,
+      collateralIndex: trade.collateralIndex,
+      pairIndex: trade.pairIndex,
+      currentPairPrice,
+      initialAccBorrowingFeeP: tradeFeesData.initialAccBorrowingFeeP,
+      currentTimestamp: context.currentTimestamp,
+    },
+    context
+  );
+
+  // Calculate v1 borrowing fees (some markets use v1 indefinitely)
+  const borrowingFeeCollateral_old = getBorrowingFee(
+    trade.collateralAmount * trade.leverage,
+    trade.pairIndex,
+    trade.long,
+    context.initialAccFees || { accPairFee: 0, accGroupFee: 0, block: 0 }, // Use context initial fees or empty
+    context
+  );
+
+  return {
+    fundingFeeCollateral,
+    borrowingFeeCollateral,
+    borrowingFeeCollateral_old,
+    totalFeeCollateral:
+      fundingFeeCollateral +
+      borrowingFeeCollateral +
+      borrowingFeeCollateral_old,
+  };
 };
 
 export const getLiquidationPrice = (
@@ -22,31 +123,90 @@ export const getLiquidationPrice = (
   initialAccFees: BorrowingFee.InitialAccFees,
   context: GetLiquidationPriceContext
 ): number => {
-  const closingFee = getClosingFee(
+  // Ensure initialAccFees is in context
+  if (!context.initialAccFees) {
+    context = { ...context, initialAccFees };
+  }
+
+  // 1. Calculate liquidation fees
+  const closingFee = getTotalTradeLiqFeesCollateral(
+    0, // collateralIndex not used in calculation
+    trade.user,
+    trade.pairIndex,
     trade.collateralAmount,
-    trade.leverage,
-    trade.pairIndex,
-    fee,
-    context.collateralPriceUsd
-  );
-  const borrowingFee = getBorrowingFee(
-    trade.collateralAmount * trade.leverage,
-    trade.pairIndex,
-    trade.long,
-    initialAccFees,
     context
   );
+
+  // 2. Calculate holding fees and realized PnL
+  let holdingFeesTotal = 0;
+  let totalRealizedPnlCollateral = 0;
+
+  if (
+    !context.beforeOpened &&
+    context.tradeFeesData &&
+    context.currentPairPrice
+  ) {
+    // V10 data available - calculate full holding fees
+    // Create a minimal tradeInfo from context
+    const tradeInfo: TradeInfo = {
+      contractsVersion: context.contractsVersion ?? ContractsVersion.V10,
+      createdBlock: 0,
+      tpLastUpdatedBlock: 0,
+      slLastUpdatedBlock: 0,
+      maxSlippageP: 0,
+      lastOiUpdateTs: 0,
+      collateralPriceUsd: context.collateralPriceUsd ?? 0,
+      lastPosIncreaseBlock: 0,
+    };
+
+    const holdingFees = getTradePendingHoldingFeesCollateral(
+      trade,
+      tradeInfo,
+      context.tradeFeesData,
+      context.currentPairPrice,
+      context
+    );
+    holdingFeesTotal = holdingFees.totalFeeCollateral;
+
+    // Calculate total realized PnL (realized PnL minus realized trading fees)
+    totalRealizedPnlCollateral =
+      context.tradeFeesData.realizedPnlCollateral -
+      context.tradeFeesData.realizedTradingFeesCollateral;
+  } else if (!context.beforeOpened) {
+    // Markets using v1 borrowing fees model
+    holdingFeesTotal = getBorrowingFee(
+      trade.collateralAmount * trade.leverage,
+      trade.pairIndex,
+      trade.long,
+      initialAccFees,
+      context
+    );
+  }
+
+  // 3. Apply unified formula for all trades
+  const partialCloseMultiplier = context.partialCloseMultiplier ?? 1;
+  const additionalFeeCollateral = context.additionalFeeCollateral ?? 0;
+
+  const totalFeesCollateral =
+    closingFee +
+    (holdingFeesTotal - totalRealizedPnlCollateral) * partialCloseMultiplier +
+    additionalFeeCollateral;
+
+  // 4. Calculate liquidation threshold
   const liqThresholdP = getLiqPnlThresholdP(
     context.liquidationParams,
     trade.leverage
   );
 
+  // 5. Calculate liquidation price distance
+  const collateralLiqNegativePnl = trade.collateralAmount * liqThresholdP;
+
   let liqPriceDistance =
-    (trade.openPrice *
-      (trade.collateralAmount * liqThresholdP - (borrowingFee + closingFee))) /
+    (trade.openPrice * (collateralLiqNegativePnl - totalFeesCollateral)) /
     trade.collateralAmount /
     trade.leverage;
 
+  // 6. Apply closing spread for v9.2+
   if (
     context?.contractsVersion !== undefined &&
     context.contractsVersion >= ContractsVersion.V9_2 &&
@@ -65,6 +225,7 @@ export const getLiquidationPrice = (
     liqPriceDistance -= trade.openPrice * closingSpreadP;
   }
 
+  // 7. Calculate final liquidation price
   return trade.long
     ? Math.max(trade.openPrice - liqPriceDistance, 0)
     : Math.max(trade.openPrice + liqPriceDistance, 0);

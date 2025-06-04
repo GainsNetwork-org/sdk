@@ -1,6 +1,10 @@
-import { getBorrowingFee, GetBorrowingFeeContext, getClosingFee } from "./fees";
 import {
-  Fee,
+  getBorrowingFee,
+  GetBorrowingFeeContext,
+  getTotalTradeFeesCollateral,
+  GetTradeFeesContext,
+} from "./fees";
+import {
   LiquidationParams,
   Trade,
   TradeInfo,
@@ -9,12 +13,12 @@ import {
 import { getLiqPnlThresholdP } from "./liquidation";
 import { ContractsVersion } from "../contracts/types";
 
-export type GetPnlContext = GetBorrowingFeeContext & {
-  fee: Fee | undefined;
-  collateralPriceUsd: number | undefined;
-  contractsVersion: ContractsVersion | undefined;
-  feeMultiplier: number | undefined;
-};
+export type GetPnlContext = GetBorrowingFeeContext &
+  GetTradeFeesContext & {
+    collateralPriceUsd: number | undefined;
+    contractsVersion: ContractsVersion | undefined;
+    feeMultiplier: number | undefined;
+  };
 
 export const getPnl = (
   price: number | undefined,
@@ -30,7 +34,6 @@ export const getPnl = (
   }
   const posCollat = trade.collateralAmount;
   const { openPrice, leverage } = trade;
-  const { fee } = context;
 
   let pnlCollat = trade.long
     ? ((price - openPrice) / openPrice) * leverage * posCollat
@@ -55,14 +58,17 @@ export const getPnl = (
   ) {
     pnlPercentage = -100;
   } else {
-    pnlCollat -= getClosingFee(
-      posCollat,
-      trade.leverage,
+    // Calculate closing fee using the same function as opening fees
+    const positionSizeCollateral = posCollat * trade.leverage;
+    const closingFee = getTotalTradeFeesCollateral(
+      0, // collateralIndex not used
+      trade.user,
       trade.pairIndex,
-      fee,
-      context.collateralPriceUsd,
-      context.feeMultiplier
+      positionSizeCollateral,
+      trade.isCounterTrade ?? false,
+      context
     );
+    pnlCollat -= closingFee;
     pnlPercentage = (pnlCollat / posCollat) * 100;
   }
 

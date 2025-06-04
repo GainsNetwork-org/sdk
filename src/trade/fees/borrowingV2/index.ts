@@ -3,7 +3,7 @@ import * as BorrowingFeeV2 from "./types";
 /**
  * @dev Maximum borrowing rate per second (1,000% APR)
  */
-export const MAX_BORROWING_RATE_PER_SECOND = 317097; // 1e10 precision
+export const MAX_BORROWING_RATE_PER_SECOND = 0.0317097; // 317097 / 1e10
 
 /**
  * @dev Precision constants for borrowing v2 calculations
@@ -40,7 +40,6 @@ export const getPairPendingAccBorrowingFees = (
 
   // Calculate accumulated borrowing fee delta
   // Formula: borrowingRatePerSecondP * timeElapsed * currentPairPrice
-  // This gives us the delta in normalized float precision
   const accBorrowingFeeDeltaP =
     params.borrowingRatePerSecondP * timeElapsed * currentPairPrice;
 
@@ -85,7 +84,6 @@ export const getTradeBorrowingFeesCollateral = (
 
   // Calculate borrowing fees for this trade
   // Formula: (positionSizeCollateral * (currentAccFee - initialAccFee)) / openPrice / 100
-  // Note: No precision division needed since we work with normalized floats
   const feeDeltaP = currentAccBorrowingFeeP - initialAccBorrowingFeeP;
 
   return (

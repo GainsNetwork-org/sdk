@@ -1,6 +1,5 @@
 /**
  * @dev Funding fees types for v10+ trades
- * @dev All values are normalized floats (not BigNumbers)
  */
 
 // Funding fee parameters (per collateral/pair)

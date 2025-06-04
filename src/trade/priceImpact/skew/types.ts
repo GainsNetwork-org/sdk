@@ -1,6 +1,5 @@
 /**
  * @dev Skew price impact types for v10+ trades
- * @dev All values are normalized floats (not BigNumbers)
  */
 
 // Post-v10 OI tracking for skew calculations
