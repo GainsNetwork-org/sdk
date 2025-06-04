@@ -26,6 +26,7 @@ export enum CollateralTypes {
 export enum ContractsVersion {
   BEFORE_V9_2,
   V9_2,
+  V10,
 }
 
 export type ContractAddressList = Record<

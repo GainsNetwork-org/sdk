@@ -201,6 +201,8 @@ const _prepareTradeContainer = (
       openPrice: parseFloat(trade.openPrice.toString()) / 1e10,
       tp: parseFloat(trade.tp.toString()) / 1e10,
       sl: parseFloat(trade.sl.toString()) / 1e10,
+      isCounterTrade: trade.isCounterTrade,
+      positionSizeToken: parseFloat(trade.positionSizeToken.toString()) / 1e18,
     },
     tradeInfo: {
       createdBlock: parseInt(tradeInfo.createdBlock.toString()),
@@ -252,7 +254,7 @@ const _prepareTradeContainer = (
       initialAccFundingFeeP:
         parseFloat(tradeFeesData.initialAccFundingFeeP.toString()) / 1e10,
       initialAccBorrowingFeeP:
-        parseFloat(tradeFeesData.initialAccFundingFeeP.toString()) / 1e10,
+        parseFloat(tradeFeesData.initialAccBorrowingFeeP.toString()) / 1e10,
     },
     uiRealizedPnlData: uiRealizedPnlData
       ? {
