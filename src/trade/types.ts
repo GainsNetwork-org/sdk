@@ -638,4 +638,8 @@ export enum PairIndex {
   SIGNUSD,
   ZORAUSD,
   COINUSD,
+
+  HOODUSD,
+  SYRUPUSD,
+  CAKEUSD,
 }
