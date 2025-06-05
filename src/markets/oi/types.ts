@@ -56,8 +56,8 @@ export interface OiUsageMetadata {
   borrowingV1: Array<"beforeV10Collateral" | "token">; // Combined dynamic
   fundingFees: Array<"token">;
   skewImpact: Array<"token">;
-  maxPairOi: Array<"beforeV10Collateral" | "collateral">; // Combined static
-  maxGroupOi: Array<"beforeV10Collateral" | "collateral">; // Combined static
+  maxPairOi: Array<"beforeV10Collateral" | "token">; // Combined dynamic (was wrong before)
+  maxGroupOi: Array<"beforeV10Collateral" | "token">; // Combined dynamic (was wrong before)
   maxSkew: Array<"token">;
 }
 

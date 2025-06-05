@@ -3,7 +3,6 @@
  * @dev Handles the three OI storage systems and precision conversions
  */
 
-import { ethers } from "ethers";
 import {
   IBorrowingFees,
   IPriceImpact,

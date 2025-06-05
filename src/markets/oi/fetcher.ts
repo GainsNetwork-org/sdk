@@ -50,7 +50,7 @@ export async function fetchPairOi(
     long: beforeV10Raw.longOi,
     short: beforeV10Raw.shortOi,
     max: maxOi,
-    __placeholder: ethers.BigNumber.from(0)
+    __placeholder: ethers.BigNumber.from(0),
   };
 
   return convertPairOi(
@@ -106,7 +106,7 @@ export async function fetchMultiplePairOi(
     return {
       beforeV10: beforeV10 as any,
       afterV10Collateral,
-      afterV10Token
+      afterV10Token,
     };
   });
 

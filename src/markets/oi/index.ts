@@ -24,14 +24,24 @@ export {
   fetchOiForUseCase,
 } from "./fetcher";
 
+// Validation
+export {
+  withinMaxPairOi,
+  calculateDynamicOi,
+  getRemainingOiCapacity,
+  withinMaxGroupOiDynamic,
+  getGroupDynamicOi,
+  validateOiLimits,
+} from "./validation";
+
 // Usage metadata for documentation
 import { OiUsageMetadata } from "./types";
 
 export const OI_USAGE: OiUsageMetadata = {
-  borrowingV1: ["beforeV10Collateral", "token"],
-  fundingFees: ["token"],
-  skewImpact: ["token"],
-  maxPairOi: ["beforeV10Collateral", "collateral"],
-  maxGroupOi: ["beforeV10Collateral", "collateral"],
-  maxSkew: ["token"],
+  borrowingV1: ["beforeV10Collateral", "token"], // Dynamic: combines both with current price
+  fundingFees: ["token"], // V10+ only: uses token OI
+  skewImpact: ["token"], // V10+ only: uses token OI
+  maxPairOi: ["beforeV10Collateral", "token"], // Dynamic: uses getPairTotalOiDynamicCollateral
+  maxGroupOi: ["beforeV10Collateral", "token"], // Dynamic: same as borrowing v1
+  maxSkew: ["token"], // V10+ only: uses token OI
 };
