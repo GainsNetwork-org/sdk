@@ -647,4 +647,5 @@ export enum PairIndex {
   LPTUSD,
   BVIVUSD,
   EVIVUSD,
+  CRCLUSD,
 }
