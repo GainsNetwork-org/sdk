@@ -2,14 +2,20 @@
  * @dev Trading fee calculations for opening and closing positions
  */
 
-import { Fee, PairIndex } from "../../types";
+import { Fee, PairIndex, Trade, TradeInfo, TradeFeesData } from "../../types";
 import { calculateFeeAmount } from "../tiers";
 import {
   GetTradeFeesContext,
   GetLiquidationFeesContext,
   GetClosingFeeContext,
   TradeFeesBreakdown,
+  TradeHoldingFees,
 } from "./types";
+import { getTradeFundingFeesCollateral } from "../fundingFees";
+import { getTradeBorrowingFeesCollateral as getTradeBorrowingFeesCollateralV2 } from "../borrowingV2";
+import { getBorrowingFee } from "../borrowing";
+import { ContractsVersion } from "../../../contracts/types";
+import * as BorrowingFee from "../borrowing/types";
 
 /**
  * @dev Returns the total fee for a trade in collateral tokens
@@ -146,6 +152,77 @@ export const getClosingFee = (
     isCounterTrade,
     context
   );
+};
+
+/**
+ * @dev Calculates total holding fees for a trade (funding + borrowing fees)
+ * @param trade The trade to calculate fees for
+ * @param tradeInfo Trade info containing contracts version
+ * @param tradeFeesData Trade fees data containing initial acc fees
+ * @param currentPairPrice Current pair price
+ * @param context Context with fee parameters
+ * @returns Object containing all holding fee components
+ */
+export const getTradePendingHoldingFeesCollateral = (
+  trade: Trade,
+  tradeInfo: TradeInfo,
+  tradeFeesData: TradeFeesData,
+  currentPairPrice: number,
+  context: {
+    contractsVersion?: ContractsVersion;
+    currentBlock?: number;
+    groups?: BorrowingFee.Group[];
+    pairs?: BorrowingFee.Pair[];
+    collateralPriceUsd?: number;
+    initialAccFees?: BorrowingFee.InitialAccFees;
+    [key: string]: any;
+  }
+): TradeHoldingFees => {
+  // Calculate funding fees (v10+ only)
+  const fundingFeeCollateral =
+    (context.contractsVersion ?? tradeInfo.contractsVersion) >=
+    ContractsVersion.V10
+      ? getTradeFundingFeesCollateral(
+          trade,
+          tradeInfo,
+          tradeFeesData,
+          currentPairPrice,
+          context as any
+        )
+      : 0;
+
+  // Calculate borrowing fees v2
+  const borrowingFeeCollateral = getTradeBorrowingFeesCollateralV2(
+    {
+      positionSizeCollateral: trade.collateralAmount * trade.leverage,
+      openPrice: trade.openPrice,
+      collateralIndex: trade.collateralIndex,
+      pairIndex: trade.pairIndex,
+      currentPairPrice,
+      initialAccBorrowingFeeP: tradeFeesData.initialAccBorrowingFeeP,
+      currentTimestamp: context.currentTimestamp,
+    },
+    context as any
+  );
+
+  // Calculate v1 borrowing fees (some markets use v1 indefinitely)
+  const borrowingFeeCollateral_old = getBorrowingFee(
+    trade.collateralAmount * trade.leverage,
+    trade.pairIndex,
+    trade.long,
+    context.initialAccFees || { accPairFee: 0, accGroupFee: 0, block: 0 }, // Use context initial fees or empty
+    context as any
+  );
+
+  return {
+    fundingFeeCollateral,
+    borrowingFeeCollateral,
+    borrowingFeeCollateral_old,
+    totalFeeCollateral:
+      fundingFeeCollateral +
+      borrowingFeeCollateral +
+      borrowingFeeCollateral_old,
+  };
 };
 
 // Export types

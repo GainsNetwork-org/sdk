@@ -42,5 +42,15 @@ export type GetLiquidationFeesContext = {
  */
 export type GetClosingFeeContext = GetTradeFeesContext;
 
+/**
+ * @dev Holding fees breakdown (funding + borrowing)
+ */
+export type TradeHoldingFees = {
+  fundingFeeCollateral: number;
+  borrowingFeeCollateral: number;
+  borrowingFeeCollateral_old: number;
+  totalFeeCollateral: number;
+};
+
 // Re-export GlobalTradeFeeParams for convenience
 export type { GlobalTradeFeeParams };
