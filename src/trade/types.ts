@@ -641,7 +641,6 @@ export enum PairIndex {
   HOODUSD,
   MSTRUSD,
   NFLXUSD,
-  DAXUSD,
   LAUNCHCOINUSD,
   NXPCUSD,
   SOPHUSD,

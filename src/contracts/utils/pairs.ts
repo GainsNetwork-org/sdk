@@ -520,7 +520,6 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.HOODUSD]: "Robinhood Markets to US Dollar",
   [PairIndex.MSTRUSD]: "MicroStrategy Inc  to US Dollar",
   [PairIndex.NFLXUSD]: "Netflix to US Dollar",
-  [PairIndex.DAXUSD]: "DAX to US Dollar",
   [PairIndex.LAUNCHCOINUSD]: "Launch Coin on Believe to US Dollar",
   [PairIndex.NXPCUSD]: "NEXPACE to US Dollar",
   [PairIndex.SOPHUSD]: "Sophon to US Dollar",
