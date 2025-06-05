@@ -277,7 +277,9 @@ const getPendingAccFees = (
 
   // Convert OI to USD if collateral price is provided (dynamic collateral OI)
   const oiLongUsd = collateralPriceUsd ? oiLong * collateralPriceUsd : oiLong;
-  const oiShortUsd = collateralPriceUsd ? oiShort * collateralPriceUsd : oiShort;
+  const oiShortUsd = collateralPriceUsd
+    ? oiShort * collateralPriceUsd
+    : oiShort;
   const maxOiUsd = collateralPriceUsd ? maxOi * collateralPriceUsd : maxOi;
 
   const netOi = Math.abs(oiLongUsd - oiShortUsd);
