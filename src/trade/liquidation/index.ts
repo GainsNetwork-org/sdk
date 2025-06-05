@@ -14,7 +14,63 @@ import {
   getSpreadP,
   LiquidationParams,
 } from "..";
-import { GetLiquidationPriceContext } from "./types";
+import { GetLiquidationPriceContext, LiqPriceInput } from "./types";
+
+/**
+ * @dev Wrapper function that mirrors the contract's getTradeLiquidationPrice signature
+ * @dev This is the main entry point matching the contract interface
+ * @param input Liquidation price input parameters
+ * @param context Additional context for SDK calculations
+ * @returns Liquidation price
+ */
+export const getTradeLiquidationPrice = (
+  input: LiqPriceInput,
+  context: Omit<
+    GetLiquidationPriceContext,
+    | "currentPairPrice"
+    | "isCounterTrade"
+    | "partialCloseMultiplier"
+    | "additionalFeeCollateral"
+    | "beforeOpened"
+    | "liquidationParams"
+  > & { fee: Fee }
+): number => {
+  // Create trade object from input
+  const trade: Trade = {
+    user: input.trader,
+    index: input.index,
+    pairIndex: input.pairIndex,
+    leverage: input.leverage,
+    long: input.long,
+    isOpen: true,
+    collateralIndex: input.collateralIndex,
+    tradeType: 0, // Regular trade
+    collateralAmount: input.collateral,
+    openPrice: input.openPrice,
+    sl: 0,
+    tp: 0,
+    isCounterTrade: input.isCounterTrade,
+  };
+
+  // Merge input params into context
+  const fullContext: GetLiquidationPriceContext = {
+    ...context,
+    currentPairPrice: input.currentPairPrice,
+    isCounterTrade: input.isCounterTrade,
+    partialCloseMultiplier: input.partialCloseMultiplier,
+    additionalFeeCollateral: input.additionalFeeCollateral,
+    beforeOpened: input.beforeOpened,
+    liquidationParams: input.liquidationParams,
+  };
+
+  // Call the existing implementation
+  return getLiquidationPrice(
+    trade,
+    context.fee,
+    context.initialAccFees || { accPairFee: 0, accGroupFee: 0, block: 0 },
+    fullContext
+  );
+};
 
 export const getLiquidationPrice = (
   trade: Trade,
@@ -167,6 +223,50 @@ export const getLiqPnlThresholdP = (
         liquidationParams.endLiqThresholdP)) /
       (liquidationParams.endLeverage - liquidationParams.startLeverage)
   );
+};
+
+/**
+ * @dev Simplified wrapper for getTradeLiquidationPrice
+ * @dev Mirrors the contract's simplified overload
+ * @param trade The trade to calculate liquidation price for
+ * @param additionalFeeCollateral Additional fees to consider
+ * @param currentPairPrice Current pair price
+ * @param context Context with all required data
+ * @returns Liquidation price
+ */
+export const getTradeLiquidationPriceSimple = (
+  trade: Trade,
+  additionalFeeCollateral: number,
+  currentPairPrice: number,
+  context: Omit<
+    GetLiquidationPriceContext,
+    "currentPairPrice" | "additionalFeeCollateral"
+  > & { fee: Fee }
+): number => {
+  const input: LiqPriceInput = {
+    collateralIndex: trade.collateralIndex,
+    trader: trade.user,
+    pairIndex: trade.pairIndex,
+    index: trade.index,
+    openPrice: trade.openPrice,
+    long: trade.long,
+    collateral: trade.collateralAmount,
+    leverage: trade.leverage,
+    additionalFeeCollateral,
+    liquidationParams: context.liquidationParams || {
+      maxLiqSpreadP: 0,
+      startLiqThresholdP: 0.9,
+      endLiqThresholdP: 0.9,
+      startLeverage: 0,
+      endLeverage: 0,
+    },
+    currentPairPrice,
+    isCounterTrade: trade.isCounterTrade || false,
+    partialCloseMultiplier: 1,
+    beforeOpened: false,
+  };
+
+  return getTradeLiquidationPrice(input, context);
 };
 
 // Converters

@@ -4,6 +4,27 @@ import { BorrowingFeeV2 } from "./../fees/borrowingV2";
 import { LiquidationParams, UserPriceImpact, TradeFeesData } from "./../types";
 import { ContractsVersion } from "../../contracts/types";
 
+/**
+ * @dev Input parameters for getTradeLiquidationPrice
+ * @dev Mirrors the contract's LiqPriceInput struct
+ */
+export type LiqPriceInput = {
+  collateralIndex: number;
+  trader: string;
+  pairIndex: number;
+  index: number;
+  openPrice: number; // SDK uses floats, not 1e10
+  long: boolean;
+  collateral: number; // SDK uses floats, not 1e18/1e6
+  leverage: number; // SDK uses floats, not 1e3
+  additionalFeeCollateral: number; // SDK uses floats
+  liquidationParams: LiquidationParams;
+  currentPairPrice: number; // SDK uses floats, not 1e10
+  isCounterTrade: boolean;
+  partialCloseMultiplier: number; // SDK uses floats, not 1e18
+  beforeOpened: boolean;
+};
+
 export type GetLiquidationPriceContext = GetBorrowingFeeContext &
   BorrowingFeeV2.GetBorrowingFeeV2Context &
   GetLiquidationFeesContext & {
