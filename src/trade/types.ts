@@ -646,4 +646,6 @@ export enum PairIndex {
   NXPCUSD,
   SOPHUSD,
   LPTUSD,
+  BVIVUSD,
+  EVIVUSD,
 }
