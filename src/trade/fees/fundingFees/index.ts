@@ -546,3 +546,5 @@ export type {
   PairAccumulatedFees,
   TradeInitialAccFees,
 } from "./types";
+
+export * from "./fetcher";

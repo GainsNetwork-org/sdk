@@ -37,7 +37,7 @@ export {
   createBorrowingV2ContextFromContract,
   createBorrowingV2ContextFromArrays,
   fetchBorrowingV2DataForPairs,
-} from "../../contracts/fetch/fees/borrowingFeesV2";
+} from "./borrowingV2/fetcher";
 
 // Funding Fees exports
 export {

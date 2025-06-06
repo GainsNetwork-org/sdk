@@ -1,5 +1,5 @@
-import type { GNSMultiCollatDiamond } from "../../types/generated";
-import type { TradeInitialAccFees } from "../../../trade/fees/fundingFees";
+import type { GNSMultiCollatDiamond } from "../../../contracts/types/generated";
+import type { TradeInitialAccFees } from ".";
 
 /**
  * @dev Fetches pending accumulated funding fees for a specific pair
