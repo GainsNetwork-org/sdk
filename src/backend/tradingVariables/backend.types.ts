@@ -1,5 +1,4 @@
-import { LiquidationParams } from "@gainsnetwork/sdk";
-import { TokenPrices } from "@/types/trading";
+import { TokenPrices } from "./types";
 
 export interface TradeContainerBackend {
   trade: TradeBackend;

@@ -16,20 +16,14 @@ import {
 import {
   GlobalTradingVariablesType,
   TradingVariablesCollateral,
+  TransformedGlobalTradingVariables,
 } from "./types";
 import { GlobalTradingVariablesBackend } from "./backend.types";
 import { Pair, PairIndexes } from "src/trade";
 
-export interface ITransformedGlobalTradingVariables {
-  globalTradingVariables: GlobalTradingVariablesType;
-  pairIndexes: PairIndexes;
-  blockNumber: number | undefined;
-  l1BlockNumber: number | undefined;
-}
-
 export const transformGlobalTradingVariables = (
   rawData: GlobalTradingVariablesBackend
-): ITransformedGlobalTradingVariables => {
+): TransformedGlobalTradingVariables => {
   const globalTradingVariables: GlobalTradingVariablesType = {
     collaterals: convertCollaterals(rawData.collaterals),
     pairs: convertTradingPairs(rawData.pairs),

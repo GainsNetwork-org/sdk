@@ -13,9 +13,17 @@ import {
   Pair,
   PairDepth,
   PairFactor,
+  PairIndexes,
   TradingGroup,
 } from "../../trade";
 import { UnifiedPairOi } from "src/markets";
+
+export type TransformedGlobalTradingVariables = {
+  globalTradingVariables: GlobalTradingVariablesType;
+  pairIndexes: PairIndexes;
+  blockNumber: number | undefined;
+  l1BlockNumber: number | undefined;
+};
 
 /**
  * @dev Processed collateral data from backend (wrapper of contract data)
@@ -48,7 +56,6 @@ export type TradingVariablesCollateral = {
   pairOis: UnifiedPairOi[];
 };
 
-// Orphaned types
 export type TokenPrices = {
   collateralPriceUsd: number;
   gnsPriceCollateral: number;
