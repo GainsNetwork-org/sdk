@@ -1,5 +1,20 @@
 import { CollateralConfig } from "src/markets/collateral";
-import { BorrowingFee, BorrowingFeeV2, FundingFees, Pair } from "../../trade";
+import {
+  BorrowingFee,
+  BorrowingFeeV2,
+  Fee,
+  FeeTiers,
+  FundingFees,
+  GlobalTradeFeeParams,
+  LeaderboardTrader,
+  LiquidationParams,
+  OiWindows,
+  OiWindowsSettings,
+  Pair,
+  PairDepth,
+  PairFactor,
+  TradingGroup,
+} from "../../trade";
 import { UnifiedPairOi } from "src/markets";
 
 /**
@@ -39,3 +54,75 @@ export type TokenPrices = {
   gnsPriceCollateral: number;
   gnsPriceUsd: number;
 };
+
+export type GlobalTradingVariablesType = {
+  collaterals: TradingVariablesCollateral[];
+  paused?: boolean;
+  pairs?: Pair[];
+  stockPairToActiveStockSplit?: Map<string, string>;
+  groups?: TradingGroup[];
+  fees?: Fee[];
+  orderTimeout?: number;
+  crypto?: string[];
+  forex?: string[];
+  forexClosed?: boolean;
+  stocks?: string[];
+  stocksClosed?: boolean;
+  indices?: string[];
+  indicesClosed?: boolean;
+  commodities?: string[];
+  commoditiesClosed?: boolean;
+  blockConfirmations?: number;
+  pairDepths?: PairDepth[];
+  pairMaxLeverages?: number[];
+  maxNegativePnlOnOpenP?: number;
+  oiWindowsSettings?: OiWindowsSettings;
+  oiWindows?: OiWindows[];
+  collateralConfig?: CollateralConfig;
+  feeTiers?: FeeTiers;
+  liquidationParams: {
+    groups: LiquidationParams[];
+    pairs: LiquidationParams[];
+  };
+  pairFactors: PairFactor[];
+  globalTradeFeeParams?: GlobalTradeFeeParams;
+  congestionLevels: {
+    low: number;
+    high: number;
+  };
+};
+
+export interface LeaderboardTraderWithWinsLosses extends LeaderboardTrader {
+  wins?: number;
+  losses?: number;
+}
+
+export interface ILeaderboard {
+  ready: boolean;
+  bestTraders: LeaderboardTraderWithWinsLosses[];
+}
+
+export enum ORDER_TYPE {
+  LIMIT = "LIMIT",
+  STOP = "STOP",
+  MARKET = "MARKET",
+}
+
+export enum TRADE_TYPE {
+  LONG = "LONG",
+  SHORT = "SHORT",
+}
+
+export interface ActiveNews {
+  desc: string;
+  from: number;
+  to: number;
+}
+
+export interface BorrowingFeePerBlock {
+  pairFee: number;
+  minPairFee: number;
+  groupFee: number;
+  pairLong: boolean;
+  groupLong: boolean;
+}

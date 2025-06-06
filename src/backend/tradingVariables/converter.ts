@@ -56,7 +56,6 @@ import {
   TradingGroupBackend,
 } from "./backend.types";
 import { TradingVariablesCollateral } from "./types";
-import { convertBorrowingFeeParamsArray } from "src/trade/fees/borrowingV2";
 import { IFundingFees } from "src/contracts/types/generated/GNSMultiCollatDiamond";
 
 export const convertFees = (fees: FeeBackend[]): Fee[] =>
