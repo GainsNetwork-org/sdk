@@ -15,7 +15,6 @@ import {
   FeeTiers,
   getPairDescription,
   GlobalTradeFeeParams,
-  LiquidationParams,
   OiWindows,
   OiWindowsSettings,
   OpenInterest,
@@ -24,13 +23,14 @@ import {
   PairOi,
   Trade,
   TradeContainer,
-  TradeFeesData,
   TradeInfo,
   TradeInitialAccFees,
   TraderFeeTiers,
   TradingGroup,
   PairFactor,
-  UiRealizedPnlData,
+  convertLiquidationParams,
+  convertTradeFeesData as convertTradeFeesDataCanonical,
+  convertUiRealizedPnlData as convertUiRealizedPnlDataCanonical,
 } from "../../";
 import {
   BorrowingFeePerBlockCapBackend,
@@ -38,7 +38,6 @@ import {
   FeeBackend,
   FeeTiersBackend,
   GlobalTradeFeeParamsBackend,
-  LiquidationParamsBackend,
   OiWindowsBackend,
   OiWindowsSettingsBackend,
   OpenInterestBackend,
@@ -52,15 +51,16 @@ import {
   PairParamsBorrowingFeesBackend,
   TradeBackend,
   TradeContainerBackend,
-  TradeFeesDataBackend,
   TradeInfoBackend,
   TradeInitialAccFeesBackend,
   TraderFeeTiersBackend,
   TradingGroupBackend,
-  UiRealizedPnlDataBackend,
 } from "./backend.types";
 import { TradingVariablesCollateral } from "./types";
-import { IFundingFees } from "src/contracts/types/generated/GNSMultiCollatDiamond";
+import {
+  IFundingFees,
+  IPairsStorage,
+} from "src/contracts/types/generated/GNSMultiCollatDiamond";
 
 export const convertFees = (fees: FeeBackend[]): Fee[] =>
   fees?.map(fee => convertFee(fee));
@@ -262,80 +262,23 @@ export const convertTradeContainer = (
             startLeverage: 0,
             endLeverage: 0,
           }
-        : convertLiquidationParams(tradeContainer.liquidationParams),
+        : convertLiquidationParams(
+            tradeContainer.liquidationParams as any as IPairsStorage.GroupLiquidationParamsStructOutput
+          ),
     tradeFeesData: tradeContainer.tradeFeesData
-      ? convertTradeFeesData(
-          tradeContainer.tradeFeesData,
-          collaterals[collateralIndex - 1]
+      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        convertTradeFeesDataCanonical(
+          tradeContainer.tradeFeesData as any as IFundingFees.TradeFeesDataStructOutput,
+          collaterals[collateralIndex - 1].collateralConfig
         )
       : undefined,
     uiRealizedPnlData: tradeContainer.uiRealizedPnlData
-      ? convertUiRealizedPnlData(
-          tradeContainer.uiRealizedPnlData,
-          collaterals[collateralIndex - 1]
+      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        convertUiRealizedPnlDataCanonical(
+          tradeContainer.uiRealizedPnlData as any as IFundingFees.UiRealizedPnlDataStructOutput,
+          collaterals[collateralIndex - 1].collateralConfig
         )
       : undefined,
-  };
-};
-
-export const convertTradeFeesData = (
-  data: TradeFeesDataBackend,
-  collateral: TradingVariablesCollateral
-): TradeFeesData => {
-  const decimals = collateral?.collateralConfig?.decimals || 18;
-
-  return {
-    realizedTradingFeesCollateral:
-      parseFloat(data.realizedTradingFeesCollateral) / 10 ** decimals,
-    realizedPnlCollateral:
-      parseFloat(data.realizedPnlCollateral) / 10 ** decimals,
-    manuallyRealizedNegativePnlCollateral:
-      parseFloat(data.manuallyRealizedNegativePnlCollateral) / 10 ** decimals,
-    alreadyTransferredNegativePnlCollateral:
-      parseFloat(data.alreadyTransferredNegativePnlCollateral) / 10 ** decimals,
-    virtualAvailableCollateralInDiamond:
-      parseFloat(data.virtualAvailableCollateralInDiamond) / 10 ** decimals,
-    initialAccFundingFeeP: parseFloat(data.initialAccFundingFeeP) / 1e10,
-    initialAccBorrowingFeeP: parseFloat(data.initialAccBorrowingFeeP) / 1e10,
-  };
-};
-
-export const convertUiRealizedPnlData = (
-  data: UiRealizedPnlDataBackend,
-  collateral: TradingVariablesCollateral
-): UiRealizedPnlData => {
-  const decimals = collateral?.collateralConfig?.decimals || 18;
-
-  return {
-    realizedTradingFeesCollateral:
-      parseFloat(data.realizedTradingFeesCollateral) / 10 ** decimals,
-    realizedOldBorrowingFeesCollateral:
-      parseFloat(data.realizedOldBorrowingFeesCollateral) / 10 ** decimals,
-    realizedNewBorrowingFeesCollateral:
-      parseFloat(data.realizedNewBorrowingFeesCollateral) / 10 ** decimals,
-    realizedFundingFeesCollateral:
-      parseFloat(data.realizedFundingFeesCollateral) / 10 ** decimals,
-    realizedPnlPartialCloseCollateral:
-      parseFloat(data.realizedPnlPartialCloseCollateral) / 10 ** decimals,
-    pnlWithdrawnCollateral:
-      parseFloat(data.pnlWithdrawnCollateral) / 10 ** decimals,
-  };
-};
-
-export const convertLiquidationParams = (
-  liquidationParams: LiquidationParamsBackend
-): LiquidationParams => {
-  const ONCHAIN_LIQ_THRESHOLD = 0.9;
-  return {
-    maxLiqSpreadP: parseFloat(liquidationParams.maxLiqSpreadP) / 1e12,
-    startLiqThresholdP:
-      parseFloat(liquidationParams.startLiqThresholdP) / 1e12 ||
-      ONCHAIN_LIQ_THRESHOLD,
-    endLiqThresholdP:
-      parseFloat(liquidationParams.endLiqThresholdP) / 1e12 ||
-      ONCHAIN_LIQ_THRESHOLD,
-    startLeverage: parseFloat(liquidationParams.startLeverage) / 1e3,
-    endLeverage: parseFloat(liquidationParams.endLeverage) / 1e3,
   };
 };
 

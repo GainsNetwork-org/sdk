@@ -8,6 +8,12 @@ import {
   IFundingFees,
 } from "../types/generated/GNSMultiCollatDiamond";
 import { Contract, Provider } from "ethcall";
+import {
+  convertTradeFeesData,
+  convertUiRealizedPnlData,
+  convertLiquidationParams,
+} from "../../trade";
+import { CollateralConfig } from "src/markets";
 
 export type FetchOpenPairTradesOverrides = {
   batchSize?: number;
@@ -21,9 +27,13 @@ export const fetchOpenPairTrades = async (
   overrides: FetchOpenPairTradesOverrides = {}
 ): Promise<TradeContainer[]> => {
   const rawTrades = await fetchOpenPairTradesRaw(contracts, overrides);
-  const collateralPrecisions = (
-    await contracts.gnsMultiCollatDiamond.getCollaterals()
-  ).map(({ precision }) => precision);
+  const collaterals = await contracts.gnsMultiCollatDiamond.getCollaterals();
+  const collateralConfigs = collaterals.map(c => ({
+    collateral: c.collateral,
+    isActive: c.isActive,
+    precision: parseFloat(c.precision.toString()),
+    precisionDelta: parseFloat(c.precisionDelta.toString()),
+  }));
 
   return rawTrades.map(rawTrade =>
     _prepareTradeContainer(
@@ -33,9 +43,7 @@ export const fetchOpenPairTrades = async (
       rawTrade.initialAccFees,
       rawTrade.tradeFeesData,
       rawTrade.uiRealizedPnlData,
-      collateralPrecisions[
-        parseInt(rawTrade.trade.collateralIndex.toString()) - 1
-      ]
+      collateralConfigs[parseInt(rawTrade.trade.collateralIndex.toString()) - 1]
     )
   );
 };
@@ -183,9 +191,10 @@ const _prepareTradeContainer = (
   tradeInitialAccFees: any,
   tradeFeesData: any,
   uiRealizedPnlData: any,
-  collateralPrecision: any
-) => {
-  const precision = parseFloat(collateralPrecision.toString());
+  collateralConfig: CollateralConfig
+): TradeContainer => {
+  const precision = collateralConfig.precision;
+
   return {
     trade: {
       user: trade.user,
@@ -215,73 +224,16 @@ const _prepareTradeContainer = (
       contractsVersion: parseInt(tradeInfo.contractsVersion.toString()),
       lastPosIncreaseBlock: parseInt(tradeInfo.lastPosIncreaseBlock.toString()),
     },
-    liquidationParams: {
-      maxLiqSpreadP:
-        parseFloat(tradeLiquidationParams.maxLiqSpreadP.toString()) / 1e12,
-      startLiqThresholdP:
-        parseFloat(tradeLiquidationParams.startLiqThresholdP.toString()) / 1e12,
-      endLiqThresholdP:
-        parseFloat(tradeLiquidationParams.endLiqThresholdP.toString()) / 1e12,
-      startLeverage:
-        parseFloat(tradeLiquidationParams.startLeverage.toString()) / 1e3,
-      endLeverage:
-        parseFloat(tradeLiquidationParams.endLeverage.toString()) / 1e3,
-    },
+    liquidationParams: convertLiquidationParams(tradeLiquidationParams),
     initialAccFees: {
       accPairFee: parseFloat(tradeInitialAccFees.accPairFee.toString()) / 1e10,
       accGroupFee:
         parseFloat(tradeInitialAccFees.accGroupFee.toString()) / 1e10,
       block: parseFloat(tradeInitialAccFees.block.toString()),
     },
-    tradeFeesData: {
-      realizedTradingFeesCollateral:
-        parseFloat(tradeFeesData.realizedTradingFeesCollateral.toString()) /
-        precision,
-      realizedPnlCollateral:
-        parseFloat(tradeFeesData.realizedPnlCollateral.toString()) / precision,
-      manuallyRealizedNegativePnlCollateral:
-        parseFloat(
-          tradeFeesData.manuallyRealizedNegativePnlCollateral.toString()
-        ) / precision,
-      alreadyTransferredNegativePnlCollateral:
-        parseFloat(
-          tradeFeesData.alreadyTransferredNegativePnlCollateral.toString()
-        ) / precision,
-      virtualAvailableCollateralInDiamond:
-        parseFloat(
-          tradeFeesData.virtualAvailableCollateralInDiamond.toString()
-        ) / precision,
-      initialAccFundingFeeP:
-        parseFloat(tradeFeesData.initialAccFundingFeeP.toString()) / 1e10,
-      initialAccBorrowingFeeP:
-        parseFloat(tradeFeesData.initialAccBorrowingFeeP.toString()) / 1e10,
-    },
+    tradeFeesData: convertTradeFeesData(tradeFeesData, collateralConfig),
     uiRealizedPnlData: uiRealizedPnlData
-      ? {
-          realizedTradingFeesCollateral:
-            parseFloat(
-              uiRealizedPnlData.realizedTradingFeesCollateral.toString()
-            ) / precision,
-          realizedOldBorrowingFeesCollateral:
-            parseFloat(
-              uiRealizedPnlData.realizedOldBorrowingFeesCollateral.toString()
-            ) / precision,
-          realizedNewBorrowingFeesCollateral:
-            parseFloat(
-              uiRealizedPnlData.realizedNewBorrowingFeesCollateral.toString()
-            ) / precision,
-          realizedFundingFeesCollateral:
-            parseFloat(
-              uiRealizedPnlData.realizedFundingFeesCollateral.toString()
-            ) / precision,
-          realizedPnlPartialCloseCollateral:
-            parseFloat(
-              uiRealizedPnlData.realizedPnlPartialCloseCollateral.toString()
-            ) / precision,
-          pnlWithdrawnCollateral:
-            parseFloat(uiRealizedPnlData.pnlWithdrawnCollateral.toString()) /
-            precision,
-        }
+      ? convertUiRealizedPnlData(uiRealizedPnlData, collateralConfig)
       : undefined,
   };
 };

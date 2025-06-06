@@ -292,7 +292,6 @@ export interface UserTradingVariablesBackend {
   }>;
 }
 
-
 export type OpenTradeInfo = {
   tradeId: string;
   timestamp: number;

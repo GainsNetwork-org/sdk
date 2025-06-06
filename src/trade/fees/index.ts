@@ -2,6 +2,16 @@ export * from "./borrowing";
 export * from "./tiers";
 export * from "./trading";
 
+// TradeFeesData and UiRealizedPnlData converters
+export {
+  convertTradeFeesData,
+  convertTradeFeesDataArray,
+  convertUiRealizedPnlData,
+  convertUiRealizedPnlDataArray,
+  encodeTradeFeesData,
+  encodeUiRealizedPnlData,
+} from "./converter";
+
 // Borrowing V2 exports with explicit naming to avoid conflicts
 export {
   BorrowingFeeV2,

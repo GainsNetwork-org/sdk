@@ -13,10 +13,13 @@ import { LiquidationParams } from "../types";
 export const convertLiquidationParams = (
   params: IPairsStorage.GroupLiquidationParamsStructOutput
 ): LiquidationParams => {
+  const ONCHAIN_LIQ_THRESHOLD = 0.9;
   return {
     maxLiqSpreadP: Number(params.maxLiqSpreadP) / 1e10 / 100, // 1e10 → percentage
-    startLiqThresholdP: Number(params.startLiqThresholdP) / 1e10 / 100, // 1e10 → percentage
-    endLiqThresholdP: Number(params.endLiqThresholdP) / 1e10 / 100, // 1e10 → percentage
+    startLiqThresholdP:
+      Number(params.startLiqThresholdP) / 1e10 / 100 || ONCHAIN_LIQ_THRESHOLD, // 1e10 → percentage
+    endLiqThresholdP:
+      Number(params.endLiqThresholdP) / 1e10 / 100 || ONCHAIN_LIQ_THRESHOLD, // 1e10 → percentage
     startLeverage: Number(params.startLeverage) / 1e3, // 1e3 → float
     endLeverage: Number(params.endLeverage) / 1e3, // 1e3 → float
   };
