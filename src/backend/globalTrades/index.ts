@@ -1,4 +1,4 @@
-import { Pair, TradeContainer, TradeType } from "src/trade";
+import { Pair, TradeContainer, TradeType } from "../../trade";
 import { TradeContainerBackend } from "./../tradingVariables/backend.types";
 import { convertTradesAndLimitOrders } from "./../tradingVariables/converter";
 import { TradingVariablesCollateral } from "./../tradingVariables/types";

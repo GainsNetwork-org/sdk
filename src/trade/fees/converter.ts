@@ -4,7 +4,7 @@
 
 import { IFundingFees } from "../../contracts/types/generated/GNSMultiCollatDiamond";
 import { TradeFeesData, UiRealizedPnlData } from "../types";
-import { CollateralConfig } from "../../utils/collaterals";
+import { CollateralConfig } from "../../markets/collateral/types";
 
 /**
  * @dev Converts contract TradeFeesData to SDK format
@@ -16,7 +16,7 @@ export const convertTradeFeesData = (
   data: IFundingFees.TradeFeesDataStructOutput,
   collateralConfig: CollateralConfig
 ): TradeFeesData => {
-  const decimals = collateralConfig.decimals;
+  const decimals = collateralConfig.decimals || 18;
 
   return {
     realizedTradingFeesCollateral:
@@ -63,7 +63,7 @@ export const convertUiRealizedPnlData = (
   data: IFundingFees.UiRealizedPnlDataStructOutput,
   collateralConfig: CollateralConfig
 ): UiRealizedPnlData => {
-  const decimals = collateralConfig.decimals;
+  const decimals = collateralConfig.decimals || 18;
 
   return {
     realizedTradingFeesCollateral:
@@ -111,7 +111,7 @@ export const encodeTradeFeesData = (
   data: TradeFeesData,
   collateralConfig: CollateralConfig
 ): IFundingFees.TradeFeesDataStruct => {
-  const decimals = collateralConfig.decimals;
+  const decimals = collateralConfig.decimals || 18;
 
   return {
     realizedTradingFeesCollateral: Math.round(
@@ -145,7 +145,7 @@ export const encodeUiRealizedPnlData = (
   data: UiRealizedPnlData,
   collateralConfig: CollateralConfig
 ): IFundingFees.UiRealizedPnlDataStruct => {
-  const decimals = collateralConfig.decimals;
+  const decimals = collateralConfig.decimals || 18;
 
   return {
     realizedTradingFeesCollateral: Math.round(

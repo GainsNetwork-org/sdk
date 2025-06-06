@@ -105,8 +105,8 @@ export async function fetchMultiplePairOi(
 
     return {
       beforeV10: beforeV10 as any,
-      afterV10Collateral,
-      afterV10Token,
+      collateral: afterV10Collateral,
+      token: afterV10Token,
     };
   });
 

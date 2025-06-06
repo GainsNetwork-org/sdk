@@ -3,7 +3,6 @@ import {
   convertFees,
   convertFeeTiers,
   convertGlobalTradeFeeParams,
-  convertLiquidationParams,
   convertMaxLeverages,
   convertOiWindows,
   convertOiWindowsSettings,
@@ -19,7 +18,7 @@ import {
   TransformedGlobalTradingVariables,
 } from "./types";
 import { GlobalTradingVariablesBackend } from "./backend.types";
-import { Pair, PairIndexes } from "src/trade";
+import { convertLiquidationParams, Pair, PairIndexes } from "../../trade";
 
 export const transformGlobalTradingVariables = (
   rawData: GlobalTradingVariablesBackend
@@ -61,11 +60,11 @@ export const transformGlobalTradingVariables = (
     liquidationParams: {
       groups:
         rawData.liquidationParams?.groups.map(liqParams =>
-          convertLiquidationParams(liqParams)
+          convertLiquidationParams(liqParams as any)
         ) || [],
       pairs:
         rawData.liquidationParams?.pairs.map(liqParams =>
-          convertLiquidationParams(liqParams)
+          convertLiquidationParams(liqParams as any)
         ) || [],
     },
     pairFactors:
@@ -120,7 +119,7 @@ const getTradingPairs = (
       if (
         collaterals.some(
           (collat: TradingVariablesCollateral) =>
-            collat.pairBorrowingFees[j].oi.max > 0
+            collat.pairOis[j].maxCollateral > 0
         )
       ) {
         tradingPairs.set(j, pair);

@@ -29,8 +29,8 @@ import {
   TradingGroup,
   PairFactor,
   convertLiquidationParams,
-  convertTradeFeesData as convertTradeFeesDataCanonical,
-  convertUiRealizedPnlData as convertUiRealizedPnlDataCanonical,
+  convertTradeFeesData,
+  convertUiRealizedPnlData,
 } from "../../";
 import {
   BorrowingFeePerBlockCapBackend,
@@ -266,15 +266,15 @@ export const convertTradeContainer = (
             tradeContainer.liquidationParams as any as IPairsStorage.GroupLiquidationParamsStructOutput
           ),
     tradeFeesData: tradeContainer.tradeFeesData
-      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        convertTradeFeesDataCanonical(
+      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
+        convertTradeFeesData(
           tradeContainer.tradeFeesData as any as IFundingFees.TradeFeesDataStructOutput,
           collaterals[collateralIndex - 1].collateralConfig
         )
       : undefined,
     uiRealizedPnlData: tradeContainer.uiRealizedPnlData
-      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        convertUiRealizedPnlDataCanonical(
+      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
+        convertUiRealizedPnlData(
           tradeContainer.uiRealizedPnlData as any as IFundingFees.UiRealizedPnlDataStructOutput,
           collaterals[collateralIndex - 1].collateralConfig
         )
