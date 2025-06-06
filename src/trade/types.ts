@@ -205,14 +205,6 @@ export type OiWindows = {
   [key: string]: OiWindow;
 };
 
-export type CollateralConfig = {
-  collateral: string;
-  isActive: boolean;
-  precision: number;
-  precisionDelta: number;
-  decimals?: number;
-};
-
 export type FeeTiers = {
   tiers: FeeTier[];
   multipliers: number[];

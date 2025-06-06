@@ -90,18 +90,13 @@ export const convertPairOi = (
 export const convertPairOiArray = (
   pairs: Array<{
     beforeV10: IBorrowingFees.OpenInterestStructOutput;
-    afterV10Collateral: IPriceImpact.PairOiCollateralStructOutput;
-    afterV10Token: IPriceImpact.PairOiTokenStructOutput;
+    collateral: IPriceImpact.PairOiCollateralStructOutput;
+    token: IPriceImpact.PairOiTokenStructOutput;
   }>,
   collateralPrecision: number
 ): UnifiedPairOi[] => {
   return pairs.map(p =>
-    convertPairOi(
-      p.beforeV10,
-      p.afterV10Collateral,
-      p.afterV10Token,
-      collateralPrecision
-    )
+    convertPairOi(p.beforeV10, p.collateral, p.token, collateralPrecision)
   );
 };
 

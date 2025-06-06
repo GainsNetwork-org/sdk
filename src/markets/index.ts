@@ -4,3 +4,4 @@ export * from "./stocks";
 export * from "./indices";
 export * from "./commodities";
 export * from "./oi";
+export * from "./collateral";

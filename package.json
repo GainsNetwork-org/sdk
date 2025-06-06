@@ -98,6 +98,7 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
+    "@gainsnetwork/contests": "^0.0.1",
     "ethcall": "^4.8.13",
     "ethers": "^5.7.2",
     "luxon": "^3.2.0"
