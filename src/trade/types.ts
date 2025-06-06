@@ -21,6 +21,15 @@ export type TradeFeesData = {
   initialAccBorrowingFeeP: number;
 };
 
+export type UiRealizedPnlData = {
+  realizedTradingFeesCollateral: number;
+  realizedOldBorrowingFeesCollateral: number;
+  realizedNewBorrowingFeesCollateral: number;
+  realizedFundingFeesCollateral: number;
+  realizedPnlPartialCloseCollateral: number;
+  pnlWithdrawnCollateral: number;
+};
+
 export type CounterTradeSettings = {
   maxLeverage: number; // e.g., 10 = 10x
   feeRateMultiplier: number; // e.g., 0.1 = 10% of normal fee, 1 = 100%
@@ -32,6 +41,7 @@ export type TradeContainer = {
   liquidationParams: LiquidationParams;
   initialAccFees: TradeInitialAccFees;
   tradeFeesData?: TradeFeesData;
+  uiRealizedPnlData?: UiRealizedPnlData;
   receivedAt?: number;
 };
 

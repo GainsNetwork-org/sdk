@@ -5,6 +5,8 @@ export interface TradeContainerBackend {
   tradeInfo: TradeInfoBackend;
   initialAccFees: TradeInitialAccFeesBackend;
   liquidationParams: LiquidationParamsBackend;
+  tradeFeesData?: TradeFeesDataBackend;
+  uiRealizedPnlData?: UiRealizedPnlDataBackend;
 }
 
 export interface TradeBackend {
@@ -20,6 +22,8 @@ export interface TradeBackend {
   openPrice: string;
   tp: string;
   sl: string;
+  isCounterTrade?: boolean;
+  positionSizeToken?: string;
 }
 
 export interface TradeInfoBackend {
@@ -37,6 +41,25 @@ export interface TradeInitialAccFeesBackend {
   accPairFee: string;
   accGroupFee: string;
   block: string;
+}
+
+export interface TradeFeesDataBackend {
+  realizedTradingFeesCollateral: string;
+  realizedPnlCollateral: string;
+  manuallyRealizedNegativePnlCollateral: string;
+  alreadyTransferredNegativePnlCollateral: string;
+  virtualAvailableCollateralInDiamond: string;
+  initialAccFundingFeeP: string;
+  initialAccBorrowingFeeP: string;
+}
+
+export interface UiRealizedPnlDataBackend {
+  realizedTradingFeesCollateral: string;
+  realizedOldBorrowingFeesCollateral: string;
+  realizedNewBorrowingFeesCollateral: string;
+  realizedFundingFeesCollateral: string;
+  realizedPnlPartialCloseCollateral: string;
+  pnlWithdrawnCollateral: string;
 }
 
 export interface LiquidationParamsBackend {
@@ -269,10 +292,6 @@ export interface UserTradingVariablesBackend {
   }>;
 }
 
-interface Reserves {
-  "0": string;
-  "1": string;
-}
 
 export type OpenTradeInfo = {
   tradeId: string;
