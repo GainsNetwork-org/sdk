@@ -74,15 +74,13 @@ export const convertTradeInitialAccFeesArray = (
 
 /**
  * @dev Creates a context object from contract data arrays
- * @param collateralIndices Array of collateral indices
  * @param pairIndices Array of pair indices
  * @param borrowingParams Array of borrowing fee params from contract
  * @param borrowingData Array of pair borrowing fee data from contract
  * @param currentTimestamp Optional current timestamp
- * @returns Complete SDK context for borrowing v2 calculations
+ * @returns Complete SDK context for borrowing v2 calculations (collateral-scoped)
  */
 export const createBorrowingV2Context = (
-  collateralIndices: number[],
   pairIndices: number[],
   borrowingParams: IFundingFees.BorrowingFeeParamsStructOutput[],
   borrowingData: IFundingFees.PairBorrowingFeeDataStructOutput[],
@@ -94,23 +92,14 @@ export const createBorrowingV2Context = (
     borrowingData: {},
   };
 
-  // Build nested objects indexed by collateralIndex and pairIndex
-  for (let i = 0; i < collateralIndices.length; i++) {
-    const collateralIndex = collateralIndices[i];
+  // Build objects indexed by pairIndex
+  for (let i = 0; i < pairIndices.length; i++) {
     const pairIndex = pairIndices[i];
 
-    // Initialize collateral index objects if they don't exist
-    if (!context.borrowingParams[collateralIndex]) {
-      context.borrowingParams[collateralIndex] = {};
-    }
-    if (!context.borrowingData[collateralIndex]) {
-      context.borrowingData[collateralIndex] = {};
-    }
-
     // Store converted data
-    context.borrowingParams[collateralIndex][pairIndex] =
+    context.borrowingParams[pairIndex] =
       convertBorrowingFeeParams(borrowingParams[i]);
-    context.borrowingData[collateralIndex][pairIndex] =
+    context.borrowingData[pairIndex] =
       convertPairBorrowingFeeData(borrowingData[i]);
   }
 
@@ -149,4 +138,35 @@ export const borrowingRateToAPR = (borrowingRatePerSecondP: number): number => {
 export const aprToBorrowingRate = (aprPercentage: number): number => {
   const SECONDS_PER_YEAR = 365 * 24 * 60 * 60; // 31,536,000
   return aprPercentage / SECONDS_PER_YEAR;
+};
+
+/**
+ * @dev Creates a collateral-scoped context from frontend data structure
+ * @param collateralBorrowingData Data structure from frontend (params and data arrays)
+ * @param currentTimestamp Optional current timestamp
+ * @returns Collateral-scoped borrowing fee v2 context
+ */
+export const createCollateralScopedBorrowingContext = (
+  collateralBorrowingData: {
+    params: BorrowingFeeV2.BorrowingFeeParams[];
+    data: BorrowingFeeV2.PairBorrowingFeeData[];
+  },
+  currentTimestamp?: number
+): BorrowingFeeV2.GetBorrowingFeeV2Context => {
+  const context: BorrowingFeeV2.GetBorrowingFeeV2Context = {
+    currentTimestamp: currentTimestamp ?? Math.floor(Date.now() / 1000),
+    borrowingParams: {},
+    borrowingData: {},
+  };
+
+  // Map arrays to objects indexed by array position (pairIndex)
+  collateralBorrowingData.params.forEach((param, index) => {
+    context.borrowingParams[index] = param;
+  });
+
+  collateralBorrowingData.data.forEach((data, index) => {
+    context.borrowingData[index] = data;
+  });
+
+  return context;
 };

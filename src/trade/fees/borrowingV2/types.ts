@@ -43,6 +43,7 @@ export type TradeInitialAccFees = {
 
 /**
  * @dev Context required for borrowing v2 fee calculations
+ * @dev Context is already scoped to a specific collateral
  */
 export type GetBorrowingFeeV2Context = {
   /**
@@ -51,21 +52,20 @@ export type GetBorrowingFeeV2Context = {
   currentTimestamp?: number;
   /**
    * @dev Borrowing fee parameters for pairs
-   * @dev Indexed by: params[collateralIndex][pairIndex]
+   * @dev Indexed by: params[pairIndex]
    */
-  borrowingParams: Record<number, Record<number, BorrowingFeeParams>>;
+  borrowingParams: Record<number, BorrowingFeeParams>;
   /**
    * @dev Borrowing fee data for pairs
-   * @dev Indexed by: data[collateralIndex][pairIndex]
+   * @dev Indexed by: data[pairIndex]
    */
-  borrowingData: Record<number, Record<number, PairBorrowingFeeData>>;
+  borrowingData: Record<number, PairBorrowingFeeData>;
 };
 
 /**
  * @dev Input for calculating pending borrowing fees for a pair
  */
 export type PairBorrowingFeeInput = {
-  collateralIndex: number;
   pairIndex: number;
   currentPairPrice: number;
   currentTimestamp?: number;
@@ -77,7 +77,6 @@ export type PairBorrowingFeeInput = {
 export type TradeBorrowingFeeInput = {
   positionSizeCollateral: number;
   openPrice: number;
-  collateralIndex: number;
   pairIndex: number;
   currentPairPrice: number;
   initialAccBorrowingFeeP: number;

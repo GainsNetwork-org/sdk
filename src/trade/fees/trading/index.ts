@@ -196,7 +196,6 @@ export const getTradePendingHoldingFeesCollateral = (
     {
       positionSizeCollateral: trade.collateralAmount * trade.leverage,
       openPrice: trade.openPrice,
-      collateralIndex: trade.collateralIndex,
       pairIndex: trade.pairIndex,
       currentPairPrice,
       initialAccBorrowingFeeP: tradeFeesData.initialAccBorrowingFeeP,

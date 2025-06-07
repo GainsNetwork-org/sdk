@@ -6,7 +6,11 @@
 import { Trade, TradeInfo, LiquidationParams, TradeContainer } from "../types";
 import { ComprehensivePnlResult } from "./types";
 import { getBorrowingFee, GetBorrowingFeeContext, BorrowingFee } from "../fees";
-import { getTradeBorrowingFeesCollateral as getBorrowingFeeV2 } from "../fees/borrowingV2";
+import { 
+  getTradeBorrowingFeesCollateral as getBorrowingFeeV2,
+  createCollateralScopedBorrowingContext,
+  BorrowingFeeV2
+} from "../fees/borrowingV2";
 import { getTradeFundingFeesCollateral } from "../fees/fundingFees";
 import {
   getTotalTradeFeesCollateral,
@@ -74,7 +78,10 @@ export type GetComprehensivePnlContext = GetBorrowingFeeContext &
     initialAccFees?: BorrowingFee.InitialAccFees;
 
     // V2 borrowing fees
-    borrowingProviderContext?: any;
+    borrowingProviderContext?: {
+      params: BorrowingFeeV2.BorrowingFeeParams[];
+      data: BorrowingFeeV2.PairBorrowingFeeData[];
+    };
 
     // Funding fees context
     fundingParams?: any;
@@ -160,18 +167,23 @@ export const getComprehensivePnl = (
 
     // V2 borrowing fees
     if (context.tradeFeesData && context.borrowingProviderContext) {
+      // Create collateral-scoped context from the provider data
+      const borrowingContext = createCollateralScopedBorrowingContext(
+        context.borrowingProviderContext,
+        context.currentTimestamp
+      );
+      
       borrowingFeeV2 = getBorrowingFeeV2(
         {
           positionSizeCollateral,
           openPrice: trade.openPrice,
-          collateralIndex: trade.collateralIndex,
           pairIndex: trade.pairIndex,
           currentPairPrice: currentPrice,
           initialAccBorrowingFeeP:
             context.tradeFeesData.initialAccBorrowingFeeP,
           currentTimestamp: context.currentTimestamp,
         },
-        context.borrowingProviderContext
+        borrowingContext
       );
     }
 
@@ -468,17 +480,22 @@ export const getPriceForTargetPnlPercentage = (
     }
     
     if (context.tradeFeesData && context.borrowingProviderContext) {
+      // Create collateral-scoped context from the provider data
+      const borrowingContext = createCollateralScopedBorrowingContext(
+        context.borrowingProviderContext,
+        context.currentTimestamp
+      );
+      
       holdingFees += getBorrowingFeeV2(
         {
           positionSizeCollateral,
           openPrice: trade.openPrice,
-          collateralIndex: trade.collateralIndex,
           pairIndex: trade.pairIndex,
           currentPairPrice: openPrice,
           initialAccBorrowingFeeP: context.tradeFeesData.initialAccBorrowingFeeP,
           currentTimestamp: context.currentTimestamp,
         },
-        context.borrowingProviderContext
+        borrowingContext
       );
     }
     

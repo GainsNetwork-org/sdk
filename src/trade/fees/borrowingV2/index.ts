@@ -59,7 +59,6 @@ export const getTradeBorrowingFeesCollateral = (
   const {
     positionSizeCollateral,
     openPrice,
-    collateralIndex,
     pairIndex,
     currentPairPrice,
     initialAccBorrowingFeeP,
@@ -67,8 +66,8 @@ export const getTradeBorrowingFeesCollateral = (
   } = input;
 
   // Get borrowing parameters and data for the pair
-  const params = context.borrowingParams[collateralIndex]?.[pairIndex];
-  const data = context.borrowingData[collateralIndex]?.[pairIndex];
+  const params = context.borrowingParams[pairIndex];
+  const data = context.borrowingData[pairIndex];
 
   if (!params || !data) {
     return 0;
@@ -97,7 +96,6 @@ export const getTradeBorrowingFeesCollateral = (
  * @dev Convenience function to calculate borrowing fees for a trade using individual parameters
  * @param positionSizeCollateral Position size in collateral tokens
  * @param pairIndex Index of the trading pair
- * @param collateralIndex Index of the collateral
  * @param openPrice Price at which the trade was opened
  * @param currentPairPrice Current price of the trading pair
  * @param initialAccBorrowingFeeP Initial accumulated borrowing fee when trade was opened
@@ -107,7 +105,6 @@ export const getTradeBorrowingFeesCollateral = (
 export const getBorrowingFee = (
   positionSizeCollateral: number,
   pairIndex: number,
-  collateralIndex: number,
   openPrice: number,
   currentPairPrice: number,
   initialAccBorrowingFeeP: number,
@@ -117,7 +114,6 @@ export const getBorrowingFee = (
     {
       positionSizeCollateral,
       openPrice,
-      collateralIndex,
       pairIndex,
       currentPairPrice,
       initialAccBorrowingFeeP,
@@ -137,11 +133,10 @@ export const getPairBorrowingFees = (
   input: BorrowingFeeV2.PairBorrowingFeeInput,
   context: BorrowingFeeV2.GetBorrowingFeeV2Context
 ): number => {
-  const { collateralIndex, pairIndex, currentPairPrice, currentTimestamp } =
-    input;
+  const { pairIndex, currentPairPrice, currentTimestamp } = input;
 
-  const params = context.borrowingParams[collateralIndex]?.[pairIndex];
-  const data = context.borrowingData[collateralIndex]?.[pairIndex];
+  const params = context.borrowingParams[pairIndex];
+  const data = context.borrowingData[pairIndex];
 
   if (!params || !data) {
     return 0;

@@ -8,4 +8,6 @@ export {
   convertOiWindows as convertOiWindowsBackend,
   convertOiWindowsSettings as convertOiWindowsSettingsBackend,
   convertTraderFeeTiers as convertTraderFeeTiersBackend,
+  convertTradingPairs as convertTradingPairsBackend,
+  convertCollaterals as convertCollateralsBackend,
 } from "./tradingVariables/converter";

@@ -214,22 +214,13 @@ export const createBorrowingV2ContextFromArrays = (
     borrowingData: {},
   };
 
-  // Build nested objects indexed by collateralIndex and pairIndex
-  for (let i = 0; i < collateralIndices.length; i++) {
-    const collateralIndex = collateralIndices[i];
+  // Build objects indexed by pairIndex (collateral-scoped)
+  for (let i = 0; i < pairIndices.length; i++) {
     const pairIndex = pairIndices[i];
 
-    // Initialize collateral index objects if they don't exist
-    if (!context.borrowingParams[collateralIndex]) {
-      context.borrowingParams[collateralIndex] = {};
-    }
-    if (!context.borrowingData[collateralIndex]) {
-      context.borrowingData[collateralIndex] = {};
-    }
-
-    // Store data
-    context.borrowingParams[collateralIndex][pairIndex] = params[i];
-    context.borrowingData[collateralIndex][pairIndex] = data[i];
+    // Store data indexed by pairIndex
+    context.borrowingParams[pairIndex] = params[i];
+    context.borrowingData[pairIndex] = data[i];
   }
 
   return context;

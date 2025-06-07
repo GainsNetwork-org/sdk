@@ -133,6 +133,3 @@ const getTradingPairs = (
 // Re-export everything from backend.types
 export * from "./backend.types";
 export * from "./types";
-
-// Re-export converter functions needed by frontend
-export { convertTradeContainer } from "./converter";

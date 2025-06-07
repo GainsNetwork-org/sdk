@@ -501,3 +501,6 @@ export const convertPairName = (pair?: PairBackend): string => {
   if (!pair) return "";
   return pair.from.split("_")[0] + "/" + pair.to;
 };
+
+// Re-export convertLiquidationParams so it's available when importing from converter
+export { convertLiquidationParams };
