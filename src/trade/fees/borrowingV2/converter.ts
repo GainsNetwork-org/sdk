@@ -97,10 +97,12 @@ export const createBorrowingV2Context = (
     const pairIndex = pairIndices[i];
 
     // Store converted data
-    context.borrowingParams[pairIndex] =
-      convertBorrowingFeeParams(borrowingParams[i]);
-    context.borrowingData[pairIndex] =
-      convertPairBorrowingFeeData(borrowingData[i]);
+    context.borrowingParams[pairIndex] = convertBorrowingFeeParams(
+      borrowingParams[i]
+    );
+    context.borrowingData[pairIndex] = convertPairBorrowingFeeData(
+      borrowingData[i]
+    );
   }
 
   return context;
