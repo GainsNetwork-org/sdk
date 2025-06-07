@@ -423,6 +423,103 @@ export const buildComprehensivePnlContext = (
   };
 };
 
+/**
+ * @dev Calculates the price needed to achieve a target PnL percentage
+ * @param targetPnlPercent The target PnL percentage (e.g., 50 for 50% profit, -25 for 25% loss)
+ * @param trade The trade to calculate for
+ * @param tradeInfo Trade info with timestamps
+ * @param context Context with fee calculation parameters
+ * @param netPnl Whether to include closing fees in the calculation
+ * @returns The price that would result in the target PnL percentage
+ */
+export const getPriceForTargetPnlPercentage = (
+  targetPnlPercent: number,
+  trade: Trade,
+  tradeInfo: TradeInfo,
+  context: GetComprehensivePnlContext,
+  netPnl = false
+): number => {
+  const { leverage, openPrice, long, collateralAmount } = trade;
+  const positionSizeCollateral = collateralAmount * leverage;
+
+  // Calculate holding fees
+  let holdingFees = 0;
+  
+  if (context.contractsVersion >= ContractsVersion.V10 && context.tradeFeesData) {
+    // V10: Use aggregated holding fees
+    const fees = getTradePendingHoldingFeesCollateral(
+      trade,
+      tradeInfo,
+      context.tradeFeesData as any,
+      openPrice, // Use open price as a baseline
+      context
+    );
+    holdingFees = fees.fundingFeeCollateral + fees.borrowingFeeCollateral + fees.borrowingFeeCollateral_old;
+  } else {
+    // Pre-v10: Calculate fees individually
+    if (context.initialAccFees) {
+      holdingFees += getBorrowingFee(
+        positionSizeCollateral,
+        trade.pairIndex,
+        trade.long,
+        context.initialAccFees,
+        context
+      );
+    }
+    
+    if (context.tradeFeesData && context.borrowingProviderContext) {
+      holdingFees += getBorrowingFeeV2(
+        {
+          positionSizeCollateral,
+          openPrice: trade.openPrice,
+          collateralIndex: trade.collateralIndex,
+          pairIndex: trade.pairIndex,
+          currentPairPrice: openPrice,
+          initialAccBorrowingFeeP: context.tradeFeesData.initialAccBorrowingFeeP,
+          currentTimestamp: context.currentTimestamp,
+        },
+        context.borrowingProviderContext
+      );
+    }
+    
+    if (context.contractsVersion >= ContractsVersion.V10 && context.tradeFeesData) {
+      holdingFees += getTradeFundingFeesCollateral(
+        trade,
+        tradeInfo,
+        context.tradeFeesData as any,
+        openPrice,
+        context as any
+      );
+    }
+  }
+
+  const targetPnlInCollateral = (collateralAmount * targetPnlPercent) / 100;
+  let targetPnlGross = targetPnlInCollateral + holdingFees;
+
+  if (netPnl) {
+    // Include closing fees
+    const closingFee = getTotalTradeFeesCollateral(
+      trade.collateralIndex,
+      trade.user,
+      trade.pairIndex,
+      positionSizeCollateral,
+      trade.isCounterTrade || false,
+      context
+    );
+    targetPnlGross += closingFee;
+  }
+
+  // Calculate the price
+  let price: number;
+  if (long) {
+    price = openPrice + (targetPnlGross * openPrice) / positionSizeCollateral;
+  } else {
+    price = openPrice - (targetPnlGross * openPrice) / positionSizeCollateral;
+  }
+
+  return price;
+};
+
 // Re-export types
 export * from "./types";
 export * from "./converter";
