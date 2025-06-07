@@ -3,7 +3,7 @@
  * @dev Provides functions matching v10 contract implementations
  */
 
-import { Trade, TradeInfo, LiquidationParams } from "../types";
+import { Trade, TradeInfo, LiquidationParams, TradeContainer } from "../types";
 import { ComprehensivePnlResult } from "./types";
 import { getBorrowingFee, GetBorrowingFeeContext, BorrowingFee } from "../fees";
 import { getTradeBorrowingFeesCollateral as getBorrowingFeeV2 } from "../fees/borrowingV2";
@@ -15,6 +15,7 @@ import {
 } from "../fees/trading";
 import { getLiqPnlThresholdP } from "../liquidation";
 import { ContractsVersion } from "../../contracts/types";
+import { GlobalTradingVariablesType } from "src/backend/tradingVariables/types";
 
 /**
  * @dev Calculates PnL percentage for a position
@@ -230,11 +231,29 @@ export const getComprehensivePnl = (
   // Calculate net PnL after fees
   const netPnlAfterFees = pnlCollateral - totalFees;
 
+  // Calculate unrealized PnL (before closing fee, after holding fees)
+  const holdingFees = borrowingFeeV1 + borrowingFeeV2 + fundingFee;
+  const uPnlCollateral = pnlCollateral - holdingFees;
+  const uPnlPercent = (uPnlCollateral / trade.collateralAmount) * 100;
+
+  // Realized PnL (after all fees including closing)
+  const realizedPnlCollateral = pnlCollateral - totalFees;
+  const realizedPnlPercent =
+    (realizedPnlCollateral / trade.collateralAmount) * 100;
+
   return {
     // Core PnL values
     pnlPercent,
     pnlCollateral,
     tradeValue,
+
+    // Unrealized PnL (after holding fees, before closing fee)
+    uPnlCollateral,
+    uPnlPercent,
+
+    // Realized PnL (after all fees)
+    realizedPnlCollateral,
+    realizedPnlPercent,
 
     // Fee breakdown
     fees: {
@@ -334,6 +353,74 @@ export const getPnl = (
   pnlCollat = (posCollat * pnlPercentage) / 100;
 
   return [pnlCollat, pnlPercentage];
+};
+
+/**
+ * @todo should we add validation or?
+ * @dev Builds a complete context for comprehensive PnL calculations
+ * @dev Extracts all required data from global trading variables and trade information
+ * @param globalTradingVariables The transformed global trading variables from backend
+ * @param trade The trade to calculate PnL for
+ * @param tradeInfo Trade info with version and timestamps
+ * @param tradeContainer Full trade container with fees data and liquidation params
+ * @param additionalParams Additional parameters not available in trading variables
+ * @returns Complete context ready for getComprehensivePnl
+ */
+export const buildComprehensivePnlContext = (
+  globalTradingVariables: GlobalTradingVariablesType,
+  trade: Trade,
+  tradeInfo: TradeInfo,
+  tradeContainer: TradeContainer,
+  additionalParams: {
+    currentBlock: number;
+    currentTimestamp: number;
+    traderFeeMultiplier?: number;
+  }
+): GetComprehensivePnlContext => {
+  const { collaterals, pairs, fees, globalTradeFeeParams } =
+    globalTradingVariables;
+
+  const collateral = collaterals[(trade.collateralIndex || 1) - 1];
+
+  // Extract borrowing fees data
+  const { pairBorrowingFees, groupBorrowingFees, pairBorrowingFeesV2 } =
+    collateral;
+
+  // Extract funding fees data
+  const { pairFundingFees } = collateral;
+
+  // Build the comprehensive context
+  return {
+    // Core context
+    currentBlock: additionalParams.currentBlock,
+    collateralPriceUsd: collateral.prices?.collateralPriceUsd || 1,
+    contractsVersion: tradeInfo.contractsVersion,
+    currentTimestamp: additionalParams.currentTimestamp,
+
+    // Borrowing fees v1
+    groups: groupBorrowingFees,
+    pairs: pairBorrowingFees,
+    initialAccFees: tradeContainer.initialAccFees,
+
+    // Trading fees
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    fee: fees![pairs![trade.pairIndex].feeIndex],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    globalTradeFeeParams: globalTradeFeeParams!,
+    traderFeeMultiplier: additionalParams.traderFeeMultiplier,
+
+    // v10+ features
+    tradeFeesData: tradeContainer.tradeFeesData,
+    liquidationParams: tradeContainer.liquidationParams,
+
+    // v2 borrowing fees
+    borrowingProviderContext: pairBorrowingFeesV2,
+
+    // Funding fees
+    fundingParams: pairFundingFees?.params?.[trade.pairIndex],
+    fundingData: pairFundingFees?.data?.[trade.pairIndex],
+    pairOiAfterV10: collateral.pairOis?.[trade.pairIndex],
+  };
 };
 
 // Re-export types

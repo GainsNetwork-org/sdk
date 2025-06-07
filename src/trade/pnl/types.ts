@@ -61,6 +61,14 @@ export type ComprehensivePnlResult = {
   pnlCollateral: number;
   tradeValue: number;
 
+  // Unrealized PnL (after holding fees, before closing fee)
+  uPnlCollateral: number;
+  uPnlPercent: number;
+
+  // Realized PnL (after all fees)
+  realizedPnlCollateral: number;
+  realizedPnlPercent: number;
+
   // Fee breakdown
   fees: FeeBreakdown;
 
