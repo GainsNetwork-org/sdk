@@ -13,7 +13,7 @@ export type GetBorrowingFeeContext = {
  * @dev Still actively used by markets that haven't migrated to v2
  * @dev Uses dynamic collateral OI - converts OI to USD for fee calculations
  * @param posDai Position size in collateral
- * @param pairIndex Trading pair index
+ * @param pairIndex Trading pair index (required)
  * @param long Whether position is long
  * @param initialAccFees Initial accumulated fees when trade was opened
  * @param context Context with current block, fee data, and collateral price
@@ -21,16 +21,20 @@ export type GetBorrowingFeeContext = {
  */
 export const getBorrowingFee = (
   posDai: number,
-  pairIndex: PairIndex,
+  pairIndex: PairIndex | undefined,
   long: boolean,
   initialAccFees: BorrowingFee.InitialAccFees,
   context: GetBorrowingFeeContext
 ): number => {
-  if (!context.groups || !context.pairs || !context.pairs[pairIndex]) {
+  if (pairIndex === undefined) {
+    throw new Error("pairIndex is required for borrowing fee calculations");
+  }
+
+  const { pairs, groups } = context;
+  if (!groups || !pairs || !pairs[pairIndex]) {
     return 0;
   }
 
-  const { pairs } = context;
   const pairGroups = pairs[pairIndex].groups;
   const firstPairGroup = pairGroups?.length > 0 ? pairGroups[0] : undefined;
 
@@ -57,7 +61,12 @@ export const getBorrowingFee = (
         initialAccFees,
         pairIndex,
         long,
-        context
+        {
+          currentBlock: context.currentBlock,
+          groups,
+          pairs,
+          collateralPriceUsd: context.collateralPriceUsd,
+        }
       );
 
     fee += Math.max(deltaGroup, deltaPair);
@@ -401,3 +410,4 @@ export const borrowingFeeUtils = {
 
 export * as BorrowingFee from "./types";
 export * from "./converter";
+export * from "./builder";

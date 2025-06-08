@@ -336,7 +336,7 @@ export const getPairPendingAccFundingFees = (
  * @param tradeInfo Trade info (contracts version)
  * @param tradeFeesData Trade fees data containing initial acc funding fee
  * @param currentPairPrice Current pair price
- * @param context Optional context with funding fee data (if not provided, uses simple calculation)
+ * @param context Optional context with funding fee data (full or pair-specific)
  * @returns Funding fee in collateral tokens
  */
 export const getTradeFundingFeesCollateral = (
@@ -355,17 +355,26 @@ export const getTradeFundingFeesCollateral = (
     initialAccFundingFeeP: number;
   },
   currentPairPrice: number,
-  context?: GetFundingFeeContext & {
-    pairOiAfterV10?: {
-      [collateralIndex: number]: { [pairIndex: number]: PairOiAfterV10 };
-    };
-    netExposureToken?: {
-      [collateralIndex: number]: { [pairIndex: number]: number };
-    };
-    netExposureUsd?: {
-      [collateralIndex: number]: { [pairIndex: number]: number };
-    };
-  }
+  context?:
+    | (GetFundingFeeContext & {
+        pairOiAfterV10?: {
+          [collateralIndex: number]: { [pairIndex: number]: PairOiAfterV10 };
+        };
+        netExposureToken?: {
+          [collateralIndex: number]: { [pairIndex: number]: number };
+        };
+        netExposureUsd?: {
+          [collateralIndex: number]: { [pairIndex: number]: number };
+        };
+      })
+    | {
+        currentTimestamp: number;
+        params: FundingFeeParams;
+        data: PairFundingFeeData;
+        pairOi?: PairOiAfterV10;
+        netExposureToken?: number;
+        netExposureUsd?: number;
+      }
 ): number => {
   // Funding fees are only charged on post-v10 trades
   if (tradeInfo.contractsVersion < 10) {
@@ -374,9 +383,43 @@ export const getTradeFundingFeesCollateral = (
 
   const positionSizeCollateral = trade.collateralAmount * trade.leverage;
 
-  // If we have full context, calculate current accumulated funding fee
+  if (!context) {
+    return 0; // Cannot calculate without context
+  }
+
+  // Check if we have a pair-specific context
+  if ("params" in context && "data" in context) {
+    // Pair-specific context
+    const { params, data, pairOi, netExposureToken, netExposureUsd } = context;
+
+    if (!params.fundingFeesEnabled) {
+      return 0;
+    }
+
+    // Calculate pending accumulated fees
+    const { accFundingFeeLongP, accFundingFeeShortP } =
+      getPairPendingAccFundingFees(
+        params,
+        data,
+        currentPairPrice,
+        pairOi || { oiLongToken: 0, oiShortToken: 0 },
+        netExposureToken || 0,
+        netExposureUsd || 0,
+        context.currentTimestamp
+      );
+
+    const currentAccFundingFeeP = trade.long
+      ? accFundingFeeLongP
+      : accFundingFeeShortP;
+    const fundingFeeDelta =
+      currentAccFundingFeeP - tradeFeesData.initialAccFundingFeeP;
+
+    return (positionSizeCollateral * fundingFeeDelta) / trade.openPrice;
+  }
+
+  // Full context - original logic
   if (
-    context &&
+    "fundingParams" in context &&
     trade.collateralIndex !== undefined &&
     trade.pairIndex !== undefined
   ) {
@@ -547,4 +590,9 @@ export type {
   TradeInitialAccFees,
 } from "./types";
 
+// Re-export pair-specific context types
+export type { GetPairFundingFeeContext } from "./pairContext";
+
 export * from "./fetcher";
+export * from "./pairContext";
+export * from "./builder";

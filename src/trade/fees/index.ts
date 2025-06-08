@@ -18,7 +18,6 @@ export {
   borrowingFeeV2Utils,
   getPairPendingAccBorrowingFees as getPairPendingAccBorrowingFeesV2,
   getTradeBorrowingFeesCollateral as getTradeBorrowingFeesCollateralV2,
-  getBorrowingFee as getBorrowingFeeV2,
   getPairBorrowingFees as getPairBorrowingFeesV2,
   MAX_BORROWING_RATE_PER_SECOND as MAX_BORROWING_RATE_PER_SECOND_V2,
   BORROWING_V2_PRECISION,

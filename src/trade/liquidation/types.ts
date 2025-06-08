@@ -33,6 +33,7 @@ export type GetLiquidationPriceContext = GetBorrowingFeeContext &
     collateralPriceUsd: number | undefined;
     contractsVersion: ContractsVersion | undefined;
     userPriceImpact?: UserPriceImpact | undefined;
+    currentTimestamp?: number;
 
     // V10 additions
     currentPairPrice?: number;

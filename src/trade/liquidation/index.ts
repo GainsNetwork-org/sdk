@@ -114,12 +114,19 @@ export const getLiquidationPrice = (
       lastPosIncreaseBlock: 0,
     };
 
+    // Build structured context for holding fees
+    const structuredContext = {
+      contractsVersion: context.contractsVersion ?? ContractsVersion.V10,
+      currentTimestamp: context.currentTimestamp ?? Date.now() / 1000,
+      collateralPriceUsd: context.collateralPriceUsd ?? 0,
+    };
+
     const holdingFees = getTradePendingHoldingFeesCollateral(
       trade,
       tradeInfo,
       context.tradeFeesData,
       context.currentPairPrice,
-      context
+      structuredContext
     );
     holdingFeesTotal = holdingFees.totalFeeCollateral;
 

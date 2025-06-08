@@ -63,6 +63,24 @@ export type GetBorrowingFeeV2Context = {
 };
 
 /**
+ * @dev Context for pair-specific borrowing v2 fee calculations
+ */
+export type GetPairBorrowingFeeV2Context = {
+  /**
+   * @dev Current timestamp (defaults to Date.now() / 1000)
+   */
+  currentTimestamp?: number;
+  /**
+   * @dev Borrowing fee parameters for this specific pair
+   */
+  params: BorrowingFeeParams;
+  /**
+   * @dev Borrowing fee data for this specific pair
+   */
+  data: PairBorrowingFeeData;
+};
+
+/**
  * @dev Input for calculating pending borrowing fees for a pair
  */
 export type PairBorrowingFeeInput = {

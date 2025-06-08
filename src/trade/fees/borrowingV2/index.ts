@@ -48,26 +48,23 @@ export const getPairPendingAccBorrowingFees = (
 
 /**
  * @dev Calculates borrowing fees owed by a specific trade
- * @param input Trade borrowing fee calculation input
- * @param context Context containing borrowing parameters and data
+ * @param input Trade borrowing fee calculation input (without pairIndex)
+ * @param context Pair-specific borrowing context
  * @returns Borrowing fees in collateral tokens
  */
 export const getTradeBorrowingFeesCollateral = (
-  input: BorrowingFeeV2.TradeBorrowingFeeInput,
-  context: BorrowingFeeV2.GetBorrowingFeeV2Context
+  input: Omit<BorrowingFeeV2.TradeBorrowingFeeInput, "pairIndex">,
+  context: BorrowingFeeV2.GetPairBorrowingFeeV2Context
 ): number => {
   const {
     positionSizeCollateral,
     openPrice,
-    pairIndex,
     currentPairPrice,
     initialAccBorrowingFeeP,
     currentTimestamp,
   } = input;
 
-  // Get borrowing parameters and data for the pair
-  const params = context.borrowingParams[pairIndex];
-  const data = context.borrowingData[pairIndex];
+  const { params, data } = context;
 
   if (!params || !data) {
     return 0;
@@ -78,7 +75,7 @@ export const getTradeBorrowingFeesCollateral = (
     params,
     data,
     currentPairPrice,
-    currentTimestamp
+    currentTimestamp ?? context.currentTimestamp
   );
 
   // Calculate borrowing fees for this trade
@@ -89,37 +86,6 @@ export const getTradeBorrowingFeesCollateral = (
     (positionSizeCollateral * feeDeltaP) /
     openPrice /
     BORROWING_V2_PRECISION.PERCENTAGE
-  );
-};
-
-/**
- * @dev Convenience function to calculate borrowing fees for a trade using individual parameters
- * @param positionSizeCollateral Position size in collateral tokens
- * @param pairIndex Index of the trading pair
- * @param openPrice Price at which the trade was opened
- * @param currentPairPrice Current price of the trading pair
- * @param initialAccBorrowingFeeP Initial accumulated borrowing fee when trade was opened
- * @param context Context containing borrowing parameters and data
- * @returns Borrowing fees in collateral tokens
- */
-export const getBorrowingFee = (
-  positionSizeCollateral: number,
-  pairIndex: number,
-  openPrice: number,
-  currentPairPrice: number,
-  initialAccBorrowingFeeP: number,
-  context: BorrowingFeeV2.GetBorrowingFeeV2Context
-): number => {
-  return getTradeBorrowingFeesCollateral(
-    {
-      positionSizeCollateral,
-      openPrice,
-      pairIndex,
-      currentPairPrice,
-      initialAccBorrowingFeeP,
-      currentTimestamp: context.currentTimestamp,
-    },
-    context
   );
 };
 
@@ -157,10 +123,9 @@ export const borrowingFeeV2Utils = {
   getPairPendingAccBorrowingFees,
   getTradeBorrowingFeesCollateral,
   getPairBorrowingFees,
-  getBorrowingFee,
 };
 
 export * as BorrowingFeeV2 from "./types";
+export { GetPairBorrowingFeeV2Context } from "./types";
 export * from "./converter";
-
 export * from "./fetcher";

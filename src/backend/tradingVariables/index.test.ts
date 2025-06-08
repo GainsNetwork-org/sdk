@@ -27,9 +27,17 @@ describe("transformGlobalTradingVariables", () => {
 
     // Log basic info about the transformed data
     console.log("Transform completed successfully");
-    console.log(`Number of collaterals: ${result?.globalTradingVariables.collaterals?.length || 0}`);
-    console.log(`Number of pairs: ${result?.globalTradingVariables.pairs?.length || 0}`);
-    console.log(`Number of groups: ${result?.globalTradingVariables.groups?.length || 0}`);
+    console.log(
+      `Number of collaterals: ${
+        result?.globalTradingVariables.collaterals?.length || 0
+      }`
+    );
+    console.log(
+      `Number of pairs: ${result?.globalTradingVariables.pairs?.length || 0}`
+    );
+    console.log(
+      `Number of groups: ${result?.globalTradingVariables.groups?.length || 0}`
+    );
     console.log(`Block number: ${result?.blockNumber || "undefined"}`);
     console.log(`L1 block number: ${result?.l1BlockNumber || "undefined"}`);
   });

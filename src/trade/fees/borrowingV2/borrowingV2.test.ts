@@ -1,7 +1,6 @@
 import {
   getPairPendingAccBorrowingFees,
   getTradeBorrowingFeesCollateral,
-  getBorrowingFee,
   borrowingRateToAPR,
   aprToBorrowingRate,
   MAX_BORROWING_RATE_PER_SECOND,
@@ -20,16 +19,10 @@ describe("Borrowing V2 Fees", () => {
 
   const mockContext: BorrowingFeeV2.GetBorrowingFeeV2Context = {
     borrowingParams: {
-      0: {
-        // collateralIndex 0
-        1: mockParams, // pairIndex 1
-      },
+      1: mockParams, // pairIndex 1
     },
     borrowingData: {
-      0: {
-        // collateralIndex 0
-        1: mockData, // pairIndex 1
-      },
+      1: mockData, // pairIndex 1
     },
   };
 
@@ -81,17 +74,21 @@ describe("Borrowing V2 Fees", () => {
 
   describe("getTradeBorrowingFeesCollateral", () => {
     it("should calculate correct trade borrowing fees", () => {
-      const input: BorrowingFeeV2.TradeBorrowingFeeInput = {
+      const input = {
         positionSizeCollateral: 1000000000, // 1000 collateral tokens (1e6 precision)
         openPrice: 1000000, // 1.0 open price (1e6)
-        collateralIndex: 0,
-        pairIndex: 1,
         currentPairPrice: 1200000, // 1.2 current price (1e6)
         initialAccBorrowingFeeP: 1000000000000000000000 / 1e20, // 1e21 (normalized)
         currentTimestamp: mockData.lastBorrowingUpdateTs + 3600, // 1 hour later
       };
 
-      const result = getTradeBorrowingFeesCollateral(input, mockContext);
+      const pairContext: BorrowingFeeV2.GetPairBorrowingFeeV2Context = {
+        params: mockContext.borrowingParams[1],
+        data: mockContext.borrowingData[1],
+        currentTimestamp: mockContext.currentTimestamp,
+      };
+
+      const result = getTradeBorrowingFeesCollateral(input, pairContext);
 
       // Calculate expected:
       // 1. Current acc fee = initial + (31710/1e10 * 3600 * 1200000) = 10 + 0.136987200
@@ -102,59 +99,21 @@ describe("Borrowing V2 Fees", () => {
     });
 
     it("should return 0 when pair data is missing", () => {
-      const input: BorrowingFeeV2.TradeBorrowingFeeInput = {
+      const input = {
         positionSizeCollateral: 1000000000,
         openPrice: 1000000,
-        collateralIndex: 999, // Non-existent
-        pairIndex: 999, // Non-existent
         currentPairPrice: 1200000,
         initialAccBorrowingFeeP: 1000000000000000000000 / 1e20, // normalized
       };
 
-      const result = getTradeBorrowingFeesCollateral(input, mockContext);
+      const pairContext: BorrowingFeeV2.GetPairBorrowingFeeV2Context = {
+        params: undefined as any, // Missing params
+        data: undefined as any, // Missing data
+        currentTimestamp: mockContext.currentTimestamp,
+      };
+
+      const result = getTradeBorrowingFeesCollateral(input, pairContext);
       expect(result).toBe(0);
-    });
-  });
-
-  describe("getBorrowingFee convenience function", () => {
-    it("should match getTradeBorrowingFeesCollateral result", () => {
-      const positionSize = 1000000000;
-      const openPrice = 1000000;
-      const currentPrice = 1200000;
-      const initialAccFee = 1000000000000000000000 / 1e20; // normalized
-      const timestamp = mockData.lastBorrowingUpdateTs + 3600;
-
-      const contextWithTimestamp = {
-        ...mockContext,
-        currentTimestamp: timestamp,
-      };
-
-      const result1 = getBorrowingFee(
-        positionSize,
-        1, // pairIndex
-        0, // collateralIndex
-        openPrice,
-        currentPrice,
-        initialAccFee,
-        contextWithTimestamp
-      );
-
-      const input: BorrowingFeeV2.TradeBorrowingFeeInput = {
-        positionSizeCollateral: positionSize,
-        openPrice,
-        collateralIndex: 0,
-        pairIndex: 1,
-        currentPairPrice: currentPrice,
-        initialAccBorrowingFeeP: initialAccFee,
-        currentTimestamp: timestamp,
-      };
-
-      const result2 = getTradeBorrowingFeesCollateral(
-        input,
-        contextWithTimestamp
-      );
-
-      expect(result1).toBe(result2);
     });
   });
 

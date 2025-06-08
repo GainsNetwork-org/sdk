@@ -1,4 +1,7 @@
-import { transformGlobalTrades, ITransformedGlobalTradingVariables } from "./index";
+import {
+  transformGlobalTrades,
+  ITransformedGlobalTradingVariables,
+} from "./index";
 import { TradeContainerBackend } from "../tradingVariables/backend.types";
 import fs from "fs";
 import path from "path";
@@ -99,7 +102,7 @@ describe("transformGlobalTrades", () => {
           isActive: true,
           precision: 1,
           precisionDelta: 0,
-          decimals: 6,  // USDC has 6 decimals
+          decimals: 6, // USDC has 6 decimals
         },
         pairBorrowingFees: [],
         groupBorrowingFees: [],
@@ -138,7 +141,7 @@ describe("transformGlobalTrades", () => {
         pairFundingFees: { globalParams: [], params: [], data: [] },
         pairOis: [],
         tradingPairs: new Map(),
-      }
+      },
     ];
 
     let result: ITransformedGlobalTradingVariables | undefined;
@@ -162,13 +165,8 @@ describe("transformGlobalTrades", () => {
   });
 
   it("should handle undefined rawTrades", () => {
-    const result = transformGlobalTrades(
-      undefined as any,
-      [],
-      "0x123",
-      []
-    );
-    
+    const result = transformGlobalTrades(undefined as any, [], "0x123", []);
+
     expect(result).toBeUndefined();
   });
 });
