@@ -7,33 +7,17 @@ import {
   Trade,
   TradeInfo,
   LiquidationParams,
-  TradeContainer,
   Fee,
   GlobalTradeFeeParams,
-  TradeFeesData,
 } from "../types";
-import { ComprehensivePnlResult } from "./types";
-import {
-  BorrowingFee,
-  GetBorrowingFeeContext,
-  getBorrowingFee,
-} from "../fees/borrowing";
-import { GetPairBorrowingFeeV2Context } from "../fees/borrowingV2";
-import { buildBorrowingV2Context } from "../fees/borrowingV2/builder";
-import { GetPairFundingFeeContext } from "../fees/fundingFees/pairContext";
-import { buildFundingContext } from "../fees/fundingFees/builder";
-import { buildBorrowingV1Context as buildBorrowingV1ContextFromBuilder } from "../fees/borrowing/builder";
+import { ComprehensivePnlResult, GetComprehensivePnlContext } from "./types";
+import { BorrowingFee, getBorrowingFee } from "../fees/borrowing";
 import {
   getTotalTradeFeesCollateral,
   getTradePendingHoldingFeesCollateral,
 } from "../fees/trading";
-import {
-  buildTradingFeesContext,
-  TradingFeesSubContext,
-} from "../fees/trading/builder";
 import { getLiqPnlThresholdP } from "../liquidation";
 import { ContractsVersion } from "../../contracts/types";
-import { GlobalTradingVariablesType } from "src/backend/tradingVariables/types";
 
 /**
  * @dev Calculates PnL percentage for a position
@@ -77,30 +61,6 @@ export const getTradeValue = (
   const value = collateral + pnlCollateral - totalFees;
   return Math.max(0, value);
 };
-/**
- * @dev Context for comprehensive PnL calculations with nested sub-contexts
- */
-export type GetComprehensivePnlContext = {
-  // Core shared context
-  core: {
-    currentBlock: number;
-    currentTimestamp: number;
-    collateralPriceUsd: number;
-    contractsVersion: ContractsVersion;
-  };
-
-  // Fee contexts using canonical types
-  borrowingV1?: GetBorrowingFeeContext;
-  borrowingV2?: GetPairBorrowingFeeV2Context;
-  funding?: GetPairFundingFeeContext;
-  trading: TradingFeesSubContext; // This one is fine, defined in builder
-
-  // Trade-specific data
-  tradeData?: {
-    tradeFeesData: TradeFeesData;
-    liquidationParams: LiquidationParams;
-  };
-};
 
 /**
  * @dev Comprehensive PnL calculation including all fees
@@ -124,6 +84,10 @@ export const getComprehensivePnl = (
     trade.leverage
   );
 
+  if (!context.tradeData) {
+    throw new Error("Trade data is undefined");
+  }
+
   // Calculate position size
   const positionSizeCollateral = trade.collateralAmount * trade.leverage;
 
@@ -132,15 +96,7 @@ export const getComprehensivePnl = (
   const pendingHoldingFees = getTradePendingHoldingFeesCollateral(
     trade,
     tradeInfo,
-    context.tradeData?.tradeFeesData || {
-      realizedTradingFeesCollateral: 0,
-      realizedPnlCollateral: 0,
-      manuallyRealizedNegativePnlCollateral: 0,
-      alreadyTransferredNegativePnlCollateral: 0,
-      virtualAvailableCollateralInDiamond: 0,
-      initialAccFundingFeeP: 0,
-      initialAccBorrowingFeeP: 0,
-    },
+    context.tradeData.tradeFeesData,
     currentPrice,
     {
       contractsVersion: context.core.contractsVersion,
@@ -149,6 +105,7 @@ export const getComprehensivePnl = (
       borrowingV1: context.borrowingV1,
       borrowingV2: context.borrowingV2,
       funding: context.funding,
+      initialAccFeesV1: context.tradeData.initialAccFeesV1,
     }
   );
 
@@ -349,74 +306,6 @@ export const getPnl = (
 };
 
 /**
- * @dev Builds a complete context for comprehensive PnL calculations
- * @dev Uses sub-context builders to create properly scoped contexts
- * @param globalTradingVariables The transformed global trading variables from backend
- * @param trade The trade to calculate PnL for
- * @param tradeInfo Trade info with version and timestamps
- * @param tradeContainer Full trade container with fees data and liquidation params
- * @param additionalParams Additional parameters not available in trading variables
- * @returns Complete context ready for getComprehensivePnl
- */
-export const buildComprehensivePnlContext = (
-  globalTradingVariables: GlobalTradingVariablesType,
-  trade: Trade,
-  tradeInfo: TradeInfo,
-  tradeContainer: TradeContainer,
-  additionalParams: {
-    currentBlock: number;
-    currentTimestamp: number;
-    traderFeeMultiplier?: number;
-  }
-): GetComprehensivePnlContext => {
-  const collateralIndex = trade.collateralIndex || 1;
-  const collateral = globalTradingVariables.collaterals[collateralIndex - 1];
-
-  return {
-    // Core shared context
-    core: {
-      currentBlock: additionalParams.currentBlock,
-      currentTimestamp: additionalParams.currentTimestamp,
-      collateralPriceUsd: collateral.prices?.collateralPriceUsd || 1,
-      contractsVersion: tradeInfo.contractsVersion,
-    },
-
-    // Build sub-contexts using dedicated builders
-    borrowingV1: buildBorrowingV1ContextFromBuilder(
-      globalTradingVariables,
-      collateralIndex,
-      additionalParams.currentBlock
-    ),
-    borrowingV2: buildBorrowingV2Context(
-      globalTradingVariables,
-      collateralIndex,
-      trade.pairIndex,
-      additionalParams.currentTimestamp
-    ),
-    funding: buildFundingContext(
-      globalTradingVariables,
-      collateralIndex,
-      trade.pairIndex,
-      additionalParams.currentTimestamp
-    ),
-    trading: buildTradingFeesContext(
-      globalTradingVariables,
-      trade.pairIndex,
-      additionalParams.traderFeeMultiplier
-    ),
-
-    // Trade-specific data
-    tradeData:
-      tradeContainer.tradeFeesData && tradeContainer.liquidationParams
-        ? {
-            tradeFeesData: tradeContainer.tradeFeesData,
-            liquidationParams: tradeContainer.liquidationParams,
-          }
-        : undefined,
-  };
-};
-
-/**
  * @dev Calculates the price needed to achieve a target PnL percentage
  * @param targetPnlPercent The target PnL percentage (e.g., 50 for 50% profit, -25 for 25% loss)
  * @param trade The trade to calculate for
@@ -457,6 +346,7 @@ export const getPriceForTargetPnlPercentage = (
       borrowingV1: context.borrowingV1,
       borrowingV2: context.borrowingV2,
       funding: context.funding,
+      initialAccFeesV1: context.tradeData?.initialAccFeesV1,
     }
   );
 
@@ -500,3 +390,4 @@ export const getPriceForTargetPnlPercentage = (
 // Re-export types
 export * from "./types";
 export * from "./converter";
+export * from "./builder";

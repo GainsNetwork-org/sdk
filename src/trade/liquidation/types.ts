@@ -1,8 +1,9 @@
 import { GetBorrowingFeeContext, BorrowingFee } from "./../fees";
-import { GetLiquidationFeesContext } from "./../fees/trading";
-import { BorrowingFeeV2 } from "./../fees/borrowingV2";
-import { LiquidationParams, UserPriceImpact, TradeFeesData } from "./../types";
+import { LiquidationParams, UserPriceImpact, TradeFeesData, TradeInfo } from "./../types";
 import { ContractsVersion } from "../../contracts/types";
+import { GetPairBorrowingFeeV2Context } from "../fees/borrowingV2";
+import { GetPairFundingFeeContext } from "../fees/fundingFees";
+import { TradingFeesSubContext } from "../fees/trading/builder";
 
 /**
  * @dev Input parameters for getTradeLiquidationPrice
@@ -25,31 +26,45 @@ export type LiqPriceInput = {
   beforeOpened: boolean;
 };
 
-export type GetLiquidationPriceContext = GetBorrowingFeeContext &
-  BorrowingFeeV2.GetBorrowingFeeV2Context &
-  GetLiquidationFeesContext & {
-    liquidationParams: LiquidationParams | undefined;
-    pairSpreadP: number | undefined;
-    collateralPriceUsd: number | undefined;
-    contractsVersion: ContractsVersion | undefined;
-    userPriceImpact?: UserPriceImpact | undefined;
-    currentTimestamp?: number;
-
-    // V10 additions
-    currentPairPrice?: number;
-    isCounterTrade?: boolean;
-    tradeFeesData?: TradeFeesData;
-    partialCloseMultiplier?: number;
-    additionalFeeCollateral?: number;
-    beforeOpened?: boolean;
-
-    // V1 borrowing fees data
-    initialAccFees?: BorrowingFee.InitialAccFees;
-
-    // Optional funding fees context for v10
-    fundingParams?: Record<number, Record<number, any>>;
-    fundingData?: Record<number, Record<number, any>>;
-    pairOiAfterV10?: Record<number, Record<number, any>>;
-    netExposureToken?: Record<number, Record<number, number>>;
-    netExposureUsd?: Record<number, Record<number, number>>;
+/**
+ * @dev Structured context for liquidation price calculations
+ * @dev Follows the same pattern as GetComprehensivePnlContext
+ */
+export type GetLiquidationPriceContext = {
+  // Core shared context
+  core: {
+    currentBlock: number;
+    currentTimestamp: number;
+    collateralPriceUsd: number;
+    contractsVersion: ContractsVersion;
+    spreadP: number; // Pair spread percentage
   };
+
+  // Fee contexts using canonical types
+  borrowingV1?: GetBorrowingFeeContext;
+  borrowingV2?: GetPairBorrowingFeeV2Context;
+  funding?: GetPairFundingFeeContext;
+
+  // Trading fees context
+  trading: TradingFeesSubContext & {
+    userPriceImpact?: UserPriceImpact;
+  };
+
+  // Trade-specific data
+  tradeData: {
+    tradeInfo: TradeInfo;
+    tradeFeesData: TradeFeesData;
+    liquidationParams: LiquidationParams;
+    initialAccFeesV1?: BorrowingFee.InitialAccFees;
+  };
+
+  // Additional parameters specific to liquidation calculation
+  liquidationSpecific: {
+    currentPairPrice: number;
+    additionalFeeCollateral: number;
+    partialCloseMultiplier: number;
+    beforeOpened: boolean;
+    isCounterTrade: boolean;
+    userPriceImpact?: UserPriceImpact;
+  };
+};

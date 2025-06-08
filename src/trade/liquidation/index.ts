@@ -8,147 +8,86 @@ import {
   getBorrowingFee,
   getTradePendingHoldingFeesCollateral,
   Trade,
-  TradeInfo,
-  Fee,
-  BorrowingFee,
   getSpreadP,
   LiquidationParams,
 } from "..";
-import { GetLiquidationPriceContext, LiqPriceInput } from "./types";
+import { GetLiquidationPriceContext } from "./types";
 
 /**
- * @dev Wrapper function that mirrors the contract's getTradeLiquidationPrice signature
- * @dev This is the main entry point matching the contract interface
- * @param input Liquidation price input parameters
- * @param context Additional context for SDK calculations
+ * @dev Calculate liquidation price with structured context
+ * @param trade The trade to calculate liquidation price for
+ * @param context Structured context with all required data
  * @returns Liquidation price
  */
-export const getTradeLiquidationPrice = (
-  input: LiqPriceInput,
-  context: Omit<
-    GetLiquidationPriceContext,
-    | "currentPairPrice"
-    | "isCounterTrade"
-    | "partialCloseMultiplier"
-    | "additionalFeeCollateral"
-    | "beforeOpened"
-    | "liquidationParams"
-  > & { fee: Fee }
-): number => {
-  // Create trade object from input
-  const trade: Trade = {
-    user: input.trader,
-    index: input.index,
-    pairIndex: input.pairIndex,
-    leverage: input.leverage,
-    long: input.long,
-    isOpen: true,
-    collateralIndex: input.collateralIndex,
-    tradeType: 0, // Regular trade
-    collateralAmount: input.collateral,
-    openPrice: input.openPrice,
-    sl: 0,
-    tp: 0,
-    isCounterTrade: input.isCounterTrade,
-  };
-
-  // Merge input params into context
-  const fullContext: GetLiquidationPriceContext = {
-    ...context,
-    currentPairPrice: input.currentPairPrice,
-    isCounterTrade: input.isCounterTrade,
-    partialCloseMultiplier: input.partialCloseMultiplier,
-    additionalFeeCollateral: input.additionalFeeCollateral,
-    beforeOpened: input.beforeOpened,
-    liquidationParams: input.liquidationParams,
-  };
-
-  // Call the existing implementation
-  return getLiquidationPrice(
-    trade,
-    context.fee,
-    context.initialAccFees || { accPairFee: 0, accGroupFee: 0, block: 0 },
-    fullContext
-  );
-};
-
 export const getLiquidationPrice = (
   trade: Trade,
-  fee: Fee,
-  initialAccFees: BorrowingFee.InitialAccFees,
   context: GetLiquidationPriceContext
 ): number => {
-  // Ensure initialAccFees is in context
-  if (!context.initialAccFees) {
-    context = { ...context, initialAccFees };
-  }
+  // Extract legacy parameters from structured context
+  const {
+    currentPairPrice,
+    additionalFeeCollateral,
+    partialCloseMultiplier,
+    beforeOpened,
+  } = context.liquidationSpecific;
 
   // 1. Calculate liquidation fees
   const closingFee = getTotalTradeLiqFeesCollateral(
-    0, // collateralIndex not used in calculation
+    trade.collateralIndex,
     trade.user,
     trade.pairIndex,
     trade.collateralAmount,
-    context
+    {
+      totalLiqCollateralFeeP:
+        context.tradeData.liquidationParams?.endLiqThresholdP || 0.9,
+      globalTradeFeeParams: context.trading.globalTradeFeeParams,
+      traderFeeMultiplier: context.trading.traderFeeMultiplier,
+    }
   );
 
   // 2. Calculate holding fees and realized PnL
   let holdingFeesTotal = 0;
   let totalRealizedPnlCollateral = 0;
 
-  if (
-    !context.beforeOpened &&
-    context.tradeFeesData &&
-    context.currentPairPrice
-  ) {
+  if (!beforeOpened && context.tradeData.tradeFeesData && currentPairPrice) {
     // V10 data available - calculate full holding fees
-    // Create a minimal tradeInfo from context
-    const tradeInfo: TradeInfo = {
-      contractsVersion: context.contractsVersion ?? ContractsVersion.V10,
-      createdBlock: 0,
-      tpLastUpdatedBlock: 0,
-      slLastUpdatedBlock: 0,
-      maxSlippageP: 0,
-      lastOiUpdateTs: 0,
-      collateralPriceUsd: context.collateralPriceUsd ?? 0,
-      lastPosIncreaseBlock: 0,
-    };
-
-    // Build structured context for holding fees
-    const structuredContext = {
-      contractsVersion: context.contractsVersion ?? ContractsVersion.V10,
-      currentTimestamp: context.currentTimestamp ?? Date.now() / 1000,
-      collateralPriceUsd: context.collateralPriceUsd ?? 0,
-    };
-
     const holdingFees = getTradePendingHoldingFeesCollateral(
       trade,
-      tradeInfo,
-      context.tradeFeesData,
-      context.currentPairPrice,
-      structuredContext
+      context.tradeData.tradeInfo,
+      context.tradeData.tradeFeesData,
+      currentPairPrice,
+      {
+        contractsVersion: context.core.contractsVersion,
+        currentTimestamp: context.core.currentTimestamp,
+        collateralPriceUsd: context.core.collateralPriceUsd,
+        borrowingV1: context.borrowingV1,
+        borrowingV2: context.borrowingV2,
+        funding: context.funding,
+        initialAccFeesV1: context.tradeData.initialAccFeesV1,
+      }
     );
     holdingFeesTotal = holdingFees.totalFeeCollateral;
 
     // Calculate total realized PnL (realized PnL minus realized trading fees)
     totalRealizedPnlCollateral =
-      context.tradeFeesData.realizedPnlCollateral -
-      context.tradeFeesData.realizedTradingFeesCollateral;
-  } else if (!context.beforeOpened) {
+      context.tradeData.tradeFeesData.realizedPnlCollateral -
+      context.tradeData.tradeFeesData.realizedTradingFeesCollateral;
+  } else if (
+    !beforeOpened &&
+    context.borrowingV1 &&
+    context.tradeData.initialAccFeesV1
+  ) {
     // Markets using v1 borrowing fees model
     holdingFeesTotal = getBorrowingFee(
       trade.collateralAmount * trade.leverage,
       trade.pairIndex,
       trade.long,
-      initialAccFees,
-      context
+      context.tradeData.initialAccFeesV1,
+      context.borrowingV1
     );
   }
 
   // 3. Apply unified formula for all trades
-  const partialCloseMultiplier = context.partialCloseMultiplier ?? 1;
-  const additionalFeeCollateral = context.additionalFeeCollateral ?? 0;
-
   const totalFeesCollateral =
     closingFee +
     (holdingFeesTotal - totalRealizedPnlCollateral) * partialCloseMultiplier +
@@ -156,7 +95,7 @@ export const getLiquidationPrice = (
 
   // 4. Calculate liquidation threshold
   const liqThresholdP = getLiqPnlThresholdP(
-    context.liquidationParams,
+    context.tradeData.liquidationParams,
     trade.leverage
   );
 
@@ -170,18 +109,18 @@ export const getLiquidationPrice = (
 
   // 6. Apply closing spread for v9.2+
   if (
-    context?.contractsVersion !== undefined &&
-    context.contractsVersion >= ContractsVersion.V9_2 &&
-    ((context?.liquidationParams?.maxLiqSpreadP !== undefined &&
-      context.liquidationParams.maxLiqSpreadP > 0) ||
-      (context?.userPriceImpact?.fixedSpreadP !== undefined &&
-        context.userPriceImpact.fixedSpreadP > 0))
+    context.core.contractsVersion >= ContractsVersion.V9_2 &&
+    ((context.tradeData.liquidationParams?.maxLiqSpreadP !== undefined &&
+      context.tradeData.liquidationParams.maxLiqSpreadP > 0) ||
+      (context.liquidationSpecific.userPriceImpact?.fixedSpreadP !==
+        undefined &&
+        context.liquidationSpecific.userPriceImpact.fixedSpreadP > 0))
   ) {
     const closingSpreadP = getSpreadP(
-      context.pairSpreadP,
+      context.core.spreadP,
       true,
-      context.liquidationParams,
-      context.userPriceImpact
+      context.tradeData.liquidationParams,
+      context.liquidationSpecific.userPriceImpact
     );
 
     liqPriceDistance -= trade.openPrice * closingSpreadP;
@@ -245,35 +184,22 @@ export const getTradeLiquidationPriceSimple = (
   trade: Trade,
   additionalFeeCollateral: number,
   currentPairPrice: number,
-  context: Omit<
-    GetLiquidationPriceContext,
-    "currentPairPrice" | "additionalFeeCollateral"
-  > & { fee: Fee }
+  context: GetLiquidationPriceContext
 ): number => {
-  const input: LiqPriceInput = {
-    collateralIndex: trade.collateralIndex,
-    trader: trade.user,
-    pairIndex: trade.pairIndex,
-    index: trade.index,
-    openPrice: trade.openPrice,
-    long: trade.long,
-    collateral: trade.collateralAmount,
-    leverage: trade.leverage,
-    additionalFeeCollateral,
-    liquidationParams: context.liquidationParams || {
-      maxLiqSpreadP: 0,
-      startLiqThresholdP: 0.9,
-      endLiqThresholdP: 0.9,
-      startLeverage: 0,
-      endLeverage: 0,
+  // Build complete context with additional parameters
+  const fullContext: GetLiquidationPriceContext = {
+    ...context,
+    liquidationSpecific: {
+      ...context.liquidationSpecific,
+      currentPairPrice,
+      additionalFeeCollateral,
+      partialCloseMultiplier: 1,
+      beforeOpened: false,
+      isCounterTrade: trade.isCounterTrade || false,
     },
-    currentPairPrice,
-    isCounterTrade: trade.isCounterTrade || false,
-    partialCloseMultiplier: 1,
-    beforeOpened: false,
   };
 
-  return getTradeLiquidationPrice(input, context);
+  return getLiquidationPrice(trade, fullContext);
 };
 
 // Converters
@@ -285,3 +211,6 @@ export {
 
 // Types
 export * from "./types";
+
+// Builder
+export * from "./builder";

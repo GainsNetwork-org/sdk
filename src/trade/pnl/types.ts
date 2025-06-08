@@ -2,7 +2,15 @@
  * @dev Types for PnL calculations
  */
 
-import { Trade, TradeInfo, TradeFeesData } from "../types";
+import { ContractsVersion } from "src/contracts/types";
+import {
+  BorrowingFee,
+  GetBorrowingFeeContext,
+  TradingFeesSubContext,
+} from "../fees";
+import { GetPairBorrowingFeeV2Context } from "../fees/borrowingV2";
+import { GetPairFundingFeeContext } from "../fees/fundingFees";
+import { Trade, TradeInfo, TradeFeesData, LiquidationParams } from "../types";
 
 /**
  * @dev Input for trade value calculation with all fees
@@ -109,4 +117,30 @@ export type V10PnlContext = {
   priceImpactContext?: any;
   skewContext?: any;
   cumulVolContext?: any;
+};
+
+/**
+ * @dev Context for comprehensive PnL calculations with nested sub-contexts
+ */
+export type GetComprehensivePnlContext = {
+  // Core shared context
+  core: {
+    currentBlock: number;
+    currentTimestamp: number;
+    collateralPriceUsd: number;
+    contractsVersion: ContractsVersion;
+  };
+
+  // Fee contexts using canonical types
+  borrowingV1?: GetBorrowingFeeContext;
+  borrowingV2?: GetPairBorrowingFeeV2Context;
+  funding?: GetPairFundingFeeContext;
+  trading: TradingFeesSubContext; // This one is fine, defined in builder
+
+  // Trade-specific data
+  tradeData?: {
+    tradeFeesData: TradeFeesData;
+    liquidationParams: LiquidationParams;
+    initialAccFeesV1?: BorrowingFee.InitialAccFees;
+  };
 };

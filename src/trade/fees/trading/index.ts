@@ -166,6 +166,10 @@ export type GetStructuredHoldingFeesContext = {
   borrowingV1?: GetBorrowingFeeContext;
   borrowingV2?: GetPairBorrowingFeeV2Context;
   funding?: GetPairFundingFeeContext;
+  // TODO: Add initialAccFees for V1 borrowing fees
+  // This is critical for accurate fee calculation and should come from
+  // the BorrowingInitialAccFeesStored event when the trade was opened
+  initialAccFeesV1?: BorrowingFee.InitialAccFees;
 };
 
 /**
@@ -201,13 +205,14 @@ export const getTradePendingHoldingFeesCollateral = (
       {
         ...context.funding,
         currentTimestamp: context.currentTimestamp,
-      } as any // TODO: Fix types once funding types are properly imported
+      }
     );
   }
 
-  // Calculate borrowing fees v2
+  // Calculate borrowing fees v2 (v10+ only)
   let borrowingFeeCollateral = 0;
   if (
+    context.contractsVersion >= ContractsVersion.V10 &&
     context.borrowingV2 &&
     tradeFeesData.initialAccBorrowingFeeP !== undefined
   ) {
@@ -225,21 +230,12 @@ export const getTradePendingHoldingFeesCollateral = (
 
   // Calculate v1 borrowing fees (some markets use v1 indefinitely)
   let borrowingFeeCollateral_old = 0;
-  if (context.borrowingV1) {
-    // V1 borrowing fees need initial accumulated fees
-    // This should ideally come from the trade data when the position was opened
-    // For now, use default values (this may underestimate fees)
-    const initialAccFees: BorrowingFee.InitialAccFees = {
-      accPairFee: 0,
-      accGroupFee: 0,
-      block: 0,
-    };
-
+  if (context.borrowingV1 && context.initialAccFeesV1) {
     borrowingFeeCollateral_old = getBorrowingFee(
       positionSizeCollateral,
       trade.pairIndex,
       trade.long,
-      initialAccFees,
+      context.initialAccFeesV1,
       context.borrowingV1
     );
   }

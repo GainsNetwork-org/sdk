@@ -68,9 +68,7 @@ export const getBorrowingFee = (
           collateralPriceUsd: context.collateralPriceUsd,
         }
       );
-
     fee += Math.max(deltaGroup, deltaPair);
-
     if (beforeTradeOpen) {
       break;
     }
