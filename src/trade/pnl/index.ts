@@ -15,15 +15,11 @@ import {
 import { ComprehensivePnlResult } from "./types";
 import {
   BorrowingFee,
-  getBorrowingFee,
   GetBorrowingFeeContext,
+  getBorrowingFee,
 } from "../fees/borrowing";
-import {
-  getTradeBorrowingFeesCollateral as getBorrowingFeeV2,
-  GetPairBorrowingFeeV2Context,
-} from "../fees/borrowingV2";
+import { GetPairBorrowingFeeV2Context } from "../fees/borrowingV2";
 import { buildBorrowingV2Context } from "../fees/borrowingV2/builder";
-import { getTradeFundingFeesCollateral } from "../fees/fundingFees";
 import { GetPairFundingFeeContext } from "../fees/fundingFees/pairContext";
 import { buildFundingContext } from "../fees/fundingFees/builder";
 import { buildBorrowingV1Context as buildBorrowingV1ContextFromBuilder } from "../fees/borrowing/builder";
@@ -131,99 +127,34 @@ export const getComprehensivePnl = (
   // Calculate position size
   const positionSizeCollateral = trade.collateralAmount * trade.leverage;
 
-  // Initialize fees
-  let borrowingFeeV1 = 0;
-  let borrowingFeeV2 = 0;
-  let fundingFee = 0;
-
-  // Calculate holding fees based on version
-  if (
-    context.core.contractsVersion >= ContractsVersion.V10 &&
-    context.tradeData?.tradeFeesData
-  ) {
-    // V10: Use aggregated holding fees function
-    const holdingFees = getTradePendingHoldingFeesCollateral(
-      trade,
-      tradeInfo,
-      {
-        ...context.tradeData.tradeFeesData,
-        manuallyRealizedNegativePnlCollateral:
-          context.tradeData.tradeFeesData
-            .manuallyRealizedNegativePnlCollateral || 0,
-        alreadyTransferredNegativePnlCollateral:
-          context.tradeData.tradeFeesData
-            .alreadyTransferredNegativePnlCollateral || 0,
-        virtualAvailableCollateralInDiamond:
-          context.tradeData.tradeFeesData.virtualAvailableCollateralInDiamond ||
-          0,
-      },
-      currentPrice,
-      {
-        contractsVersion: context.core.contractsVersion,
-        currentTimestamp: context.core.currentTimestamp,
-        collateralPriceUsd: context.core.collateralPriceUsd,
-        borrowingV1: context.borrowingV1,
-        borrowingV2: context.borrowingV2,
-        funding: context.funding,
-      }
-    );
-
-    fundingFee = holdingFees.fundingFeeCollateral;
-    borrowingFeeV2 = holdingFees.borrowingFeeCollateral;
-    borrowingFeeV1 = holdingFees.borrowingFeeCollateral_old;
-  } else {
-    // Pre-v10: Calculate fees individually
-    // V1 borrowing fees (still used by some markets)
-    if (context.borrowingV1) {
-      // For v1, we need the initial accumulated fees from when the trade was opened
-      // This would typically come from the trade data, but for now use defaults
-      const initialAccFees: BorrowingFee.InitialAccFees = {
-        accPairFee: 0,
-        accGroupFee: 0,
-        block: 0,
-      };
-
-      borrowingFeeV1 = getBorrowingFee(
-        positionSizeCollateral,
-        trade.pairIndex,
-        trade.long,
-        initialAccFees,
-        context.borrowingV1
-      );
+  // Calculate holding fees - always use getTradePendingHoldingFeesCollateral
+  // This mirrors the contract's getTradeValueCollateral which always calls this function
+  const pendingHoldingFees = getTradePendingHoldingFeesCollateral(
+    trade,
+    tradeInfo,
+    context.tradeData?.tradeFeesData || {
+      realizedTradingFeesCollateral: 0,
+      realizedPnlCollateral: 0,
+      manuallyRealizedNegativePnlCollateral: 0,
+      alreadyTransferredNegativePnlCollateral: 0,
+      virtualAvailableCollateralInDiamond: 0,
+      initialAccFundingFeeP: 0,
+      initialAccBorrowingFeeP: 0,
+    },
+    currentPrice,
+    {
+      contractsVersion: context.core.contractsVersion,
+      currentTimestamp: context.core.currentTimestamp,
+      collateralPriceUsd: context.core.collateralPriceUsd,
+      borrowingV1: context.borrowingV1,
+      borrowingV2: context.borrowingV2,
+      funding: context.funding,
     }
+  );
 
-    // V2 borrowing fees
-    if (context.tradeData?.tradeFeesData && context.borrowingV2) {
-      borrowingFeeV2 = getBorrowingFeeV2(
-        {
-          positionSizeCollateral,
-          openPrice: trade.openPrice,
-          currentPairPrice: currentPrice,
-          initialAccBorrowingFeeP:
-            context.tradeData.tradeFeesData.initialAccBorrowingFeeP,
-        },
-        context.borrowingV2
-      );
-    }
-
-    // Funding fees (v10+)
-    if (
-      context.core.contractsVersion >= ContractsVersion.V10 &&
-      context.tradeData?.tradeFeesData &&
-      context.funding
-    ) {
-      fundingFee = getTradeFundingFeesCollateral(
-        trade,
-        tradeInfo,
-        context.tradeData.tradeFeesData,
-        currentPrice,
-        {
-          ...context.funding,
-          currentTimestamp: context.core.currentTimestamp,
-        } as any
-      );
-    }
-  }
+  const borrowingFeeV1 = pendingHoldingFees.borrowingFeeCollateral_old;
+  const borrowingFeeV2 = pendingHoldingFees.borrowingFeeCollateral;
+  const fundingFee = pendingHoldingFees.fundingFeeCollateral;
 
   // Calculate closing fees
   const closingFee = getTotalTradeFeesCollateral(
@@ -273,8 +204,8 @@ export const getComprehensivePnl = (
   const netPnlAfterFees = pnlCollateral - totalFees;
 
   // Calculate unrealized PnL (before closing fee, after holding fees)
-  const holdingFees = borrowingFeeV1 + borrowingFeeV2 + fundingFee;
-  const uPnlCollateral = pnlCollateral - holdingFees;
+  const totalHoldingFees = borrowingFeeV1 + borrowingFeeV2 + fundingFee;
+  const uPnlCollateral = pnlCollateral - totalHoldingFees;
   const uPnlPercent = (uPnlCollateral / trade.collateralAmount) * 100;
 
   // Realized PnL (after all fees including closing)
@@ -504,96 +435,38 @@ export const getPriceForTargetPnlPercentage = (
   const { leverage, openPrice, long, collateralAmount } = trade;
   const positionSizeCollateral = collateralAmount * leverage;
 
-  // Calculate holding fees
-  let holdingFees = 0;
-
-  if (
-    context.core.contractsVersion >= ContractsVersion.V10 &&
-    context.tradeData?.tradeFeesData
-  ) {
-    // V10: Use aggregated holding fees
-    const fees = getTradePendingHoldingFeesCollateral(
-      trade,
-      tradeInfo,
-      {
-        ...context.tradeData.tradeFeesData,
-        manuallyRealizedNegativePnlCollateral:
-          context.tradeData.tradeFeesData
-            .manuallyRealizedNegativePnlCollateral || 0,
-        alreadyTransferredNegativePnlCollateral:
-          context.tradeData.tradeFeesData
-            .alreadyTransferredNegativePnlCollateral || 0,
-        virtualAvailableCollateralInDiamond:
-          context.tradeData.tradeFeesData.virtualAvailableCollateralInDiamond ||
-          0,
-      },
-      openPrice, // Use open price as a baseline
-      {
-        contractsVersion: context.core.contractsVersion,
-        currentTimestamp: context.core.currentTimestamp,
-        collateralPriceUsd: context.core.collateralPriceUsd,
-        borrowingV1: context.borrowingV1,
-        borrowingV2: context.borrowingV2,
-        funding: context.funding,
-      }
-    );
-    holdingFees =
-      fees.fundingFeeCollateral +
-      fees.borrowingFeeCollateral +
-      fees.borrowingFeeCollateral_old;
-  } else {
-    // Pre-v10: Calculate fees individually
-    if (context.borrowingV1) {
-      // For v1, we need the initial accumulated fees from when the trade was opened
-      const initialAccFees: BorrowingFee.InitialAccFees = {
-        accPairFee: 0,
-        accGroupFee: 0,
-        block: 0,
-      };
-
-      holdingFees += getBorrowingFee(
-        positionSizeCollateral,
-        trade.pairIndex,
-        trade.long,
-        initialAccFees,
-        context.borrowingV1
-      );
+  // Calculate holding fees - always use getTradePendingHoldingFeesCollateral
+  // This mirrors the contract's getTradeValueCollateral which always calls this function
+  const fees = getTradePendingHoldingFeesCollateral(
+    trade,
+    tradeInfo,
+    context.tradeData?.tradeFeesData || {
+      realizedTradingFeesCollateral: 0,
+      realizedPnlCollateral: 0,
+      manuallyRealizedNegativePnlCollateral: 0,
+      alreadyTransferredNegativePnlCollateral: 0,
+      virtualAvailableCollateralInDiamond: 0,
+      initialAccFundingFeeP: 0,
+      initialAccBorrowingFeeP: 0,
+    },
+    openPrice, // Use open price as a baseline
+    {
+      contractsVersion: context.core.contractsVersion,
+      currentTimestamp: context.core.currentTimestamp,
+      collateralPriceUsd: context.core.collateralPriceUsd,
+      borrowingV1: context.borrowingV1,
+      borrowingV2: context.borrowingV2,
+      funding: context.funding,
     }
+  );
 
-    if (context.tradeData?.tradeFeesData && context.borrowingV2) {
-      holdingFees += getBorrowingFeeV2(
-        {
-          positionSizeCollateral,
-          openPrice: trade.openPrice,
-          currentPairPrice: openPrice,
-          initialAccBorrowingFeeP:
-            context.tradeData.tradeFeesData.initialAccBorrowingFeeP,
-          currentTimestamp: context.borrowingV2.currentTimestamp,
-        },
-        context.borrowingV2
-      );
-    }
-
-    if (
-      context.core.contractsVersion >= ContractsVersion.V10 &&
-      context.tradeData?.tradeFeesData &&
-      context.funding
-    ) {
-      holdingFees += getTradeFundingFeesCollateral(
-        trade,
-        tradeInfo,
-        context.tradeData.tradeFeesData,
-        openPrice,
-        {
-          ...context.funding,
-          currentTimestamp: context.core.currentTimestamp,
-        } as any
-      );
-    }
-  }
+  const totalHoldingFees =
+    fees.fundingFeeCollateral +
+    fees.borrowingFeeCollateral +
+    fees.borrowingFeeCollateral_old;
 
   const targetPnlInCollateral = (collateralAmount * targetPnlPercent) / 100;
-  let targetPnlGross = targetPnlInCollateral + holdingFees;
+  let targetPnlGross = targetPnlInCollateral + totalHoldingFees;
 
   if (netPnl) {
     // Include closing fees
