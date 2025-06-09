@@ -63,7 +63,7 @@ export const getLiquidationPrice = (
         borrowingV1: context.borrowingV1,
         borrowingV2: context.borrowingV2,
         funding: context.funding,
-        initialAccFeesV1: context.tradeData.initialAccFeesV1,
+        initialAccFees: context.tradeData.initialAccFees,
       }
     );
     holdingFeesTotal = holdingFees.totalFeeCollateral;
@@ -75,14 +75,14 @@ export const getLiquidationPrice = (
   } else if (
     !beforeOpened &&
     context.borrowingV1 &&
-    context.tradeData.initialAccFeesV1
+    context.tradeData.initialAccFees
   ) {
     // Markets using v1 borrowing fees model
     holdingFeesTotal = getBorrowingFee(
       trade.collateralAmount * trade.leverage,
       trade.pairIndex,
       trade.long,
-      context.tradeData.initialAccFeesV1,
+      context.tradeData.initialAccFees,
       context.borrowingV1
     );
   }
@@ -169,37 +169,6 @@ export const getLiqPnlThresholdP = (
         liquidationParams.endLiqThresholdP)) /
       (liquidationParams.endLeverage - liquidationParams.startLeverage)
   );
-};
-
-/**
- * @dev Simplified wrapper for getTradeLiquidationPrice
- * @dev Mirrors the contract's simplified overload
- * @param trade The trade to calculate liquidation price for
- * @param additionalFeeCollateral Additional fees to consider
- * @param currentPairPrice Current pair price
- * @param context Context with all required data
- * @returns Liquidation price
- */
-export const getTradeLiquidationPriceSimple = (
-  trade: Trade,
-  additionalFeeCollateral: number,
-  currentPairPrice: number,
-  context: GetLiquidationPriceContext
-): number => {
-  // Build complete context with additional parameters
-  const fullContext: GetLiquidationPriceContext = {
-    ...context,
-    liquidationSpecific: {
-      ...context.liquidationSpecific,
-      currentPairPrice,
-      additionalFeeCollateral,
-      partialCloseMultiplier: 1,
-      beforeOpened: false,
-      isCounterTrade: trade.isCounterTrade || false,
-    },
-  };
-
-  return getLiquidationPrice(trade, fullContext);
 };
 
 // Converters

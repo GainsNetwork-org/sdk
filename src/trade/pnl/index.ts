@@ -105,7 +105,7 @@ export const getComprehensivePnl = (
       borrowingV1: context.borrowingV1,
       borrowingV2: context.borrowingV2,
       funding: context.funding,
-      initialAccFeesV1: context.tradeData.initialAccFeesV1,
+      initialAccFees: context.tradeData.initialAccFees,
     }
   );
 
@@ -346,7 +346,7 @@ export const getPriceForTargetPnlPercentage = (
       borrowingV1: context.borrowingV1,
       borrowingV2: context.borrowingV2,
       funding: context.funding,
-      initialAccFeesV1: context.tradeData?.initialAccFeesV1,
+      initialAccFees: context.tradeData?.initialAccFees,
     }
   );
 

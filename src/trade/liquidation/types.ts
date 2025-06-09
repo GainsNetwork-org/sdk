@@ -1,30 +1,14 @@
 import { GetBorrowingFeeContext, BorrowingFee } from "./../fees";
-import { LiquidationParams, UserPriceImpact, TradeFeesData, TradeInfo } from "./../types";
+import {
+  LiquidationParams,
+  UserPriceImpact,
+  TradeFeesData,
+  TradeInfo,
+} from "./../types";
 import { ContractsVersion } from "../../contracts/types";
 import { GetPairBorrowingFeeV2Context } from "../fees/borrowingV2";
 import { GetPairFundingFeeContext } from "../fees/fundingFees";
 import { TradingFeesSubContext } from "../fees/trading/builder";
-
-/**
- * @dev Input parameters for getTradeLiquidationPrice
- * @dev Mirrors the contract's LiqPriceInput struct
- */
-export type LiqPriceInput = {
-  collateralIndex: number;
-  trader: string;
-  pairIndex: number;
-  index: number;
-  openPrice: number; // SDK uses floats, not 1e10
-  long: boolean;
-  collateral: number; // SDK uses floats, not 1e18/1e6
-  leverage: number; // SDK uses floats, not 1e3
-  additionalFeeCollateral: number; // SDK uses floats
-  liquidationParams: LiquidationParams;
-  currentPairPrice: number; // SDK uses floats, not 1e10
-  isCounterTrade: boolean;
-  partialCloseMultiplier: number; // SDK uses floats, not 1e18
-  beforeOpened: boolean;
-};
 
 /**
  * @dev Structured context for liquidation price calculations
@@ -55,7 +39,7 @@ export type GetLiquidationPriceContext = {
     tradeInfo: TradeInfo;
     tradeFeesData: TradeFeesData;
     liquidationParams: LiquidationParams;
-    initialAccFeesV1?: BorrowingFee.InitialAccFees;
+    initialAccFees?: BorrowingFee.InitialAccFees;
   };
 
   // Additional parameters specific to liquidation calculation

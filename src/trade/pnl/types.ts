@@ -10,22 +10,7 @@ import {
 } from "../fees";
 import { GetPairBorrowingFeeV2Context } from "../fees/borrowingV2";
 import { GetPairFundingFeeContext } from "../fees/fundingFees";
-import { Trade, TradeInfo, TradeFeesData, LiquidationParams } from "../types";
-
-/**
- * @dev Input for trade value calculation with all fees
- * @dev Mirrors contract's TradeValueInput struct
- */
-export type TradeValueInput = {
-  trade: Trade;
-  currentPrice: number;
-  collateralPriceUsd: number;
-  fees: {
-    openingFeeCollateral: number;
-    closingFeeCollateral: number;
-    holdingFeesCollateral: number;
-  };
-};
+import { TradeFeesData, LiquidationParams } from "../types";
 
 /**
  * @dev Result of trade value calculation
@@ -93,33 +78,6 @@ export type ComprehensivePnlResult = {
 };
 
 /**
- * @dev Simple PnL result for backward compatibility
- */
-export type SimplePnlResult = [pnlCollateral: number, pnlPercent: number];
-
-/**
- * @dev Input for PnL calculation with price impact
- */
-export type PnlWithPriceImpactInput = {
-  trade: Trade;
-  tradeInfo: TradeInfo;
-  oraclePrice: number;
-  currentPairPrice: number;
-  usePriceImpact: boolean;
-  includeOpeningFees?: boolean;
-};
-
-/**
- * @dev Context for v10 PnL calculations
- */
-export type V10PnlContext = {
-  tradeFeesData: TradeFeesData;
-  priceImpactContext?: any;
-  skewContext?: any;
-  cumulVolContext?: any;
-};
-
-/**
  * @dev Context for comprehensive PnL calculations with nested sub-contexts
  */
 export type GetComprehensivePnlContext = {
@@ -135,12 +93,12 @@ export type GetComprehensivePnlContext = {
   borrowingV1?: GetBorrowingFeeContext;
   borrowingV2?: GetPairBorrowingFeeV2Context;
   funding?: GetPairFundingFeeContext;
-  trading: TradingFeesSubContext; // This one is fine, defined in builder
+  trading: TradingFeesSubContext;
 
   // Trade-specific data
   tradeData?: {
     tradeFeesData: TradeFeesData;
     liquidationParams: LiquidationParams;
-    initialAccFeesV1?: BorrowingFee.InitialAccFees;
+    initialAccFees?: BorrowingFee.InitialAccFees;
   };
 };
