@@ -31,10 +31,12 @@ import {
   convertLiquidationParams,
   convertTradeFeesData,
   convertUiRealizedPnlData,
+  CounterTradeSettings,
 } from "../../";
 import {
   BorrowingFeePerBlockCapBackend,
   CollateralBackend,
+  CounterTradeSettingsBackend,
   FeeBackend,
   FeeTiersBackend,
   GlobalTradeFeeParamsBackend,
@@ -501,6 +503,13 @@ export const convertPairName = (pair?: PairBackend): string => {
   if (!pair) return "";
   return pair.from.split("_")[0] + "/" + pair.to;
 };
+
+export const convertCounterTradeSettings = (
+  counterTradeSetting: CounterTradeSettingsBackend
+): CounterTradeSettings => ({
+  maxLeverage: parseFloat(counterTradeSetting.maxLeverage) / 1e3,
+  feeRateMultiplier: parseFloat(counterTradeSetting.feeRateMultiplier) / 1e3,
+});
 
 // Re-export convertLiquidationParams so it's available when importing from converter
 export { convertLiquidationParams };
