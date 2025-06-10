@@ -18,6 +18,7 @@ import {
   isValidSkewDepth,
 } from "./converter";
 import { PairOiToken, SkewPriceImpactContext, TradeSkewParams } from "./types";
+import { ContractsVersion } from "../../../contracts/types";
 
 describe("Skew Price Impact", () => {
   describe("getNetSkewToken", () => {
@@ -217,7 +218,7 @@ describe("Skew Price Impact", () => {
         open: true,
         positionSizeCollateral: 10000,
         currentPrice: 2000,
-        contractsVersion: 9,
+        contractsVersion: ContractsVersion.V9_2,
       };
 
       const result = getTradeSkewPriceImpactWithChecks(params, context);
@@ -232,7 +233,7 @@ describe("Skew Price Impact", () => {
         open: true,
         positionSizeCollateral: 10000,
         currentPrice: 2000,
-        contractsVersion: 10,
+        contractsVersion: ContractsVersion.V10,
         isCounterTrade: true,
       };
 
@@ -248,7 +249,7 @@ describe("Skew Price Impact", () => {
         open: true,
         positionSizeCollateral: 10000,
         currentPrice: 2000,
-        contractsVersion: 10,
+        contractsVersion: ContractsVersion.V10,
         isCounterTrade: false,
       };
 

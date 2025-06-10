@@ -11,6 +11,7 @@ import {
   TradeSkewParams,
 } from "./types";
 import { calculatePositionSizeToken } from "../../utils";
+import { ContractsVersion } from "../../../contracts/types";
 
 // Constants
 const PRICE_IMPACT_DIVIDER = 2; // Half price impact to match cumulative volume impact scale
@@ -153,7 +154,7 @@ export const getTradeSkewPriceImpactWithChecks = (
   context: SkewPriceImpactContext
 ): number => {
   // v10+ trades only
-  if (params.contractsVersion < 10) {
+  if (params.contractsVersion < ContractsVersion.V10) {
     return 0;
   }
 

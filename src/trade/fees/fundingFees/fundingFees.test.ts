@@ -21,6 +21,7 @@ import {
   GetFundingFeeContext,
   PairOiAfterV10,
 } from "./types";
+import { ContractsVersion } from "../../../contracts/types";
 
 describe("Funding Fees", () => {
   describe("getCurrentFundingVelocityPerYear", () => {
@@ -312,7 +313,7 @@ describe("Funding Fees", () => {
         openPrice: 50000,
         long: true,
       };
-      const tradeInfo = { contractsVersion: 9 };
+      const tradeInfo = { contractsVersion: ContractsVersion.V9_2 };
 
       const result = getTradeFundingFeesCollateralSimple(
         trade,
@@ -330,7 +331,7 @@ describe("Funding Fees", () => {
         openPrice: 50000,
         long: true,
       };
-      const tradeInfo = { contractsVersion: 10 };
+      const tradeInfo = { contractsVersion: ContractsVersion.V10 };
       const initialAccFee = 0.1;
       const currentAccFee = 0.15;
 
@@ -516,7 +517,7 @@ describe("Funding Fees", () => {
         long: true,
       };
 
-      const tradeInfo = { contractsVersion: 10 };
+      const tradeInfo = { contractsVersion: ContractsVersion.V10 };
       const initialAccFundingFeeP = 0.09;
       const currentPairPrice = 51000;
       const pairOiToken: PairOiAfterV10 = {
@@ -565,7 +566,7 @@ describe("Funding Fees", () => {
           0,
           1,
           trade,
-          { contractsVersion: 10 },
+          { contractsVersion: ContractsVersion.V10 },
           0.1,
           51000,
           { oiLongToken: 10000, oiShortToken: 8000 },
