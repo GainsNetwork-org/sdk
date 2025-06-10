@@ -216,6 +216,15 @@ export const getTradePendingHoldingFeesCollateral = (
     context.borrowingV2 &&
     tradeFeesData.initialAccBorrowingFeeP !== undefined
   ) {
+    console.log(
+      "initialAccBorrowingFeeP",
+      tradeFeesData.initialAccBorrowingFeeP
+    );
+    console.log("positionSizeCollateral", positionSizeCollateral);
+    console.log("openPrice", trade.openPrice);
+    console.log("currentPairPrice", currentPairPrice);
+    console.log("currentTimestamp", context.currentTimestamp);
+    console.log("borrowingv2", context.borrowingV2);
     borrowingFeeCollateral = getTradeBorrowingFeesCollateralV2(
       {
         positionSizeCollateral,
