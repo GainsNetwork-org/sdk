@@ -3,23 +3,37 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { TradeContainer, TradeContainerRaw } from "../../trade/types";
 import { Contracts, BlockTag } from "../../contracts/types";
-import { IBorrowingFees } from "../types/generated/GNSMultiCollatDiamond";
+import {
+  IBorrowingFees,
+  IFundingFees,
+} from "../types/generated/GNSMultiCollatDiamond";
 import { Contract, Provider } from "ethcall";
+import {
+  convertTradeFeesData,
+  convertUiRealizedPnlData,
+  convertLiquidationParams,
+} from "../../trade";
+import { CollateralConfig } from "src/markets";
 
 export type FetchOpenPairTradesOverrides = {
   batchSize?: number;
   useMulticall?: boolean;
   includeLimits?: boolean;
   blockTag?: BlockTag;
+  includeUIRealizedPnlData?: boolean;
 };
 export const fetchOpenPairTrades = async (
   contracts: Contracts,
   overrides: FetchOpenPairTradesOverrides = {}
 ): Promise<TradeContainer[]> => {
   const rawTrades = await fetchOpenPairTradesRaw(contracts, overrides);
-  const collateralPrecisions = (
-    await contracts.gnsMultiCollatDiamond.getCollaterals()
-  ).map(({ precision }) => precision);
+  const collaterals = await contracts.gnsMultiCollatDiamond.getCollaterals();
+  const collateralConfigs = collaterals.map(c => ({
+    collateral: c.collateral,
+    isActive: c.isActive,
+    precision: parseFloat(c.precision.toString()),
+    precisionDelta: parseFloat(c.precisionDelta.toString()),
+  }));
 
   return rawTrades.map(rawTrade =>
     _prepareTradeContainer(
@@ -27,9 +41,9 @@ export const fetchOpenPairTrades = async (
       rawTrade.tradeInfo,
       rawTrade.liquidationParams,
       rawTrade.initialAccFees,
-      collateralPrecisions[
-        parseInt(rawTrade.trade.collateralIndex.toString()) - 1
-      ]
+      rawTrade.tradeFeesData,
+      rawTrade.uiRealizedPnlData,
+      collateralConfigs[parseInt(rawTrade.trade.collateralIndex.toString()) - 1]
     )
   );
 };
@@ -47,6 +61,7 @@ export const fetchOpenPairTradesRaw = async (
     batchSize = 50,
     includeLimits = true,
     useMulticall = false,
+    includeUIRealizedPnlData = true,
   } = overrides;
 
   const { gnsMultiCollatDiamond: multiCollatDiamondContract } = contracts;
@@ -68,19 +83,19 @@ export const fetchOpenPairTradesRaw = async (
     let offset = 0;
 
     while (running) {
-      const trades = await multiCollatDiamondContract.getAllTrades(
-        offset,
-        offset + batchSize
-      );
-      const tradeInfos = await multiCollatDiamondContract.getAllTradeInfos(
-        offset,
-        offset + batchSize
-      );
-      const tradeLiquidationParams =
-        await multiCollatDiamondContract.getAllTradesLiquidationParams(
+      const [trades, tradeInfos, tradeLiquidationParams] = await Promise.all([
+        multiCollatDiamondContract.getAllTrades(offset, offset + batchSize),
+        multiCollatDiamondContract.getAllTradeInfos(offset, offset + batchSize),
+        multiCollatDiamondContract.getAllTradesLiquidationParams(
           offset,
           offset + batchSize
-        );
+        ),
+      ]);
+
+      const fundingFeesCallParams: [string[], any[]] = [
+        [], // traders
+        [], // indices
+      ];
 
       // Array is always of length `batchSize`
       // so we need to filter out the empty trades, indexes are reliable
@@ -90,8 +105,10 @@ export const fetchOpenPairTradesRaw = async (
             t.collateralIndex > 0 &&
             (includeLimits || (!includeLimits && t.tradeType === 0))
         )
-        .map(
-          (trade, ix): TradeContainerRaw => ({
+        .map((trade, ix): TradeContainerRaw => {
+          fundingFeesCallParams[0].push(trade.user);
+          fundingFeesCallParams[1].push(trade.index);
+          return {
             trade,
             tradeInfo: tradeInfos[ix],
             liquidationParams: tradeLiquidationParams[ix],
@@ -101,8 +118,33 @@ export const fetchOpenPairTradesRaw = async (
               block: 0,
               __placeholder: 0,
             },
-          })
-        );
+            tradeFeesData: {
+              realizedTradingFeesCollateral: 0,
+              realizedPnlCollateral: 0,
+              manuallyRealizedNegativePnlCollateral: 0,
+              alreadyTransferredNegativePnlCollateral: 0,
+              virtualAvailableCollateralInDiamond: 0,
+              initialAccFundingFeeP: 0,
+              initialAccBorrowingFeeP: 0,
+              __placeholder: 0,
+            },
+            uiRealizedPnlData: undefined,
+          };
+        });
+
+      const [tradeFeesData, uiRealizedPnlData]: [
+        IFundingFees.TradeFeesDataStruct[],
+        IFundingFees.UiRealizedPnlDataStruct[]
+      ] = await Promise.all([
+        multiCollatDiamondContract.getTradeFeesDataArray(
+          ...fundingFeesCallParams
+        ),
+        includeUIRealizedPnlData
+          ? multiCollatDiamondContract.getTradeUiRealizedPnlDataArray(
+              ...fundingFeesCallParams
+            )
+          : [],
+      ]);
 
       const initialAccFeesPromises = openTrades
         .map(({ trade }) => ({
@@ -124,6 +166,8 @@ export const fetchOpenPairTradesRaw = async (
 
       initialAccFees.forEach((accFees, ix) => {
         openTrades[ix].initialAccFees = accFees;
+        openTrades[ix].tradeFeesData = tradeFeesData[ix];
+        openTrades[ix].uiRealizedPnlData = uiRealizedPnlData?.[ix];
       });
 
       allOpenPairTrades = allOpenPairTrades.concat(openTrades);
@@ -145,50 +189,51 @@ const _prepareTradeContainer = (
   tradeInfo: any,
   tradeLiquidationParams: any,
   tradeInitialAccFees: any,
-  collateralPrecision: any
-) => ({
-  trade: {
-    user: trade.user,
-    index: parseInt(trade.index.toString()),
-    pairIndex: parseInt(trade.pairIndex.toString()),
-    leverage: parseFloat(trade.leverage.toString()) / 1e3,
-    long: trade.long.toString() === "true",
-    isOpen: trade.isOpen.toString() === "true",
-    collateralIndex: parseInt(trade.collateralIndex.toString()),
-    tradeType: trade.tradeType,
-    collateralAmount:
-      parseFloat(trade.collateralAmount.toString()) /
-      parseFloat(collateralPrecision.toString()),
-    openPrice: parseFloat(trade.openPrice.toString()) / 1e10,
-    tp: parseFloat(trade.tp.toString()) / 1e10,
-    sl: parseFloat(trade.sl.toString()) / 1e10,
-  },
-  tradeInfo: {
-    createdBlock: parseInt(tradeInfo.createdBlock.toString()),
-    tpLastUpdatedBlock: parseInt(tradeInfo.tpLastUpdatedBlock.toString()),
-    slLastUpdatedBlock: parseInt(tradeInfo.slLastUpdatedBlock.toString()),
-    maxSlippageP: parseFloat(tradeInfo.maxSlippageP.toString()) / 1e3,
-    lastOiUpdateTs: parseFloat(tradeInfo.lastOiUpdateTs),
-    collateralPriceUsd:
-      parseFloat(tradeInfo.collateralPriceUsd.toString()) / 1e8,
-    contractsVersion: parseInt(tradeInfo.contractsVersion.toString()),
-    lastPosIncreaseBlock: parseInt(tradeInfo.lastPosIncreaseBlock.toString()),
-  },
-  liquidationParams: {
-    maxLiqSpreadP:
-      parseFloat(tradeLiquidationParams.maxLiqSpreadP.toString()) / 1e12,
-    startLiqThresholdP:
-      parseFloat(tradeLiquidationParams.startLiqThresholdP.toString()) / 1e12,
-    endLiqThresholdP:
-      parseFloat(tradeLiquidationParams.endLiqThresholdP.toString()) / 1e12,
-    startLeverage:
-      parseFloat(tradeLiquidationParams.startLeverage.toString()) / 1e3,
-    endLeverage:
-      parseFloat(tradeLiquidationParams.endLeverage.toString()) / 1e3,
-  },
-  initialAccFees: {
-    accPairFee: parseFloat(tradeInitialAccFees.accPairFee.toString()) / 1e10,
-    accGroupFee: parseFloat(tradeInitialAccFees.accGroupFee.toString()) / 1e10,
-    block: parseFloat(tradeInitialAccFees.block.toString()),
-  },
-});
+  tradeFeesData: any,
+  uiRealizedPnlData: any,
+  collateralConfig: CollateralConfig
+): TradeContainer => {
+  const precision = collateralConfig.precision;
+
+  return {
+    trade: {
+      user: trade.user,
+      index: parseInt(trade.index.toString()),
+      pairIndex: parseInt(trade.pairIndex.toString()),
+      leverage: parseFloat(trade.leverage.toString()) / 1e3,
+      long: trade.long.toString() === "true",
+      isOpen: trade.isOpen.toString() === "true",
+      collateralIndex: parseInt(trade.collateralIndex.toString()),
+      tradeType: trade.tradeType,
+      collateralAmount:
+        parseFloat(trade.collateralAmount.toString()) / precision,
+      openPrice: parseFloat(trade.openPrice.toString()) / 1e10,
+      tp: parseFloat(trade.tp.toString()) / 1e10,
+      sl: parseFloat(trade.sl.toString()) / 1e10,
+      isCounterTrade: trade.isCounterTrade,
+      positionSizeToken: parseFloat(trade.positionSizeToken.toString()) / 1e18,
+    },
+    tradeInfo: {
+      createdBlock: parseInt(tradeInfo.createdBlock.toString()),
+      tpLastUpdatedBlock: parseInt(tradeInfo.tpLastUpdatedBlock.toString()),
+      slLastUpdatedBlock: parseInt(tradeInfo.slLastUpdatedBlock.toString()),
+      maxSlippageP: parseFloat(tradeInfo.maxSlippageP.toString()) / 1e3,
+      lastOiUpdateTs: parseFloat(tradeInfo.lastOiUpdateTs),
+      collateralPriceUsd:
+        parseFloat(tradeInfo.collateralPriceUsd.toString()) / 1e8,
+      contractsVersion: parseInt(tradeInfo.contractsVersion.toString()),
+      lastPosIncreaseBlock: parseInt(tradeInfo.lastPosIncreaseBlock.toString()),
+    },
+    liquidationParams: convertLiquidationParams(tradeLiquidationParams),
+    initialAccFees: {
+      accPairFee: parseFloat(tradeInitialAccFees.accPairFee.toString()) / 1e10,
+      accGroupFee:
+        parseFloat(tradeInitialAccFees.accGroupFee.toString()) / 1e10,
+      block: parseFloat(tradeInitialAccFees.block.toString()),
+    },
+    tradeFeesData: convertTradeFeesData(tradeFeesData, collateralConfig),
+    uiRealizedPnlData: uiRealizedPnlData
+      ? convertUiRealizedPnlData(uiRealizedPnlData, collateralConfig)
+      : undefined,
+  };
+};

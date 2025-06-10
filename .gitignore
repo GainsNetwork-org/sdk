@@ -122,3 +122,7 @@ lib/
 /src/contracts/types/generated/*
 
 test/local-test.ts
+
+# claude
+.claude/*
+CLAUDE.md
