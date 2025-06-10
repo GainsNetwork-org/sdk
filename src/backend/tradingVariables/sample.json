@@ -9673,8 +9673,8 @@
       "feeRateMultiplier": "1000"
     },
     {
-      "maxLeverage": "0",
-      "feeRateMultiplier": "1000"
+      "maxLeverage": "25000",
+      "feeRateMultiplier": "500"
     },
     {
       "maxLeverage": "0",

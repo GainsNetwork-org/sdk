@@ -41,4 +41,15 @@ describe("transformGlobalTradingVariables", () => {
     console.log(`Block number: ${result?.blockNumber || "undefined"}`);
     console.log(`L1 block number: ${result?.l1BlockNumber || "undefined"}`);
   });
+
+  it.only('should convert counter trade settings properly', () => {
+    const samplePath = path.join(__dirname, "sample.json");
+    const rawData = JSON.parse(
+      fs.readFileSync(samplePath, "utf-8")
+    ) as GlobalTradingVariablesBackend;
+
+    const result = transformGlobalTradingVariables(rawData);
+    expect(result?.globalTradingVariables?.counterTradeSettings?.[2].maxLeverage).toEqual(25);
+    expect(result?.globalTradingVariables?.counterTradeSettings?.[2].feeRateMultiplier).toEqual(0.5);
+  })
 });
