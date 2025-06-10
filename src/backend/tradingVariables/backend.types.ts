@@ -209,6 +209,7 @@ export interface GlobalTradingVariablesBackend {
     low: number;
     high: number;
   };
+  counterTradeSettings?: CounterTradeSettingsBackend[];
 }
 
 export interface FundingFeesBackend {
@@ -334,4 +335,9 @@ export type GlobalTradeFeeParamsBackend = {
   triggerOrderFeeP: string;
   gnsOtcFeeP: string;
   gTokenFeeP: string;
+};
+
+export type CounterTradeSettingsBackend = {
+  maxLeverage: string;
+  feeRateMultiplier: string;
 };

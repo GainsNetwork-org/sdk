@@ -2,6 +2,7 @@ import { CollateralConfig } from "src/markets/collateral";
 import {
   BorrowingFee,
   BorrowingFeeV2,
+  CounterTradeSettings,
   Fee,
   FeeTiers,
   FundingFees,
@@ -97,6 +98,7 @@ export type GlobalTradingVariablesType = {
     low: number;
     high: number;
   };
+  counterTradeSettings: CounterTradeSettings[];
 };
 
 export interface LeaderboardTraderWithWinsLosses extends LeaderboardTrader {
