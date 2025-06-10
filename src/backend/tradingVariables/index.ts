@@ -10,6 +10,7 @@ import {
   convertPairFactor,
   convertTradingGroups,
   convertTradingPairs,
+  convertCounterTradeSettings,
   generateStockPairToActiveStockSplit,
 } from "./converter";
 import {
@@ -75,6 +76,9 @@ export const transformGlobalTradingVariables = (
       ? convertGlobalTradeFeeParams(rawData.globalTradeFeeParams)
       : undefined,
     congestionLevels: rawData.congestionLevels,
+    counterTradeSettings: rawData.counterTradeSettings?.map(settings =>
+      convertCounterTradeSettings(settings)
+    ) || [],
   };
 
   const currentBlock =
