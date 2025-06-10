@@ -2,6 +2,7 @@ import { CollateralConfig } from "src/markets/collateral";
 import {
   BorrowingFee,
   BorrowingFeeV2,
+  CounterTradeSettings,
   Fee,
   FeeTiers,
   FundingFees,
@@ -91,6 +92,7 @@ export type GlobalTradingVariablesType = {
     groups: LiquidationParams[];
     pairs: LiquidationParams[];
   };
+  counterTradeSettings: CounterTradeSettings[];
   pairFactors: PairFactor[];
   globalTradeFeeParams?: GlobalTradeFeeParams;
   congestionLevels: {

@@ -203,6 +203,7 @@ export interface GlobalTradingVariablesBackend {
     groups: LiquidationParamsBackend[];
     pairs: LiquidationParamsBackend[];
   };
+  counterTradeSettings: CounterTradeSettingsBackend[];
   globalTradeFeeParams: GlobalTradeFeeParamsBackend;
   negPnlCumulVolMultiplier: string;
   congestionLevels: {
@@ -334,4 +335,9 @@ export type GlobalTradeFeeParamsBackend = {
   triggerOrderFeeP: string;
   gnsOtcFeeP: string;
   gTokenFeeP: string;
+};
+
+export type CounterTradeSettingsBackend = {
+  maxLeverage: string;
+  feeRateMultiplier: string;
 };

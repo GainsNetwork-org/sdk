@@ -4,6 +4,8 @@ import {
   UserPriceImpact,
   TradeFeesData,
   TradeInfo,
+  Fee,
+  CounterTradeSettings,
 } from "./../types";
 import { ContractsVersion } from "../../contracts/types";
 import { GetPairBorrowingFeeV2Context } from "../fees/borrowingV2";
@@ -29,17 +31,20 @@ export type GetLiquidationPriceContext = {
   borrowingV2?: GetPairBorrowingFeeV2Context;
   funding?: GetPairFundingFeeContext;
 
-  // Trading fees context
+  // Trading fees context - extended with all fields needed for getTotalTradeFeesCollateral
   trading: TradingFeesSubContext & {
     userPriceImpact?: UserPriceImpact;
+    counterTradeSettings?: {
+      [pairIndex: number]: CounterTradeSettings;
+    };
   };
 
   // Trade-specific data
   tradeData: {
     tradeInfo: TradeInfo;
-    tradeFeesData: TradeFeesData;
+    tradeFeesData: TradeFeesData; // Required for opened trades
     liquidationParams: LiquidationParams;
-    initialAccFees?: BorrowingFee.InitialAccFees;
+    initialAccFees?: BorrowingFee.InitialAccFees; // For V1 borrowing fees
   };
 
   // Additional parameters specific to liquidation calculation

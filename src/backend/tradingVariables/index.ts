@@ -18,7 +18,12 @@ import {
   TransformedGlobalTradingVariables,
 } from "./types";
 import { GlobalTradingVariablesBackend } from "./backend.types";
-import { convertLiquidationParams, Pair, PairIndexes } from "../../trade";
+import {
+  convertCounterTradeSettingsArray,
+  convertLiquidationParams,
+  Pair,
+  PairIndexes,
+} from "../../trade";
 
 export const transformGlobalTradingVariables = (
   rawData: GlobalTradingVariablesBackend
@@ -67,6 +72,9 @@ export const transformGlobalTradingVariables = (
           convertLiquidationParams(liqParams as any)
         ) || [],
     },
+    counterTradeSettings: convertCounterTradeSettingsArray(
+      rawData.counterTradeSettings
+    ),
     pairFactors:
       rawData.pairInfos?.pairFactors?.map(factor =>
         convertPairFactor(factor)

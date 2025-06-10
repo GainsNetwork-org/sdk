@@ -2,6 +2,7 @@
  * @dev Converters for trading fee data between contract and SDK formats
  */
 
+import { CounterTradeSettingsBackend } from "src/backend";
 import { CounterTradeSettings } from "../../types";
 import { GlobalTradeFeeParams } from "./types";
 
@@ -19,6 +20,17 @@ export const convertCounterTradeSettings = (
     feeRateMultiplier: feeRateMultiplier / 1000, // 1e3 → float
     maxLeverage: maxLeverage / 1000, // 1e3 → float
   };
+};
+
+export const convertCounterTradeSettingsArray = (
+  settings: CounterTradeSettingsBackend[]
+): CounterTradeSettings[] => {
+  return settings.map(setting =>
+    convertCounterTradeSettings(
+      Number(setting.feeRateMultiplier),
+      Number(setting.maxLeverage)
+    )
+  );
 };
 
 /**

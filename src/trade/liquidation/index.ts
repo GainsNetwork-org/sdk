@@ -4,8 +4,7 @@
 
 import { ContractsVersion } from "../../contracts/types";
 import {
-  getTotalTradeLiqFeesCollateral,
-  getBorrowingFee,
+  getTotalTradeFeesCollateral,
   getTradePendingHoldingFeesCollateral,
   Trade,
   getSpreadP,
@@ -23,34 +22,37 @@ export const getLiquidationPrice = (
   trade: Trade,
   context: GetLiquidationPriceContext
 ): number => {
-  // Extract legacy parameters from structured context
+  // Extract parameters from structured context
   const {
     currentPairPrice,
-    additionalFeeCollateral,
-    partialCloseMultiplier,
-    beforeOpened,
+    additionalFeeCollateral = 0,
+    partialCloseMultiplier = 1,
+    beforeOpened = false,
+    isCounterTrade = false,
   } = context.liquidationSpecific;
 
-  // 1. Calculate liquidation fees
-  const closingFee = getTotalTradeLiqFeesCollateral(
+  // 1. Calculate closing fees
+  const closingFee = getTotalTradeFeesCollateral(
     trade.collateralIndex,
-    trade.user,
+    "", // No fee tiers applied for liquidation calculation
     trade.pairIndex,
-    trade.collateralAmount,
+    trade.collateralAmount * trade.leverage,
+    isCounterTrade,
     {
-      totalLiqCollateralFeeP:
-        context.tradeData.liquidationParams?.endLiqThresholdP || 0.9,
+      fee: context.trading.fee,
+      collateralPriceUsd: context.core.collateralPriceUsd,
       globalTradeFeeParams: context.trading.globalTradeFeeParams,
-      traderFeeMultiplier: context.trading.traderFeeMultiplier,
+      traderFeeMultiplier: 1,
+      counterTradeSettings: context.trading.counterTradeSettings,
     }
   );
 
-  // 2. Calculate holding fees and realized PnL
+  // 2. Calculate holding fees and realized PnL for opened trades
   let holdingFeesTotal = 0;
   let totalRealizedPnlCollateral = 0;
 
-  if (!beforeOpened && context.tradeData.tradeFeesData && currentPairPrice) {
-    // V10 data available - calculate full holding fees
+  if (!beforeOpened) {
+    // Calculate holding fees
     const holdingFees = getTradePendingHoldingFeesCollateral(
       trade,
       context.tradeData.tradeInfo,
@@ -72,19 +74,6 @@ export const getLiquidationPrice = (
     totalRealizedPnlCollateral =
       context.tradeData.tradeFeesData.realizedPnlCollateral -
       context.tradeData.tradeFeesData.realizedTradingFeesCollateral;
-  } else if (
-    !beforeOpened &&
-    context.borrowingV1 &&
-    context.tradeData.initialAccFees
-  ) {
-    // Markets using v1 borrowing fees model
-    holdingFeesTotal = getBorrowingFee(
-      trade.collateralAmount * trade.leverage,
-      trade.pairIndex,
-      trade.long,
-      context.tradeData.initialAccFees,
-      context.borrowingV1
-    );
   }
 
   // 3. Apply unified formula for all trades
