@@ -192,8 +192,6 @@ export const getTradePendingHoldingFeesCollateral = (
 
   // Calculate funding fees (v10+ only)
   let fundingFeeCollateral = 0;
-  console.log("context", context);
-  console.log("tradeFeesData", tradeFeesData);
   if (
     context.contractsVersion >= ContractsVersion.V10 &&
     context.funding &&

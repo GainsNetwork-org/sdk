@@ -357,13 +357,10 @@ export const getTradeFundingFeesCollateral = (
   currentPairPrice: number,
   context: GetPairFundingFeeContext
 ): number => {
-  // Funding fees are only charged on post-v10 trades
   if (tradeInfo.contractsVersion < ContractsVersion.V10) {
     return 0;
   }
 
-  console.log("tradeFeesData", tradeFeesData);
-  console.log("context", context);
   const positionSizeCollateral = trade.collateralAmount * trade.leverage;
 
   if (!context.params.fundingFeesEnabled) {
@@ -388,9 +385,6 @@ export const getTradeFundingFeesCollateral = (
   const fundingFeeDelta =
     currentAccFundingFeeP - tradeFeesData.initialAccFundingFeeP;
 
-  console.log("fundingFeeDelta", fundingFeeDelta);
-  console.log("positionSizeCollateral", positionSizeCollateral);
-  console.log("trade.openPrice", trade.openPrice);
   return (positionSizeCollateral * fundingFeeDelta) / trade.openPrice / 100;
 };
 
