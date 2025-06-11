@@ -109,7 +109,7 @@ const convertCollateral = (
   },
   pairOis: convertPairOiArray(
     collateral.pairOis as any,
-    collateral.collateralConfig.decimals
+    parseInt(collateral.collateralConfig.precision)
   ),
 });
 
