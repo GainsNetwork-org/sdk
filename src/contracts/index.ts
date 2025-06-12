@@ -86,6 +86,7 @@ export const COLLATERAL_TO_CHAIN_COLLATERAL_INDEX: Record<
   },
   [ChainId.BASE]: {
     [CollateralTypes.USDC]: 1,
+    [CollateralTypes.BTCUSD]: 2,
   },
   [ChainId.APECHAIN]: {
     [CollateralTypes.APE]: 1,
@@ -100,6 +101,7 @@ export const COLLATERAL_TO_COLLATERAL_INDEX: Record<CollateralTypes, number> = {
   [CollateralTypes.ARB]: 0, // not in use
   [CollateralTypes.APE]: 0, // not in use
   [CollateralTypes.GNS]: 0, // not in use
+  [CollateralTypes.BTCUSD]: 0,
 };
 
 export * from "./utils";
