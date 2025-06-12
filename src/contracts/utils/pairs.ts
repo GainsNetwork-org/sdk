@@ -524,7 +524,9 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.NXPCUSD]: "NEXPACE to US Dollar",
   [PairIndex.SOPHUSD]: "Sophon to US Dollar",
   [PairIndex.LPTUSD]: "Livepeer to US Dollar",
-  [PairIndex.BVIVUSD]: "Bitcoin Volmex Implied Volatility 30 Day Index to US Dollar",
-  [PairIndex.EVIVUSD]: "Ethereum Volmex Implied Volatility 30 Day Index to US Dollar",
-  [PairIndex.CRCLUSD]: "Circle Internet Group to US Dollar",      
+  [PairIndex.BVIVUSD]:
+    "Bitcoin Volmex Implied Volatility 30 Day Index to US Dollar",
+  [PairIndex.EVIVUSD]:
+    "Ethereum Volmex Implied Volatility 30 Day Index to US Dollar",
+  [PairIndex.CRCLUSD]: "Circle Internet Group to US Dollar",
 };

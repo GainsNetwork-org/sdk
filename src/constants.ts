@@ -391,7 +391,7 @@ export const pairs = {
   "LPT/USD": CRYPTO,
   "BVIV/USD": CRYPTO,
   "EVIV/USD": CRYPTO,
-  "CRCL/USD": STOCKS,  
+  "CRCL/USD": STOCKS,
 };
 
 export const syntheticPairs = new Set([

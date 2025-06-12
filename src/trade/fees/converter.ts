@@ -5,6 +5,8 @@
 import { IFundingFees } from "../../contracts/types/generated/GNSMultiCollatDiamond";
 import { TradeFeesData, UiRealizedPnlData } from "../types";
 import { CollateralConfig } from "../../markets/collateral/types";
+import { BORROWING_V2_PRECISION } from "./borrowingV2";
+import { FUNDING_FEES_PRECISION } from "./fundingFees/converter";
 
 /**
  * @dev Converts contract TradeFeesData to SDK format
@@ -34,9 +36,11 @@ export const convertTradeFeesData = (
       parseFloat(data.virtualAvailableCollateralInDiamond.toString()) /
       10 ** decimals,
     initialAccFundingFeeP:
-      parseFloat(data.initialAccFundingFeeP.toString()) / 1e10,
+      parseFloat(data.initialAccFundingFeeP.toString()) /
+      FUNDING_FEES_PRECISION.ACC_FUNDING_FEE_P,
     initialAccBorrowingFeeP:
-      parseFloat(data.initialAccBorrowingFeeP.toString()) / 1e10,
+      parseFloat(data.initialAccBorrowingFeeP.toString()) /
+      BORROWING_V2_PRECISION.ACC_FEE,
   };
 };
 
@@ -130,8 +134,12 @@ export const encodeTradeFeesData = (
       data.virtualAvailableCollateralInDiamond * 10 ** decimals
     ),
     __placeholder: 0,
-    initialAccFundingFeeP: Math.round(data.initialAccFundingFeeP * 1e10),
-    initialAccBorrowingFeeP: Math.round(data.initialAccBorrowingFeeP * 1e10),
+    initialAccFundingFeeP: Math.round(
+      data.initialAccFundingFeeP * FUNDING_FEES_PRECISION.ACC_FUNDING_FEE_P
+    ),
+    initialAccBorrowingFeeP: Math.round(
+      data.initialAccBorrowingFeeP * BORROWING_V2_PRECISION.ACC_FEE
+    ),
   };
 };
 
