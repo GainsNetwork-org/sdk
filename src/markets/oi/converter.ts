@@ -71,7 +71,7 @@ export const convertPairOi = (
   collateralPrecision: number
 ): UnifiedPairOi => {
   return {
-    maxCollateral: Number(beforeV10.max) / collateralPrecision,
+    maxCollateral: Number(beforeV10.max) / 1e10,
     beforeV10Collateral: convertBeforeV10Collateral(
       beforeV10,
       collateralPrecision
