@@ -18,6 +18,9 @@ export type {
   TradeOpeningPriceImpactResult,
 };
 
+// Export builder
+export { buildTradeOpeningPriceImpactContext } from "./builder";
+
 /**
  * @dev Calculates all price impacts for trade opening
  * @dev Mirrors contract's getTradeOpeningPriceImpact function
@@ -50,7 +53,7 @@ export const getTradeOpeningPriceImpact = (
     false, // isPnlPositive - not relevant for opening
     true, // open
     0, // lastPosIncreaseBlock - not relevant for opening
-    context
+    context.cumulVolContext
   );
 
   // Calculate skew price impact (v10+ only)

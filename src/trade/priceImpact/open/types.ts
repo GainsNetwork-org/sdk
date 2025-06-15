@@ -26,9 +26,10 @@ export type TradeOpeningPriceImpactInput = {
  * @dev Context for trade opening price impact calculation
  * Combines contexts from spread, cumul vol, and skew
  */
-export type TradeOpeningPriceImpactContext = CumulVolContext & {
-  skewContext: SkewPriceImpactContext;
+export type TradeOpeningPriceImpactContext = {
   collateralPriceUsd: number; // Required for USD conversion
+  cumulVolContext: CumulVolContext;
+  skewContext: SkewPriceImpactContext;
 };
 
 /**

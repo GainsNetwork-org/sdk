@@ -8,6 +8,8 @@ export {
   // Core functions
   getTradeOpeningPriceImpact,
   getTradeOpeningPriceImpactAtMarket,
+  // Builder
+  buildTradeOpeningPriceImpactContext,
   // Types
   TradeOpeningPriceImpactInput,
   TradeOpeningPriceImpactContext,
@@ -43,6 +45,8 @@ export {
   convertOiWindow,
   convertOiWindows,
   convertOiWindowsSettingsArray,
+  // Builder
+  buildCumulVolContext,
   // Types
   CumulVolContext,
 } from "./cumulVol";
