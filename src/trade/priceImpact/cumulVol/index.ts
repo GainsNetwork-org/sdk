@@ -195,14 +195,14 @@ export const getTradeCumulVolPriceImpactP = (
     return 0;
   }
 
-  return (
+  const finalPriceImpactP =
     ((activeOi * getCumulativeFactor(updatedContext) +
       tradeOpenInterestUsd / 2) /
       onePercentDepth /
-      100 /
       getLegacyFactor(updatedContext)) *
-    getProtectionCloseFactor(updatedContext)
-  );
+    getProtectionCloseFactor(updatedContext);
+
+  return finalPriceImpactP;
 };
 
 /**
@@ -365,3 +365,6 @@ export {
   convertOiWindows,
   convertOiWindowsSettingsArray,
 } from "./converter";
+
+// Export builder
+export { buildCumulVolContext } from "./builder";
