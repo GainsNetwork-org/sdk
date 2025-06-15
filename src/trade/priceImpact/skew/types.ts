@@ -13,13 +13,6 @@ export type PairOiCollateral = {
   oiShortCollateral: number; // Short OI in collateral
 };
 
-// Skew depth configuration per collateral/pair
-export type SkewDepth = {
-  collateralIndex: number;
-  pairIndex: number;
-  depth: number; // Depth in collateral tokens (normalized)
-};
-
 // Skew price impact calculation input
 export type SkewPriceImpactInput = {
   collateralIndex: number;
@@ -39,16 +32,8 @@ export type SkewPriceImpactResult = {
 
 // Context for skew calculations
 export type SkewPriceImpactContext = {
-  skewDepths: {
-    [collateralIndex: number]: {
-      [pairIndex: number]: number; // Depth in collateral tokens
-    };
-  };
-  pairOiTokens: {
-    [collateralIndex: number]: {
-      [pairIndex: number]: PairOiToken;
-    };
-  };
+  skewDepth: number; // Normalized depth in tokens
+  pairOiToken: PairOiToken;
 };
 
 // Trade-specific parameters for skew impact

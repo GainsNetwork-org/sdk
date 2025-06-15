@@ -47,6 +47,7 @@ describe("transformGlobalTrades", () => {
         pairBorrowingFeesV2: { params: [], data: [] },
         pairFundingFees: { globalParams: [], params: [], data: [] },
         pairOis: [],
+        pairSkewDepths: {},
         tradingPairs: new Map(),
       },
       // Add mock collateral for index 2
@@ -78,6 +79,7 @@ describe("transformGlobalTrades", () => {
         pairBorrowingFeesV2: { params: [], data: [] },
         pairFundingFees: { globalParams: [], params: [], data: [] },
         pairOis: [],
+        pairSkewDepths: {},
         tradingPairs: new Map(),
       },
       // Add mock collateral for index 3 (USDC)
@@ -109,6 +111,7 @@ describe("transformGlobalTrades", () => {
         pairBorrowingFeesV2: { params: [], data: [] },
         pairFundingFees: { globalParams: [], params: [], data: [] },
         pairOis: [],
+        pairSkewDepths: {},
         tradingPairs: new Map(),
       },
       // Add mock collateral for index 4 (GNS)
@@ -140,6 +143,7 @@ describe("transformGlobalTrades", () => {
         pairBorrowingFeesV2: { params: [], data: [] },
         pairFundingFees: { globalParams: [], params: [], data: [] },
         pairOis: [],
+        pairSkewDepths: {},
         tradingPairs: new Map(),
       },
     ];

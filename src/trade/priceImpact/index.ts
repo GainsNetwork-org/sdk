@@ -67,19 +67,17 @@ export {
   convertPairOiTokenArray,
   convertPairOiCollateral,
   convertPairOiCollateralArray,
-  normalizeSkewDepth,
-  createSkewDepth,
-  createSkewPriceImpactContext,
-  isValidSkewDepth,
-  convertSkewDepthsArray,
-  mergeSkewPriceImpactContexts,
+  convertSkewDepth,
+  convertPairSkewDepths,
 } from "./skew/converter";
+
+// Export builders
+export { buildSkewPriceImpactContext } from "./skew/builder";
 
 // Re-export all types for convenience
 export type {
   PairOiToken,
   PairOiCollateral,
-  SkewDepth,
   SkewPriceImpactInput,
   SkewPriceImpactResult,
   SkewPriceImpactContext,

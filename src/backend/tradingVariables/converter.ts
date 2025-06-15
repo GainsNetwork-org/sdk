@@ -32,6 +32,7 @@ import {
   convertTradeFeesData,
   convertUiRealizedPnlData,
 } from "../../";
+import { convertPairSkewDepths as convertSkewDepths } from "../../trade/priceImpact/skew/converter";
 import {
   BorrowingFeePerBlockCapBackend,
   CollateralBackend,
@@ -111,6 +112,7 @@ const convertCollateral = (
     collateral.pairOis as any,
     parseInt(collateral.collateralConfig.precision)
   ),
+  pairSkewDepths: convertPairSkewDepths(collateral.pairSkewDepths),
 });
 
 export const convertCollaterals = (
@@ -143,6 +145,13 @@ const convertPairDepth = (pairDepth: PairDepthBackend): PairDepth => ({
   onePercentDepthAboveUsd: parseInt(pairDepth.onePercentDepthAboveUsd),
   onePercentDepthBelowUsd: parseInt(pairDepth.onePercentDepthBelowUsd),
 });
+
+export const convertPairSkewDepths = (
+  pairSkewDepths: string[] | undefined
+): { [pairIndex: number]: number } => {
+  if (!pairSkewDepths) return {};
+  return convertSkewDepths(pairSkewDepths);
+};
 
 export const convertPairBorrowingFees = (
   pairParams: PairParamsBorrowingFeesBackend

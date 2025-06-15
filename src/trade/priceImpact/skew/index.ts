@@ -26,10 +26,10 @@ export const getNetSkewToken = (pairOi: PairOiToken): number => {
 };
 
 /**
- * @dev Calculates net skew in collateral tokens
+ * @dev Calculates net skew in collateral
  * @param netSkewToken Net skew in tokens
  * @param currentPrice Current pair price
- * @returns Net skew in collateral tokens
+ * @returns Net skew in collateral
  */
 export const getNetSkewCollateral = (
   netSkewToken: number,
@@ -57,7 +57,7 @@ export const getTradeSkewDirection = (
  * @dev Core skew price impact calculation
  * @param existingSkewToken Current net skew in tokens (signed)
  * @param tradeSizeToken Trade size in tokens (always positive)
- * @param skewDepth Skew depth in collateral tokens
+ * @param skewDepth Skew depth in tokens
  * @param tradeIncreasesSkew Whether trade increases skew in its direction
  * @returns Price impact percentage (can be positive or negative)
  */
@@ -86,30 +86,16 @@ export const calculateSkewPriceImpactP = (
 
 /**
  * @dev Main function to calculate skew price impact for a trade
- * @param context Skew price impact context with depths and OI data
  * @param input Trade parameters
+ * @param context Skew price impact context with depths and OI data
  * @returns Skew price impact result
  */
 export const getTradeSkewPriceImpact = (
-  context: SkewPriceImpactContext,
-  input: SkewPriceImpactInput
+  input: SkewPriceImpactInput,
+  context: SkewPriceImpactContext
 ): SkewPriceImpactResult => {
-  // Get skew depth for the pair
-  const skewDepth =
-    context.skewDepths[input.collateralIndex]?.[input.pairIndex];
-  if (skewDepth === undefined) {
-    throw new Error(
-      `Missing skew depth for collateral ${input.collateralIndex} pair ${input.pairIndex}`
-    );
-  }
-
-  // Get pair OI data
-  const pairOi = context.pairOiTokens[input.collateralIndex]?.[input.pairIndex];
-  if (!pairOi) {
-    throw new Error(
-      `Missing pair OI data for collateral ${input.collateralIndex} pair ${input.pairIndex}`
-    );
-  }
+  // Get skew depth and pair OI from simplified context
+  const { skewDepth, pairOiToken: pairOi } = context;
 
   // Calculate net skew
   const netSkewToken = getNetSkewToken(pairOi);
@@ -170,13 +156,16 @@ export const getTradeSkewPriceImpactWithChecks = (
   );
 
   // Get skew price impact
-  const result = getTradeSkewPriceImpact(context, {
-    collateralIndex: params.collateralIndex,
-    pairIndex: params.pairIndex,
-    long: params.long,
-    open: params.open,
-    positionSizeToken,
-  });
+  const result = getTradeSkewPriceImpact(
+    {
+      collateralIndex: params.collateralIndex,
+      pairIndex: params.pairIndex,
+      long: params.long,
+      open: params.open,
+      positionSizeToken,
+    },
+    context
+  );
 
   return result.priceImpactP;
 };
@@ -203,5 +192,6 @@ export const calculatePartialSizeToken = (
 
 // Export namespace for types
 export * as SkewPriceImpact from "./types";
-
+export * from "./converter";
+export * from "./builder";
 export * from "./fetcher";

@@ -13,9 +13,8 @@ import {
 import {
   convertPairOiToken,
   convertPairOiCollateral,
-  normalizeSkewDepth,
-  createSkewPriceImpactContext,
-  isValidSkewDepth,
+  convertSkewDepth,
+  convertPairSkewDepths,
 } from "./converter";
 import { PairOiToken, SkewPriceImpactContext, TradeSkewParams } from "./types";
 import { ContractsVersion } from "../../../contracts/types";
@@ -32,137 +31,145 @@ describe("Skew Price Impact", () => {
 
     it("should calculate negative net skew when short > long", () => {
       const pairOi: PairOiToken = {
-        oiLongToken: 500,
-        oiShortToken: 800,
+        oiLongToken: 400,
+        oiShortToken: 700,
       };
       expect(getNetSkewToken(pairOi)).toBe(-300);
     });
 
-    it("should return 0 when balanced", () => {
+    it("should return 0 when long equals short", () => {
       const pairOi: PairOiToken = {
-        oiLongToken: 1000,
-        oiShortToken: 1000,
+        oiLongToken: 500,
+        oiShortToken: 500,
       };
       expect(getNetSkewToken(pairOi)).toBe(0);
     });
   });
 
-  describe("position size conversions", () => {
-    it("should convert collateral to tokens", () => {
-      const collateral = 10000; // $10,000
-      const price = 50000; // BTC at $50k
-      expect(calculatePositionSizeToken(collateral, price)).toBe(0.2); // 0.2 BTC
-    });
-
-    it("should convert tokens to collateral", () => {
-      const tokens = 0.2; // 0.2 BTC
-      const price = 50000; // BTC at $50k
-      expect(calculatePositionSizeCollateral(tokens, price)).toBe(10000);
-    });
-
-    it("should throw error for zero price", () => {
-      expect(() => calculatePositionSizeToken(10000, 0)).toThrow(
-        "Current price cannot be zero"
-      );
-    });
-  });
-
   describe("getTradeSkewDirection", () => {
-    it("should return true for long open (increases positive skew)", () => {
+    it("should return true for opening long (increases positive skew)", () => {
       expect(getTradeSkewDirection(true, true)).toBe(true);
     });
 
-    it("should return true for short close (increases positive skew)", () => {
+    it("should return true for closing short (increases positive skew)", () => {
       expect(getTradeSkewDirection(false, false)).toBe(true);
     });
 
-    it("should return false for short open (increases negative skew)", () => {
+    it("should return false for opening short (increases negative skew)", () => {
       expect(getTradeSkewDirection(false, true)).toBe(false);
     });
 
-    it("should return false for long close (increases negative skew)", () => {
+    it("should return false for closing long (increases negative skew)", () => {
       expect(getTradeSkewDirection(true, false)).toBe(false);
     });
   });
 
   describe("calculateSkewPriceImpactP", () => {
+    it("should calculate positive impact when trade increases skew", () => {
+      const impact = calculateSkewPriceImpactP(
+        100, // existing skew
+        50, // trade size
+        1000, // depth
+        true // increases skew
+      );
+      // ((100 + 50/2) / 1000) * 100 / 2 = 6.25%
+      expect(impact).toBe(6.25);
+    });
+
+    it("should calculate negative impact when trade decreases skew", () => {
+      const impact = calculateSkewPriceImpactP(
+        100, // existing skew
+        50, // trade size
+        1000, // depth
+        false // decreases skew
+      );
+      // ((100 - 50/2) / 1000) * 100 / 2 = 3.75%
+      expect(impact).toBe(3.75);
+    });
+
     it("should return 0 when depth is 0", () => {
-      const result = calculateSkewPriceImpactP(1000, 100, 0, true);
-      expect(result).toBe(0);
-    });
-
-    it("should calculate positive impact when increasing skew", () => {
-      const existingSkew = 1000; // Long heavy
-      const tradeSize = 200;
-      const depth = 10000;
-      const increasesSkew = true;
-
-      // (1000 + 200/2) / 10000 * 100 / 2 = 11/100 * 100 / 2 = 5.5%
-      const result = calculateSkewPriceImpactP(
-        existingSkew,
-        tradeSize,
-        depth,
-        increasesSkew
-      );
-      expect(result).toBe(5.5);
-    });
-
-    it("should calculate negative impact when reducing skew", () => {
-      const existingSkew = 1000; // Long heavy
-      const tradeSize = 200;
-      const depth = 10000;
-      const increasesSkew = false; // Closing long or opening short
-
-      // (1000 + (-200)/2) / 10000 * 100 / 2 = 9/100 * 100 / 2 = 4.5%
-      const result = calculateSkewPriceImpactP(
-        existingSkew,
-        tradeSize,
-        depth,
-        increasesSkew
-      );
-      expect(result).toBe(4.5);
+      const impact = calculateSkewPriceImpactP(100, 50, 0, true);
+      expect(impact).toBe(0);
     });
 
     it("should handle negative existing skew", () => {
-      const existingSkew = -800; // Short heavy
-      const tradeSize = 200;
-      const depth = 10000;
-      const increasesSkew = true; // Opening short
-
-      // (-800 + 200/2) / 10000 * 100 / 2 = -7/100 * 100 / 2 = -3.5%
-      const result = calculateSkewPriceImpactP(
-        existingSkew,
-        tradeSize,
-        depth,
-        increasesSkew
+      const impact = calculateSkewPriceImpactP(
+        -100, // negative existing skew
+        50,
+        1000,
+        false // trade in same direction as skew
       );
-      expect(result).toBeCloseTo(-3.5, 6);
+      // ((-100 - 50/2) / 1000) * 100 / 2 = -6.25%
+      expect(impact).toBe(-6.25);
+    });
+
+    it("should handle large trades relative to depth", () => {
+      const impact = calculateSkewPriceImpactP(1000, 2000, 1000, true);
+      // ((1000 + 2000/2) / 1000) * 100 / 2 = 100%
+      expect(impact).toBe(100);
+    });
+
+    it("should calculate current market skew impact with size 0", () => {
+      const existingSkew = 200; // 200 token net long skew
+      const depth = 10000;
+      const impact = calculateSkewPriceImpactP(
+        existingSkew,
+        0, // Size 0 to get current market impact
+        depth,
+        true // Direction doesn't matter for size 0
+      );
+      // (200 + 0/2) / 10000 * 100 / 2 = 1%
+      expect(impact).toBe(1);
+    });
+  });
+
+  describe("Position size utilities", () => {
+    describe("calculatePositionSizeToken", () => {
+      it("should calculate token amount from collateral", () => {
+        const collateralAmount = 100;
+        const price = 50;
+        expect(calculatePositionSizeToken(collateralAmount, price)).toBe(2);
+      });
+
+      it("should handle decimal amounts", () => {
+        const collateralAmount = 100;
+        const price = 33.33;
+        expect(calculatePositionSizeToken(collateralAmount, price)).toBeCloseTo(
+          3.0003,
+          4
+        );
+      });
+    });
+
+    describe("calculatePositionSizeCollateral", () => {
+      it("should calculate collateral amount from tokens", () => {
+        const tokenAmount = 2;
+        const price = 50;
+        expect(calculatePositionSizeCollateral(tokenAmount, price)).toBe(100);
+      });
     });
   });
 
   describe("getTradeSkewPriceImpact", () => {
     const context: SkewPriceImpactContext = {
-      skewDepths: {
-        0: { 1: 100000 }, // ETH/USD on collateral 0
-      },
-      pairOiTokens: {
-        0: {
-          1: {
-            oiLongToken: 120,
-            oiShortToken: 80,
-          },
-        },
+      skewDepth: 100000, // ETH/USD
+      pairOiToken: {
+        oiLongToken: 120,
+        oiShortToken: 80,
       },
     };
 
     it("should calculate complete skew price impact", () => {
-      const result = getTradeSkewPriceImpact(context, {
-        collateralIndex: 0,
-        pairIndex: 1,
-        long: true,
-        open: true,
-        positionSizeToken: 10,
-      });
+      const result = getTradeSkewPriceImpact(
+        {
+          collateralIndex: 0,
+          pairIndex: 1,
+          long: true,
+          open: true,
+          positionSizeToken: 10,
+        },
+        context
+      );
 
       expect(result.netSkewToken).toBe(40); // 120 - 80
       expect(result.tradeDirection).toBe("increase");
@@ -170,43 +177,37 @@ describe("Skew Price Impact", () => {
       expect(result.priceImpactP).toBeCloseTo(0.0225, 6);
     });
 
-    it("should throw error for missing skew depth", () => {
-      expect(() =>
-        getTradeSkewPriceImpact(context, {
-          collateralIndex: 0,
-          pairIndex: 999,
-          long: true,
-          open: true,
-          positionSizeToken: 10,
-        })
-      ).toThrow("Missing skew depth for collateral 0 pair 999");
-    });
+    it("should handle zero skew depth gracefully", () => {
+      const zeroDepthContext: SkewPriceImpactContext = {
+        skewDepth: 0,
+        pairOiToken: {
+          oiLongToken: 100,
+          oiShortToken: 100,
+        },
+      };
 
-    it("should throw error for missing OI data", () => {
-      expect(() =>
-        getTradeSkewPriceImpact(context, {
-          collateralIndex: 999,
+      const result = getTradeSkewPriceImpact(
+        {
+          collateralIndex: 0,
           pairIndex: 1,
           long: true,
           open: true,
           positionSizeToken: 10,
-        })
-      ).toThrow("Missing skew depth for collateral 999 pair 1");
+        },
+        zeroDepthContext
+      );
+
+      expect(result.priceImpactP).toBe(0);
+      expect(result.tradeDirection).toBe("neutral");
     });
   });
 
   describe("getTradeSkewPriceImpactWithChecks", () => {
     const context: SkewPriceImpactContext = {
-      skewDepths: {
-        0: { 1: 100000 },
-      },
-      pairOiTokens: {
-        0: {
-          1: {
-            oiLongToken: 100,
-            oiShortToken: 100,
-          },
-        },
+      skewDepth: 10000,
+      pairOiToken: {
+        oiLongToken: 100,
+        oiShortToken: 100,
       },
     };
 
@@ -216,13 +217,12 @@ describe("Skew Price Impact", () => {
         pairIndex: 1,
         long: true,
         open: true,
-        positionSizeCollateral: 10000,
-        currentPrice: 2000,
-        contractsVersion: ContractsVersion.V9_2,
+        positionSizeCollateral: 1000,
+        currentPrice: 50,
+        contractsVersion: ContractsVersion.BEFORE_V9_2,
       };
 
-      const result = getTradeSkewPriceImpactWithChecks(params, context);
-      expect(result).toBe(0);
+      expect(getTradeSkewPriceImpactWithChecks(params, context)).toBe(0);
     });
 
     it("should return 0 for counter trades", () => {
@@ -231,14 +231,13 @@ describe("Skew Price Impact", () => {
         pairIndex: 1,
         long: true,
         open: true,
-        positionSizeCollateral: 10000,
-        currentPrice: 2000,
+        positionSizeCollateral: 1000,
+        currentPrice: 50,
         contractsVersion: ContractsVersion.V10,
         isCounterTrade: true,
       };
 
-      const result = getTradeSkewPriceImpactWithChecks(params, context);
-      expect(result).toBe(0);
+      expect(getTradeSkewPriceImpactWithChecks(params, context)).toBe(0);
     });
 
     it("should calculate impact for v10+ non-counter trades", () => {
@@ -247,143 +246,87 @@ describe("Skew Price Impact", () => {
         pairIndex: 1,
         long: true,
         open: true,
-        positionSizeCollateral: 10000,
-        currentPrice: 2000,
+        positionSizeCollateral: 1000,
+        currentPrice: 50,
         contractsVersion: ContractsVersion.V10,
-        isCounterTrade: false,
       };
 
-      const result = getTradeSkewPriceImpactWithChecks(params, context);
-      // Position size in tokens = 10000 / 2000 = 5
-      // Net skew = 0, trade size = 5
-      // (0 + 5/2) / 100000 * 100 / 2 = 0.00125%
-      expect(result).toBeCloseTo(0.00125, 6);
+      const impact = getTradeSkewPriceImpactWithChecks(params, context);
+      // Position size in tokens: 1000 / 50 = 20
+      // Net skew: 100 - 100 = 0
+      // Impact: (0 + 20/2) / 10000 * 100 / 2 = 0.05%
+      expect(impact).toBeCloseTo(0.05, 6);
     });
   });
 
   describe("calculatePartialSizeToken", () => {
-    it("should calculate proportional token size for partial operations", () => {
-      const originalCollateral = 10000;
-      const deltaCollateral = 2500; // 25% partial close
-      const originalTokens = 0.2;
+    it("should calculate partial token size proportionally", () => {
+      const originalCollateral = 1000;
+      const deltaCollateral = 250; // 25% reduction
+      const originalToken = 20;
 
       const result = calculatePartialSizeToken(
         originalCollateral,
         deltaCollateral,
-        originalTokens
+        originalToken
       );
-      expect(result).toBe(0.05); // 25% of 0.2
+
+      expect(result).toBe(5); // 25% of 20
     });
 
-    it("should return 0 when original size is 0", () => {
-      const result = calculatePartialSizeToken(0, 100, 0.1);
+    it("should return 0 for zero original collateral", () => {
+      const result = calculatePartialSizeToken(0, 100, 20);
       expect(result).toBe(0);
+    });
+
+    it("should handle full position", () => {
+      const result = calculatePartialSizeToken(1000, 1000, 20);
+      expect(result).toBe(20);
     });
   });
 
-  describe("Converters", () => {
+  describe("Converter functions", () => {
     describe("convertPairOiToken", () => {
-      it("should convert contract OI token data", () => {
+      it("should convert contract OI to normalized values", () => {
         const contractData = {
-          oiLongToken: BigInt(100e18),
-          oiShortToken: BigInt(80e18),
-          __placeholder: 0,
+          oiLongToken: BigInt("1000000000000000000000"), // 1000 * 1e18
+          oiShortToken: BigInt("500000000000000000000"), // 500 * 1e18
         };
 
-        const result = convertPairOiToken(contractData);
-        expect(result.oiLongToken).toBe(100);
-        expect(result.oiShortToken).toBe(80);
+        const result = convertPairOiToken(contractData as any);
+        expect(result.oiLongToken).toBe(1000);
+        expect(result.oiShortToken).toBe(500);
       });
     });
 
-    describe("convertPairOiCollateral", () => {
-      it("should convert with 18 decimals (DAI)", () => {
-        const contractData = {
-          oiLongCollateral: BigInt(1000e18),
-          oiShortCollateral: BigInt(800e18),
-          __placeholder: 0,
-        };
-
-        const result = convertPairOiCollateral(contractData, 18);
-        expect(result.oiLongCollateral).toBe(1000);
-        expect(result.oiShortCollateral).toBe(800);
+    describe("convertSkewDepth", () => {
+      it("should convert depth from 1e18 to float", () => {
+        const depth = "100000000000000000000"; // 100 * 1e18
+        expect(convertSkewDepth(depth)).toBe(100);
       });
 
-      it("should convert with 6 decimals (USDC)", () => {
-        const contractData = {
-          oiLongCollateral: BigInt(1000e6),
-          oiShortCollateral: BigInt(800e6),
-          __placeholder: 0,
-        };
-
-        const result = convertPairOiCollateral(contractData, 6);
-        expect(result.oiLongCollateral).toBe(1000);
-        expect(result.oiShortCollateral).toBe(800);
+      it("should handle zero depth", () => {
+        expect(convertSkewDepth("0")).toBe(0);
       });
     });
 
-    describe("normalizeSkewDepth", () => {
-      it("should normalize depth with 18 decimals", () => {
-        const depth = BigInt(100000e18);
-        const result = normalizeSkewDepth(depth, 18);
-        expect(result).toBeCloseTo(100000, 6);
-      });
-
-      it("should normalize depth with 6 decimals", () => {
-        const depth = BigInt(100000e6);
-        const result = normalizeSkewDepth(depth, 6);
-        expect(result).toBe(100000);
-      });
-    });
-
-    describe("createSkewPriceImpactContext", () => {
-      it("should create context from arrays", () => {
-        const collateralIndices = [0, 0, 1];
-        const pairIndices = [1, 2, 1];
-        const skewDepths = [100000, 200000, 150000];
-        const pairOiTokens: PairOiToken[] = [
-          { oiLongToken: 100, oiShortToken: 80 },
-          { oiLongToken: 200, oiShortToken: 220 },
-          { oiLongToken: 150, oiShortToken: 150 },
+    describe("convertPairSkewDepths", () => {
+      it("should convert array of depths to object mapping", () => {
+        const depths = [
+          "100000000000000000000", // pair 0: 100
+          "0", // pair 1: 0 (skipped)
+          "200000000000000000000", // pair 2: 200
         ];
 
-        const context = createSkewPriceImpactContext(
-          collateralIndices,
-          pairIndices,
-          skewDepths,
-          pairOiTokens
-        );
-
-        expect(context.skewDepths[0][1]).toBe(100000);
-        expect(context.skewDepths[0][2]).toBe(200000);
-        expect(context.skewDepths[1][1]).toBe(150000);
-        expect(context.pairOiTokens[0][1]).toEqual(pairOiTokens[0]);
-        expect(context.pairOiTokens[0][2]).toEqual(pairOiTokens[1]);
-        expect(context.pairOiTokens[1][1]).toEqual(pairOiTokens[2]);
+        const result = convertPairSkewDepths(depths);
+        expect(result).toEqual({
+          0: 100,
+          2: 200,
+        });
       });
 
-      it("should throw error for mismatched array lengths", () => {
-        expect(() =>
-          createSkewPriceImpactContext([0], [1, 2], [100], [])
-        ).toThrow("All input arrays must have the same length");
-      });
-    });
-
-    describe("isValidSkewDepth", () => {
-      it("should validate depth within bounds", () => {
-        expect(isValidSkewDepth(100000)).toBe(true);
-        expect(isValidSkewDepth(0)).toBe(true);
-        expect(isValidSkewDepth(1e12)).toBe(true);
-      });
-
-      it("should reject negative depths by default", () => {
-        expect(isValidSkewDepth(-100)).toBe(false);
-      });
-
-      it("should use custom bounds", () => {
-        expect(isValidSkewDepth(50, 100, 1000)).toBe(false);
-        expect(isValidSkewDepth(500, 100, 1000)).toBe(true);
-        expect(isValidSkewDepth(2000, 100, 1000)).toBe(false);
+      it("should return empty object for empty array", () => {
+        expect(convertPairSkewDepths([])).toEqual({});
       });
     });
   });

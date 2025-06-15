@@ -254,6 +254,7 @@ export interface CollateralBackend {
   };
   fundingFees: FundingFeesBackend;
   pairOis: OpenInterestBackend[];
+  pairSkewDepths?: string[];
 }
 
 export interface PairInfosBackend {

@@ -1,10 +1,6 @@
 import type { GNSMultiCollatDiamond } from "../../../contracts/types/generated";
-import type { PairOiToken, SkewPriceImpactContext } from "..";
-import {
-  convertPairOiToken,
-  normalizeSkewDepth,
-  createSkewPriceImpactContext,
-} from "..";
+import type { PairOiToken, SkewPriceImpactContext } from "./types";
+import { convertPairOiToken, convertSkewDepth } from "./converter";
 
 /**
  * @dev Fetches pair open interest in tokens for a specific pair
@@ -67,14 +63,12 @@ export const fetchPairOisAfterV10Token = async (
  * @param contract GNSMultiCollatDiamond contract instance
  * @param collateralIndex Collateral index
  * @param pairIndex Pair index
- * @param collateralDecimals Number of decimals for the collateral
  * @returns Promise resolving to normalized skew depth
  */
 export const fetchPairSkewDepth = async (
   contract: GNSMultiCollatDiamond,
   collateralIndex: number,
-  pairIndex: number,
-  collateralDecimals: number
+  pairIndex: number
 ): Promise<number> => {
   try {
     const contractDepth = await contract.getPairSkewDepth(
@@ -82,7 +76,8 @@ export const fetchPairSkewDepth = async (
       pairIndex
     );
 
-    return normalizeSkewDepth(contractDepth.toBigInt(), collateralDecimals);
+    // Token depths are always 1e18 precision
+    return convertSkewDepth(contractDepth.toString());
   } catch (error) {
     console.error("Error fetching skew depth:", error);
     throw error;
@@ -94,19 +89,14 @@ export const fetchPairSkewDepth = async (
  * @param contract GNSMultiCollatDiamond contract instance
  * @param collateralIndices Array of collateral indices
  * @param pairIndices Array of pair indices
- * @param collateralDecimals Array of collateral decimals for each pair
  * @returns Promise resolving to array of normalized skew depths
  */
 export const fetchPairSkewDepths = async (
   contract: GNSMultiCollatDiamond,
   collateralIndices: number[],
-  pairIndices: number[],
-  collateralDecimals: number[]
+  pairIndices: number[]
 ): Promise<number[]> => {
-  if (
-    collateralIndices.length !== pairIndices.length ||
-    pairIndices.length !== collateralDecimals.length
-  ) {
+  if (collateralIndices.length !== pairIndices.length) {
     throw new Error("All input arrays must have the same length");
   }
 
@@ -116,9 +106,8 @@ export const fetchPairSkewDepths = async (
       pairIndices
     );
 
-    return contractDepths.map((depth, i) =>
-      normalizeSkewDepth(depth.toBigInt(), collateralDecimals[i])
-    );
+    // Token depths are always 1e18 precision
+    return contractDepths.map(depth => convertSkewDepth(depth.toString()));
   } catch (error) {
     console.error("Error fetching skew depths:", error);
     throw error;
@@ -126,37 +115,28 @@ export const fetchPairSkewDepths = async (
 };
 
 /**
- * @dev Fetches complete skew price impact context for multiple pairs
+ * @dev Fetches skew price impact context for a single pair
  * @param contract GNSMultiCollatDiamond contract instance
- * @param collateralIndices Array of collateral indices
- * @param pairIndices Array of pair indices
- * @param collateralDecimals Array of collateral decimals for each pair
- * @returns Promise resolving to complete skew price impact context
+ * @param collateralIndex Collateral index
+ * @param pairIndex Pair index
+ * @returns Promise resolving to skew price impact context
  */
 export const fetchSkewPriceImpactContext = async (
   contract: GNSMultiCollatDiamond,
-  collateralIndices: number[],
-  pairIndices: number[],
-  collateralDecimals: number[]
+  collateralIndex: number,
+  pairIndex: number
 ): Promise<SkewPriceImpactContext> => {
   try {
-    // Fetch OI data and skew depths in parallel
-    const [pairOiTokens, skewDepths] = await Promise.all([
-      fetchPairOisAfterV10Token(contract, collateralIndices, pairIndices),
-      fetchPairSkewDepths(
-        contract,
-        collateralIndices,
-        pairIndices,
-        collateralDecimals
-      ),
+    // Fetch OI data and skew depth in parallel
+    const [pairOiToken, skewDepth] = await Promise.all([
+      fetchPairOiAfterV10Token(contract, collateralIndex, pairIndex),
+      fetchPairSkewDepth(contract, collateralIndex, pairIndex),
     ]);
 
-    return createSkewPriceImpactContext(
-      collateralIndices,
-      pairIndices,
-      skewDepths,
-      pairOiTokens
-    );
+    return {
+      skewDepth,
+      pairOiToken,
+    };
   } catch (error) {
     console.error("Error fetching skew price impact context:", error);
     throw error;

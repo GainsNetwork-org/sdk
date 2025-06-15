@@ -390,44 +390,39 @@ export const getTradeFundingFeesCollateral = (
 
 /**
  * @dev Main function to calculate funding fees for a trade within context
+ * @param input Trade funding fee input parameters
  * @param context Funding fee context with params and data
- * @param collateralIndex Collateral index
- * @param pairIndex Pair index
- * @param trade Trade details
- * @param tradeInfo Trade info (contracts version)
- * @param initialAccFundingFeeP Initial accumulated funding fee
- * @param currentPairPrice Current pair price
- * @param pairOiToken Pair OI after v10
- * @param netExposureToken Net exposure in tokens
- * @param netExposureUsd Net exposure in USD
  * @returns Complete funding fee calculation result
  */
 export const getTradeFundingFees = (
-  context: GetFundingFeeContext,
-  collateralIndex: number,
-  pairIndex: number,
-  trade: {
-    collateralAmount: number;
-    leverage: number;
-    openPrice: number;
-    long: boolean;
+  input: {
+    collateralIndex: number;
+    pairIndex: number;
+    trade: {
+      collateralAmount: number;
+      leverage: number;
+      openPrice: number;
+      long: boolean;
+    };
+    tradeInfo: {
+      contractsVersion: number;
+    };
+    initialAccFundingFeeP: number;
+    currentPairPrice: number;
+    pairOiToken: PairOiAfterV10;
+    netExposureToken: number;
+    netExposureUsd: number;
   },
-  tradeInfo: {
-    contractsVersion: number;
-  },
-  initialAccFundingFeeP: number,
-  currentPairPrice: number,
-  pairOiToken: PairOiAfterV10,
-  netExposureToken: number,
-  netExposureUsd: number
+  context: GetFundingFeeContext
 ): TradeFundingFeeResult => {
   // Get params and data from context
-  const params = context.fundingParams[collateralIndex]?.[pairIndex];
-  const data = context.fundingData[collateralIndex]?.[pairIndex];
+  const params =
+    context.fundingParams[input.collateralIndex]?.[input.pairIndex];
+  const data = context.fundingData[input.collateralIndex]?.[input.pairIndex];
 
   if (!params || !data) {
     throw new Error(
-      `Missing funding fee data for collateral ${collateralIndex} pair ${pairIndex}`
+      `Missing funding fee data for collateral ${input.collateralIndex} pair ${input.pairIndex}`
     );
   }
 
@@ -436,36 +431,36 @@ export const getTradeFundingFees = (
     getPairPendingAccFundingFees(
       params,
       data,
-      currentPairPrice,
-      pairOiToken,
-      netExposureToken,
-      netExposureUsd,
+      input.currentPairPrice,
+      input.pairOiToken,
+      input.netExposureToken,
+      input.netExposureUsd,
       context.currentTimestamp
     );
 
-  const currentAccFundingFeeP = trade.long
+  const currentAccFundingFeeP = input.trade.long
     ? accFundingFeeLongP
     : accFundingFeeShortP;
 
   // Calculate funding fee in collateral
   const fundingFeeCollateral = getTradeFundingFeesCollateralSimple(
-    trade,
-    tradeInfo,
-    initialAccFundingFeeP,
+    input.trade,
+    input.tradeInfo,
+    input.initialAccFundingFeeP,
     currentAccFundingFeeP
   );
 
   // Calculate funding fee as percentage
   const fundingFeeP =
-    trade.collateralAmount > 0
-      ? (fundingFeeCollateral / trade.collateralAmount) * 100
+    input.trade.collateralAmount > 0
+      ? (fundingFeeCollateral / input.trade.collateralAmount) * 100
       : 0;
 
   return {
     fundingFeeCollateral,
     fundingFeeP,
     currentAccFundingFeeP,
-    initialAccFundingFeeP,
+    initialAccFundingFeeP: input.initialAccFundingFeeP,
   };
 };
 

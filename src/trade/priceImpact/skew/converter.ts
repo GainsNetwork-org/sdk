@@ -4,12 +4,7 @@
  */
 
 import { IPriceImpact } from "../../../contracts/types/generated/GNSMultiCollatDiamond";
-import {
-  PairOiToken,
-  PairOiCollateral,
-  SkewDepth,
-  SkewPriceImpactContext,
-} from "./types";
+import { PairOiToken, PairOiCollateral } from "./types";
 
 /**
  * @dev Converts contract pair OI token data to SDK format
@@ -76,158 +71,30 @@ export const convertPairOiCollateralArray = (
 };
 
 /**
- * @dev Normalizes skew depth from contract format
- * @param depth Skew depth from contract (in collateral wei)
- * @param collateralDecimals Number of decimals for the collateral
- * @returns Normalized skew depth
+ * @dev Converts skew depth from contract format to SDK format
+ * @param depth Skew depth from contract (in token units with 1e18 precision)
+ * @returns Normalized skew depth in tokens
  */
-export const normalizeSkewDepth = (
-  depth: bigint | number | string,
-  collateralDecimals: number
-): number => {
-  const divisor = 10 ** collateralDecimals;
-  return Number(depth) / divisor;
+export const convertSkewDepth = (depth: string): number => {
+  // Token depths are always stored with 1e18 precision in the contract
+  return Number(depth) / 1e18;
 };
 
 /**
- * @dev Creates a skew depth object
- * @param collateralIndex Collateral index
- * @param pairIndex Pair index
- * @param depth Normalized depth value
- * @returns Skew depth object
+ * @dev Converts array of skew depths from contract format to SDK format
+ * @param depths Array of skew depths from contract (in token units with 1e18 precision)
+ * @returns Object mapping pair index to normalized depth
  */
-export const createSkewDepth = (
-  collateralIndex: number,
-  pairIndex: number,
-  depth: number
-): SkewDepth => {
-  return {
-    collateralIndex,
-    pairIndex,
-    depth,
-  };
-};
+export const convertPairSkewDepths = (
+  depths: string[]
+): { [pairIndex: number]: number } => {
+  const result: { [pairIndex: number]: number } = {};
 
-/**
- * @dev Creates skew price impact context from arrays of data
- * @param collateralIndices Array of collateral indices
- * @param pairIndices Array of pair indices
- * @param skewDepths Array of normalized skew depths
- * @param pairOiTokens Array of pair OI token data
- * @returns Complete skew price impact context
- */
-export const createSkewPriceImpactContext = (
-  collateralIndices: number[],
-  pairIndices: number[],
-  skewDepths: number[],
-  pairOiTokens: PairOiToken[]
-): SkewPriceImpactContext => {
-  if (
-    collateralIndices.length !== pairIndices.length ||
-    pairIndices.length !== skewDepths.length ||
-    skewDepths.length !== pairOiTokens.length
-  ) {
-    throw new Error("All input arrays must have the same length");
-  }
-
-  const context: SkewPriceImpactContext = {
-    skewDepths: {},
-    pairOiTokens: {},
-  };
-
-  // Build nested objects indexed by collateralIndex and pairIndex
-  for (let i = 0; i < collateralIndices.length; i++) {
-    const collateralIndex = collateralIndices[i];
-    const pairIndex = pairIndices[i];
-
-    // Initialize collateral index objects if they don't exist
-    if (!context.skewDepths[collateralIndex]) {
-      context.skewDepths[collateralIndex] = {};
+  depths.forEach((depth, index) => {
+    if (depth && depth !== "0") {
+      result[index] = convertSkewDepth(depth);
     }
-    if (!context.pairOiTokens[collateralIndex]) {
-      context.pairOiTokens[collateralIndex] = {};
-    }
+  });
 
-    // Store data
-    context.skewDepths[collateralIndex][pairIndex] = skewDepths[i];
-    context.pairOiTokens[collateralIndex][pairIndex] = pairOiTokens[i];
-  }
-
-  return context;
-};
-
-/**
- * @dev Validates skew depth is within reasonable bounds
- * @param depth Normalized skew depth
- * @param minDepth Minimum allowed depth (default: 0)
- * @param maxDepth Maximum allowed depth (default: 1e12)
- * @returns Whether depth is valid
- */
-export const isValidSkewDepth = (
-  depth: number,
-  minDepth = 0,
-  maxDepth = 1e12
-): boolean => {
-  return depth >= minDepth && depth <= maxDepth;
-};
-
-/**
- * @dev Converts contract skew depths array to normalized values
- * @param contractDepths Array of depths from contract
- * @param collateralDecimals Array of decimals for each collateral
- * @returns Array of normalized depths
- */
-export const convertSkewDepthsArray = (
-  contractDepths: Array<bigint | number | string>,
-  collateralDecimals: number[]
-): number[] => {
-  if (contractDepths.length !== collateralDecimals.length) {
-    throw new Error(
-      "Contract depths array and collateral decimals array must have the same length"
-    );
-  }
-
-  return contractDepths.map((depth, index) =>
-    normalizeSkewDepth(depth, collateralDecimals[index])
-  );
-};
-
-/**
- * @dev Merges multiple contexts into one
- * @param contexts Array of contexts to merge
- * @returns Merged context
- */
-export const mergeSkewPriceImpactContexts = (
-  contexts: SkewPriceImpactContext[]
-): SkewPriceImpactContext => {
-  const merged: SkewPriceImpactContext = {
-    skewDepths: {},
-    pairOiTokens: {},
-  };
-
-  for (const context of contexts) {
-    // Merge skew depths
-    for (const collateralIndex in context.skewDepths) {
-      if (!merged.skewDepths[collateralIndex]) {
-        merged.skewDepths[collateralIndex] = {};
-      }
-      Object.assign(
-        merged.skewDepths[collateralIndex],
-        context.skewDepths[collateralIndex]
-      );
-    }
-
-    // Merge pair OI tokens
-    for (const collateralIndex in context.pairOiTokens) {
-      if (!merged.pairOiTokens[collateralIndex]) {
-        merged.pairOiTokens[collateralIndex] = {};
-      }
-      Object.assign(
-        merged.pairOiTokens[collateralIndex],
-        context.pairOiTokens[collateralIndex]
-      );
-    }
-  }
-
-  return merged;
+  return result;
 };

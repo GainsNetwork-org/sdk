@@ -528,16 +528,18 @@ describe("Funding Fees", () => {
       const netExposureUsd = 102000;
 
       const result = getTradeFundingFees(
-        context,
-        0,
-        1,
-        trade,
-        tradeInfo,
-        initialAccFundingFeeP,
-        currentPairPrice,
-        pairOiToken,
-        netExposureToken,
-        netExposureUsd
+        {
+          collateralIndex: 0,
+          pairIndex: 1,
+          trade,
+          tradeInfo,
+          initialAccFundingFeeP,
+          currentPairPrice,
+          pairOiToken,
+          netExposureToken,
+          netExposureUsd,
+        },
+        context
       );
 
       expect(result.fundingFeeCollateral).toBeDefined();
@@ -562,16 +564,18 @@ describe("Funding Fees", () => {
 
       expect(() =>
         getTradeFundingFees(
-          context,
-          0,
-          1,
-          trade,
-          { contractsVersion: ContractsVersion.V10 },
-          0.1,
-          51000,
-          { oiLongToken: 10000, oiShortToken: 8000 },
-          2000,
-          100000
+          {
+            collateralIndex: 0,
+            pairIndex: 1,
+            trade,
+            tradeInfo: { contractsVersion: ContractsVersion.V10 },
+            initialAccFundingFeeP: 0.1,
+            currentPairPrice: 51000,
+            pairOiToken: { oiLongToken: 10000, oiShortToken: 8000 },
+            netExposureToken: 2000,
+            netExposureUsd: 100000,
+          },
+          context
         )
       ).toThrow("Missing funding fee data for collateral 0 pair 1");
     });

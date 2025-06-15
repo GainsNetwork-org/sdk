@@ -55,6 +55,7 @@ export type TradingVariablesCollateral = {
   prices: TokenPrices;
   symbol: string;
   pairOis: UnifiedPairOi[];
+  pairSkewDepths: { [pairIndex: number]: number }; // Skew depth in tokens
 };
 
 export type TokenPrices = {
