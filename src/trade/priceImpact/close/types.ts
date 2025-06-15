@@ -29,9 +29,10 @@ export type TradeClosingPriceImpactInput = {
  * @dev Context for trade closing price impact calculation
  * Combines contexts from spread, cumul vol, and skew
  */
-export type TradeClosingPriceImpactContext = CumulVolContext & {
-  skewContext: SkewPriceImpactContext;
+export type TradeClosingPriceImpactContext = {
   collateralPriceUsd: number; // Required for USD conversion
+  cumulVolContext: CumulVolContext;
+  skewContext: SkewPriceImpactContext;
   tradeInfo: TradeInfo; // For createdBlock, contractsVersion
 };
 

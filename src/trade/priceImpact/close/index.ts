@@ -19,6 +19,9 @@ export type {
   TradeClosingPriceImpactResult,
 };
 
+// Export builder
+export { buildTradeClosingPriceImpactContext } from "./builder";
+
 /**
  * @dev Calculates position size in tokens for partial close
  * @param originalPositionSizeToken Original position size in tokens
@@ -93,13 +96,7 @@ export const getTradeClosingPriceImpact = (
       false, // Assume negative PnL initially
       false, // closing
       context.tradeInfo.lastPosIncreaseBlock || context.tradeInfo.createdBlock,
-      {
-        ...context,
-        isOpen: false,
-        isPnlPositive: false, // Initial assumption
-        contractsVersion: input.contractsVersion,
-        createdBlock: context.tradeInfo.createdBlock,
-      }
+      context.cumulVolContext
     );
 
     // Calculate price with conservative impact
@@ -140,13 +137,7 @@ export const getTradeClosingPriceImpact = (
         false, // closing
         context.tradeInfo.lastPosIncreaseBlock ||
           context.tradeInfo.createdBlock,
-        {
-          ...context,
-          isOpen: false,
-          isPnlPositive: true,
-          contractsVersion: input.contractsVersion,
-          createdBlock: context.tradeInfo.createdBlock,
-        }
+        context.cumulVolContext
       );
     }
   }

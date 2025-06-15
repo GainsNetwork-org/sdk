@@ -21,6 +21,8 @@ export {
   // Core functions
   getTradeClosingPriceImpact,
   getTradeClosingPriceImpactAtOracle,
+  // Builder
+  buildTradeClosingPriceImpactContext,
   // Types
   TradeClosingPriceImpactInput,
   TradeClosingPriceImpactContext,
