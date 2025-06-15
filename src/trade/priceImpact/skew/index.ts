@@ -78,7 +78,7 @@ export const calculateSkewPriceImpactP = (
 
   // Formula: (existingSkew + tradeSize/2) / skewDepth
   const numerator = signedExistingSkew + signedTradeSize / 2;
-  const priceImpactP = (numerator / skewDepth) * 100; // Convert to percentage
+  const priceImpactP = numerator / skewDepth;
 
   // Apply divider to match cumulative volume impact scale
   return priceImpactP / PRICE_IMPACT_DIVIDER;
