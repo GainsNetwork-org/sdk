@@ -536,10 +536,7 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.BUSD]: "BUILDon to US Dollar",
   [PairIndex.HUMAUSD]: "Huma Finance to US Dollar",
   [PairIndex.SBETUSD]: "Sharplink Gaming Inc to US Dollar",
-  [PairIndex.MTPLFUSD]: "Metaplanet to US Dollar",
   [PairIndex.PLTRUSD]: "Palantir Technologies to US Dollar",
   [PairIndex.BIDUUSD]: "Baidu to US Dollar",
   [PairIndex.ROKUUSD]: "Roku to US Dollar",
-  [PairIndex.EXODUSD]: "Exodus Movement Inc to US Dollar",
-  [PairIndex.CHYMEUSD]: "Chime Financial Inc to US Dollar",
 };

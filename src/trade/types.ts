@@ -655,10 +655,7 @@ export enum PairIndex {
   BUSD,
   HUMAUSD,
   SBETUSD,
-  MTPLFUSD,
   PLTRUSD,
   BIDUUSD,
   ROKUUSD,
-  EXODUSD,
-  CHYMEUSD,
 }
