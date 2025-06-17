@@ -23,21 +23,27 @@ export type {
 export { buildTradeClosingPriceImpactContext } from "./builder";
 
 /**
- * @dev Calculates position size in tokens for partial close
- * @param originalPositionSizeToken Original position size in tokens
+ * @dev Calculates position size in tokens for the portion being closed
+ * @param positionSizeCollateral Position size in collateral units being closed
+ * @param originalPositionSizeToken Original total position size in tokens
  * @param originalCollateral Original collateral amount
- * @param closingCollateral Collateral amount being closed
- * @returns Proportional position size in tokens
+ * @param originalLeverage Original leverage
+ * @returns Position size in tokens for the closing portion
  */
 const calculateClosingPositionSizeToken = (
+  positionSizeCollateral: number,
   originalPositionSizeToken: number,
   originalCollateral: number,
-  closingCollateral: number
+  originalLeverage: number
 ): number => {
-  if (originalCollateral === 0) return 0;
+  const totalPositionSizeCollateral = originalCollateral * originalLeverage;
+  if (totalPositionSizeCollateral === 0) return 0;
 
-  // Proportional calculation: (closingCollateral / originalCollateral) * originalPositionSizeToken
-  return (closingCollateral * originalPositionSizeToken) / originalCollateral;
+  // Match contract logic: (positionSizeCollateral * originalPositionSizeToken) / totalPositionSizeCollateral
+  return (
+    (positionSizeCollateral * originalPositionSizeToken) /
+    totalPositionSizeCollateral
+  );
 };
 
 /**
@@ -67,9 +73,10 @@ export const getTradeClosingPriceImpact = (
   // Calculate position size in tokens (proportional to collateral being closed)
   const positionSizeToken = input.trade.positionSizeToken
     ? calculateClosingPositionSizeToken(
+        input.positionSizeCollateral,
         input.trade.positionSizeToken,
         input.trade.collateralAmount,
-        input.positionSizeCollateral
+        input.trade.leverage
       )
     : 0;
 

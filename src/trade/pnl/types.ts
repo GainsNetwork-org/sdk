@@ -74,7 +74,6 @@ export type ComprehensivePnlResult = {
 
   // Additional info
   leveragedPositionSize: number;
-  netPnlAfterFees: number;
 };
 
 /**

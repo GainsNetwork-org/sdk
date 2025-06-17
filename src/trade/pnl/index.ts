@@ -9,6 +9,7 @@ import {
   LiquidationParams,
   Fee,
   GlobalTradeFeeParams,
+  TradeFeesData,
 } from "../types";
 import { ComprehensivePnlResult, GetComprehensivePnlContext } from "./types";
 import { BorrowingFee, getBorrowingFee } from "../fees/borrowing";
@@ -18,6 +19,32 @@ import {
 } from "../fees/trading";
 import { getLiqPnlThresholdP } from "../liquidation";
 import { ContractsVersion } from "../../contracts/types";
+
+/**
+ * @dev Gets trade realized PnL components from TradeFeesData
+ * @dev Mirrors contract's getTradeRealizedPnlCollateral function
+ * @param tradeFeesData Trade fees data containing realized components
+ * @returns Tuple of [realizedPnlCollateral, realizedTradingFeesCollateral, totalRealizedPnlCollateral]
+ */
+export const getTradeRealizedPnlCollateral = (
+  tradeFeesData: TradeFeesData
+): {
+  realizedPnlCollateral: number;
+  realizedTradingFeesCollateral: number;
+  totalRealizedPnlCollateral: number;
+} => {
+  const realizedPnlCollateral = tradeFeesData.realizedPnlCollateral;
+  const realizedTradingFeesCollateral =
+    tradeFeesData.realizedTradingFeesCollateral;
+  const totalRealizedPnlCollateral =
+    realizedPnlCollateral - realizedTradingFeesCollateral;
+
+  return {
+    realizedPnlCollateral,
+    realizedTradingFeesCollateral,
+    totalRealizedPnlCollateral,
+  };
+};
 
 /**
  * @dev Calculates PnL percentage for a position
@@ -129,7 +156,8 @@ export const getComprehensivePnl = (
   );
 
   // Total fees
-  const totalFees = borrowingFeeV1 + borrowingFeeV2 + fundingFee + closingFee;
+  const totalHoldingFees = borrowingFeeV1 + borrowingFeeV2 + fundingFee;
+  const totalFees = totalHoldingFees + closingFee;
 
   // Check liquidation
   const liquidationThreshold = context.tradeData?.liquidationParams
@@ -144,6 +172,11 @@ export const getComprehensivePnl = (
     pnlPercent = -100;
   }
 
+  // Get realized PnL components from TradeFeesData
+  const { totalRealizedPnlCollateral } = getTradeRealizedPnlCollateral(
+    context.tradeData.tradeFeesData
+  );
+
   // Calculate final trade value
   const tradeValue = getTradeValue(
     trade.collateralAmount,
@@ -157,16 +190,14 @@ export const getComprehensivePnl = (
   // Calculate leveraged position size
   const leveragedPositionSize = trade.collateralAmount * trade.leverage;
 
-  // Calculate net PnL after fees
-  const netPnlAfterFees = pnlCollateral - totalFees;
-
   // Calculate unrealized PnL (before closing fee, after holding fees)
-  const totalHoldingFees = borrowingFeeV1 + borrowingFeeV2 + fundingFee;
-  const uPnlCollateral = pnlCollateral - totalHoldingFees;
+  const uPnlCollateral =
+    pnlCollateral - totalHoldingFees + totalRealizedPnlCollateral;
   const uPnlPercent = (uPnlCollateral / trade.collateralAmount) * 100;
 
   // Realized PnL (after all fees including closing)
-  const realizedPnlCollateral = pnlCollateral - totalFees;
+  const realizedPnlCollateral =
+    pnlCollateral - totalFees + totalRealizedPnlCollateral;
   const realizedPnlPercent =
     (realizedPnlCollateral / trade.collateralAmount) * 100;
 
@@ -199,7 +230,6 @@ export const getComprehensivePnl = (
 
     // Additional info
     leveragedPositionSize,
-    netPnlAfterFees,
   };
 };
 
