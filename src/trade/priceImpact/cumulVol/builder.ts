@@ -43,7 +43,8 @@ export const buildCumulVolContext = (
 
   // Get user-specific parameters from additionalParams
   const userPriceImpact = additionalParams.userPriceImpact;
-  const protectionCloseFactorWhitelist = additionalParams.protectionCloseFactorWhitelist;
+  const protectionCloseFactorWhitelist =
+    additionalParams.protectionCloseFactorWhitelist;
 
   // Get liquidation params - check both pair and group level
   const liquidationParams =

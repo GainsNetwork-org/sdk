@@ -42,24 +42,15 @@ export interface UnifiedPairOi {
   };
 }
 
+export type GenericPairOiContext = {
+  pairOis: UnifiedPairOi[];
+};
+
 /**
  * @dev Group OI remains unchanged - only used by borrowing v1
  * @dev Re-export existing type for consistency
  */
 export { OpenInterest as GroupOi } from "../../trade/types";
-
-/**
- * @dev Metadata describing which OI systems are used by different features
- * @dev Helps consumers understand OI usage patterns
- */
-export interface OiUsageMetadata {
-  borrowingV1: Array<"beforeV10Collateral" | "token">; // Combined dynamic
-  fundingFees: Array<"token">;
-  skewImpact: Array<"token">;
-  maxPairOi: Array<"beforeV10Collateral" | "token">; // Combined dynamic (was wrong before)
-  maxGroupOi: Array<"beforeV10Collateral" | "token">; // Combined dynamic (was wrong before)
-  maxSkew: Array<"token">;
-}
 
 /**
  * @dev Helper type for computed OI values

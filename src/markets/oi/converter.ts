@@ -12,16 +12,14 @@ import { UnifiedPairOi, ComputedOi } from "./types";
 /**
  * @dev Converts pre-v10 OI from contract format
  * @param contractOi Contract OpenInterest struct from BorrowingFeesStorage
- * @param precision Collateral precision for conversion
  * @returns Normalized OI with long/short values
  */
 export const convertBeforeV10Collateral = (
-  contractOi: IBorrowingFees.OpenInterestStructOutput,
-  precision: number
+  contractOi: IBorrowingFees.OpenInterestStructOutput
 ): { long: number; short: number } => {
   return {
-    long: Number(contractOi.long) / precision,
-    short: Number(contractOi.short) / precision,
+    long: Number(contractOi.long) / 1e10,
+    short: Number(contractOi.short) / 1e10,
   };
 };
 
@@ -72,10 +70,7 @@ export const convertPairOi = (
 ): UnifiedPairOi => {
   return {
     maxCollateral: Number(beforeV10.max) / 1e10,
-    beforeV10Collateral: convertBeforeV10Collateral(
-      beforeV10,
-      collateralPrecision
-    ),
+    beforeV10Collateral: convertBeforeV10Collateral(beforeV10),
     collateral: convertCollateralOi(afterV10Collateral, collateralPrecision),
     token: convertTokenOi(afterV10Token),
   };
