@@ -3,6 +3,27 @@
  * @dev Exports cumulative volume, skew, and combined opening/closing price impact functionality
  */
 
+/**
+ * @dev Calculates price after impact using the same formula as the Solidity contract
+ * @dev Mirrors contract's getPriceAfterImpact function
+ * @param oraclePrice Base oracle price (no decimals requirement)
+ * @param totalPriceImpactP Total price impact percentage (can be positive or negative)
+ * @returns Price after impact has been applied
+ */
+export const getPriceAfterImpact = (
+  oraclePrice: number,
+  totalPriceImpactP: number
+): number => {
+  // Match Solidity: price = oraclePrice + (oraclePrice * totalPriceImpactP / 100)
+  const priceAfterImpact = oraclePrice * (1 + totalPriceImpactP / 100);
+
+  if (priceAfterImpact <= 0) {
+    throw new Error("Price after impact must be positive");
+  }
+
+  return priceAfterImpact;
+};
+
 // Export trade opening price impact functionality
 export {
   // Core functions

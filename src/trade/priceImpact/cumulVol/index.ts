@@ -85,6 +85,20 @@ export const isProtectionCloseFactorActive = (
     return undefined;
   }
 
+  console.log("context.isPnlPositive", context.isPnlPositive);
+  console.log("context.isOpen", context.isOpen);
+  console.log("context.protectionCloseFactor", context.protectionCloseFactor);
+  console.log("context.currentBlock", context.currentBlock);
+  console.log("context.createdBlock", context.createdBlock);
+  console.log(
+    "context.protectionCloseFactorBlocks",
+    context.protectionCloseFactorBlocks
+  );
+  console.log(
+    "context.protectionCloseFactorWhitelist",
+    context.protectionCloseFactorWhitelist
+  );
+
   return (
     context.isPnlPositive === true &&
     context.isOpen === false &&
@@ -170,15 +184,16 @@ export const getTradeCumulVolPriceImpactP = (
     return 0;
   }
 
-  const onePercentDepth = long
-    ? // if `long`
-      open
-      ? context.pairDepth?.onePercentDepthAboveUsd
-      : context.pairDepth?.onePercentDepthBelowUsd
-    : // if `short`
-    open
-    ? context.pairDepth?.onePercentDepthBelowUsd
-    : context.pairDepth?.onePercentDepthAboveUsd;
+  // Calculate trade skew direction (matches Solidity logic)
+  const tradePositiveSkew = (long && open) || (!long && !open);
+  const tradeSkewMultiplier = tradePositiveSkew ? 1 : -1;
+
+  // Select depth based on trade direction
+  // For positive skew (long open or short close), use depth above
+  // For negative skew (short open or long close), use depth below
+  const onePercentDepth = tradePositiveSkew
+    ? context.pairDepth?.onePercentDepthAboveUsd
+    : context.pairDepth?.onePercentDepthBelowUsd;
 
   let activeOi = undefined;
 
@@ -195,12 +210,27 @@ export const getTradeCumulVolPriceImpactP = (
     return 0;
   }
 
+  // Apply trade skew multiplier to match Solidity's signed calculation
+  const signedActiveOi = activeOi * tradeSkewMultiplier;
+  const signedTradeOi = tradeOpenInterestUsd * tradeSkewMultiplier;
+
+  // Calculate impact with proper signs (matching Solidity's _getTradePriceImpactP)
   const finalPriceImpactP =
-    ((activeOi * getCumulativeFactor(updatedContext) +
-      tradeOpenInterestUsd / 2) /
+    ((signedActiveOi * getCumulativeFactor(updatedContext) +
+      signedTradeOi / 2) /
       onePercentDepth /
       getLegacyFactor(updatedContext)) *
     getProtectionCloseFactor(updatedContext);
+
+  console.log("signedActiveOi", signedActiveOi);
+  console.log("getCumulativeFactor", getCumulativeFactor(updatedContext));
+  console.log("signedTradeOi", signedTradeOi);
+  console.log("onePercentDepth", onePercentDepth);
+  console.log("getLegacyFactor", getLegacyFactor(updatedContext));
+  console.log(
+    "getProtectionCloseFactor",
+    getProtectionCloseFactor(updatedContext)
+  );
 
   return finalPriceImpactP;
 };

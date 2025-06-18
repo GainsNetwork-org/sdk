@@ -10,6 +10,7 @@ import {
 } from "./types";
 import { getFixedSpreadP, getTradeCumulVolPriceImpactP } from "../cumulVol";
 import { getTradeSkewPriceImpactWithChecks } from "../skew";
+import { getPriceAfterImpact } from "../";
 
 // Re-export types
 export type {
@@ -75,19 +76,16 @@ export const getTradeOpeningPriceImpact = (
   // Spread is always positive, impacts can be negative
   const totalPriceImpactP = spreadP + cumulVolPriceImpactP + skewPriceImpactP;
 
-  // Calculate final price after impact
-  // For longs: price increases with positive impact
-  // For shorts: price decreases with positive impact
-  const priceImpactFactor = 1 + totalPriceImpactP / 100;
-  const priceAfterImpact = input.long
-    ? input.openPrice * priceImpactFactor
-    : input.openPrice / priceImpactFactor;
+  // Calculate final price after impact using the same formula as Solidity
+  const priceAfterImpact = getPriceAfterImpact(
+    input.openPrice,
+    totalPriceImpactP
+  );
 
   // Calculate percent profit from impact
-  // Positive when trader benefits, negative when trader loses
-  const percentProfitP = input.long
-    ? -totalPriceImpactP // Long loses when price goes up
-    : totalPriceImpactP; // Short gains when price goes up
+  // For longs: negative impact = profit (price goes down, good for buyer)
+  // For shorts: positive impact = profit (price goes up, good for seller)
+  const percentProfitP = -totalPriceImpactP;
 
   return {
     priceAfterImpact,

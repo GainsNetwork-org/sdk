@@ -11,6 +11,8 @@ import {
 import { getFixedSpreadP, getTradeCumulVolPriceImpactP } from "../cumulVol";
 import { getTradeSkewPriceImpactWithChecks } from "../skew";
 import { ContractsVersion } from "../../../contracts/types";
+import { getPnlPercent, getTradeValue } from "../../pnl";
+import { getPriceAfterImpact } from "../";
 
 // Re-export types
 export type {
@@ -107,31 +109,30 @@ export const getTradeClosingPriceImpact = (
     );
 
     // Calculate price with conservative impact
-    const priceWithImpact = input.trade.long
-      ? input.currentPairPrice *
-        (1 - (fixedSpreadP + cumulVolPriceImpactP) / 100)
-      : input.currentPairPrice /
-        (1 - (fixedSpreadP + cumulVolPriceImpactP) / 100);
+    const priceWithImpact = getPriceAfterImpact(
+      input.currentPairPrice,
+      fixedSpreadP + cumulVolPriceImpactP
+    );
 
-    // Calculate trade value in collateral
-    // For long: value = positionSizeToken * priceWithImpact
-    // For short: value = positionSizeToken / priceWithImpact * openPrice^2 / currentPrice
-    if (positionSizeToken > 0) {
-      if (input.trade.long) {
-        tradeValueCollateralNoFactor = positionSizeToken * priceWithImpact;
-      } else {
-        // Short calculation: profit from price decrease
-        const pnlFactor =
-          (2 * input.trade.openPrice - priceWithImpact) / input.trade.openPrice;
-        tradeValueCollateralNoFactor = input.positionSizeCollateral * pnlFactor;
-      }
-    } else {
-      tradeValueCollateralNoFactor = input.positionSizeCollateral;
-    }
+    // Calculate PnL percentage using the proper function
+    const pnlPercent = getPnlPercent(
+      input.trade.openPrice,
+      priceWithImpact,
+      input.trade.long,
+      input.trade.leverage
+    );
 
-    // Determine actual PnL
-    const isPnlPositive =
-      tradeValueCollateralNoFactor > input.trade.collateralAmount;
+    // Calculate trade value using getTradeValue function
+    // Note: We don't include fees here as this is the raw trade value
+    tradeValueCollateralNoFactor = getTradeValue(
+      input.trade.collateralAmount,
+      pnlPercent,
+      0 // No fees for raw trade value calculation
+    );
+
+    // Determine actual PnL from the calculated percentage
+    const isPnlPositive = pnlPercent > 0;
+    console.log("isPnlPositive", isPnlPositive);
 
     // Second pass: Recalculate with actual PnL if positive
     if (isPnlPositive) {
@@ -172,10 +173,11 @@ export const getTradeClosingPriceImpact = (
     fixedSpreadP + cumulVolPriceImpactP + skewPriceImpactP;
 
   // Calculate final price after all impacts
-  // For closing: longs get worse price when impact is positive, shorts get better
-  const priceAfterImpact = input.trade.long
-    ? input.currentPairPrice * (1 - totalPriceImpactP / 100)
-    : input.currentPairPrice / (1 - totalPriceImpactP / 100);
+  // The direction is already handled by getFixedSpreadP (reverses for closing)
+  const priceAfterImpact = getPriceAfterImpact(
+    input.currentPairPrice,
+    totalPriceImpactP
+  );
 
   return {
     positionSizeToken,

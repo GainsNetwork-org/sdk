@@ -155,10 +155,7 @@ export const convertRatePerSecondToAPR = (ratePerSecond: number): number => {
  * @param decimals Number of decimal places
  * @returns Formatted string with sign
  */
-export const formatHoldingFeeRate = (
-  rate: number,
-  decimals: number = 4
-): string => {
+export const formatHoldingFeeRate = (rate: number, decimals = 4): string => {
   const sign = rate > 0 ? "+" : "";
   return `${sign}${rate.toFixed(decimals)}%`;
 };
