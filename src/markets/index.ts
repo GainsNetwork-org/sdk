@@ -6,3 +6,4 @@ export * from "./commodities";
 export * from "./oi";
 export * from "./collateral";
 export * from "./price";
+export * from "./holdingFees";

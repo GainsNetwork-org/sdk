@@ -1,6 +1,7 @@
 export * from "./borrowing";
 export * from "./tiers";
 export * from "./trading";
+export * from "../../markets/holdingFees";
 
 // TradeFeesData and UiRealizedPnlData converters
 export {
