@@ -21,6 +21,7 @@ export enum CollateralTypes {
   USDC = "USDC",
   APE = "APE",
   GNS = "GNS",
+  BTCUSD = "BTCUSD",
 }
 
 export enum ContractsVersion {

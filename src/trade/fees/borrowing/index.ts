@@ -78,7 +78,6 @@ export const getBorrowingFee = (
 };
 
 /**
- * @deprecated Use withinMaxGroupOiDynamic from @gains-network/sdk/markets/oi instead
  * @dev This function uses static OI which doesn't reflect current market values
  * @dev The v10 contracts use dynamic OI (beforeV10 + afterV10Token * currentPrice)
  */
