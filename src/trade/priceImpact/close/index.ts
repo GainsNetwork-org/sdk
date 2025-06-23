@@ -82,12 +82,6 @@ export const getTradeClosingPriceImpact = (
       )
     : 0;
 
-  console.log("positionSizeToken", positionSizeToken);
-  console.log("input.positionSizeCollateral", input.positionSizeCollateral);
-  console.log("input.trade.positionSizeToken", input.trade.positionSizeToken);
-  console.log("input.trade.collateralAmount", input.trade.collateralAmount);
-  console.log("input.trade.leverage", input.trade.leverage);
-
   // Calculate fixed spread (reversed for closing)
   const fixedSpreadP = getFixedSpreadP(
     input.pairSpreadP,
