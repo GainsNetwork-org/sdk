@@ -2,6 +2,7 @@ import {
   ITradingStorage,
   IBorrowingFees,
   IPairsStorage,
+  IFundingFees,
 } from "../contracts/types/generated/GNSMultiCollatDiamond";
 import { BorrowingFee } from "./fees/borrowing";
 import { FeeTier, TraderEnrollment, TraderInfo } from "./fees/tiers/types";
@@ -10,11 +11,37 @@ export type PairIndexes = {
   [key: string]: PairIndex;
 };
 
+export type TradeFeesData = {
+  realizedTradingFeesCollateral: number;
+  realizedPnlCollateral: number;
+  manuallyRealizedNegativePnlCollateral: number;
+  alreadyTransferredNegativePnlCollateral: number;
+  virtualAvailableCollateralInDiamond: number;
+  initialAccFundingFeeP: number;
+  initialAccBorrowingFeeP: number;
+};
+
+export type UiRealizedPnlData = {
+  realizedTradingFeesCollateral: number;
+  realizedOldBorrowingFeesCollateral: number;
+  realizedNewBorrowingFeesCollateral: number;
+  realizedFundingFeesCollateral: number;
+  realizedPnlPartialCloseCollateral: number;
+  pnlWithdrawnCollateral: number;
+};
+
+export type CounterTradeSettings = {
+  maxLeverage: number; // e.g., 10 = 10x
+  feeRateMultiplier: number; // e.g., 0.1 = 10% of normal fee, 1 = 100%
+};
+
 export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
   liquidationParams: LiquidationParams;
   initialAccFees: TradeInitialAccFees;
+  tradeFeesData?: TradeFeesData;
+  uiRealizedPnlData?: UiRealizedPnlData;
   receivedAt?: number;
 };
 
@@ -31,6 +58,8 @@ export type Trade = {
   openPrice: number;
   sl: number;
   tp: number;
+  isCounterTrade?: boolean;
+  positionSizeToken?: number;
 };
 
 export type TradeInfo = {
@@ -165,6 +194,8 @@ export type TradeContainerRaw = {
   tradeInfo: ITradingStorage.TradeInfoStruct;
   liquidationParams: IPairsStorage.GroupLiquidationParamsStruct;
   initialAccFees: IBorrowingFees.BorrowingInitialAccFeesStruct;
+  tradeFeesData: IFundingFees.TradeFeesDataStruct;
+  uiRealizedPnlData?: IFundingFees.UiRealizedPnlDataStruct;
 };
 
 export type OiWindowsSettings = {
@@ -182,14 +213,6 @@ export type OiWindow = PairOi;
 
 export type OiWindows = {
   [key: string]: OiWindow;
-};
-
-export type CollateralConfig = {
-  collateral: string;
-  isActive: boolean;
-  precision: number;
-  precisionDelta: number;
-  decimals?: number;
 };
 
 export type FeeTiers = {
