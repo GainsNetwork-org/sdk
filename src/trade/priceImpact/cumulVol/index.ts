@@ -85,20 +85,6 @@ export const isProtectionCloseFactorActive = (
     return undefined;
   }
 
-  console.log("context.isPnlPositive", context.isPnlPositive);
-  console.log("context.isOpen", context.isOpen);
-  console.log("context.protectionCloseFactor", context.protectionCloseFactor);
-  console.log("context.currentBlock", context.currentBlock);
-  console.log("context.createdBlock", context.createdBlock);
-  console.log(
-    "context.protectionCloseFactorBlocks",
-    context.protectionCloseFactorBlocks
-  );
-  console.log(
-    "context.protectionCloseFactorWhitelist",
-    context.protectionCloseFactorWhitelist
-  );
-
   return (
     context.isPnlPositive === true &&
     context.isOpen === false &&
@@ -221,16 +207,6 @@ export const getTradeCumulVolPriceImpactP = (
       onePercentDepth /
       getLegacyFactor(updatedContext)) *
     getProtectionCloseFactor(updatedContext);
-
-  console.log("signedActiveOi", signedActiveOi);
-  console.log("getCumulativeFactor", getCumulativeFactor(updatedContext));
-  console.log("signedTradeOi", signedTradeOi);
-  console.log("onePercentDepth", onePercentDepth);
-  console.log("getLegacyFactor", getLegacyFactor(updatedContext));
-  console.log(
-    "getProtectionCloseFactor",
-    getProtectionCloseFactor(updatedContext)
-  );
 
   return finalPriceImpactP;
 };

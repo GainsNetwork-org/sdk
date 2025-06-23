@@ -325,7 +325,7 @@ export const convertTrade = (
     tp: parseFloat(trade.tp) / 1e10,
     isCounterTrade: trade.isCounterTrade,
     positionSizeToken: trade.positionSizeToken
-      ? parseFloat(trade.positionSizeToken) / 10 ** decimals
+      ? parseFloat(trade.positionSizeToken) / 1e18
       : undefined,
   };
 };
