@@ -92,21 +92,30 @@ export const getTradeValue = (
 /**
  * @dev Comprehensive PnL calculation including all fees
  * @param trade The trade to calculate PnL for
- * @param currentPrice Current market price
+ * @param marketPrice Current market price (without price impact)
+ * @param executionPrice Price after all impacts (spread, skew, volume)
  * @param tradeInfo Trade info with version and timestamps
  * @param context Context with all fee parameters
  * @returns Detailed PnL breakdown
  */
 export const getComprehensivePnl = (
   trade: Trade,
-  currentPrice: number,
+  marketPrice: number,
+  executionPrice: number,
   tradeInfo: TradeInfo,
   context: GetComprehensivePnlContext
 ): ComprehensivePnlResult => {
-  // Calculate base PnL percentage
-  let pnlPercent = getPnlPercent(
+  // Calculate both raw PnL (market price) and impact-adjusted PnL (execution price)
+  let rawPnlPercent = getPnlPercent(
     trade.openPrice,
-    currentPrice,
+    marketPrice,
+    trade.long,
+    trade.leverage
+  );
+
+  let impactPnlPercent = getPnlPercent(
+    trade.openPrice,
+    executionPrice,
     trade.long,
     trade.leverage
   );
@@ -119,12 +128,11 @@ export const getComprehensivePnl = (
   const positionSizeCollateral = trade.collateralAmount * trade.leverage;
 
   // Calculate holding fees - always use getTradePendingHoldingFeesCollateral
-  // This mirrors the contract's getTradeValueCollateral which always calls this function
   const pendingHoldingFees = getTradePendingHoldingFeesCollateral(
     trade,
     tradeInfo,
     context.tradeData.tradeFeesData,
-    currentPrice,
+    executionPrice,
     {
       contractsVersion: context.core.contractsVersion,
       currentTimestamp: context.core.currentTimestamp,
@@ -159,17 +167,18 @@ export const getComprehensivePnl = (
   const totalHoldingFees = borrowingFeeV1 + borrowingFeeV2 + fundingFee;
   const totalFees = totalHoldingFees + closingFee;
 
-  // Check liquidation
+  // Check liquidation (using raw PnL for liquidation check)
   const liquidationThreshold = context.tradeData?.liquidationParams
     ? getLiqPnlThresholdP(context.tradeData.liquidationParams, trade.leverage) *
       -100
     : -90; // Default 90% loss
 
-  const isLiquidated = pnlPercent <= liquidationThreshold;
+  const isLiquidated = rawPnlPercent <= liquidationThreshold;
 
-  // If liquidated, set PnL to -100%
+  // If liquidated, set both PnL percentages to -100%
   if (isLiquidated) {
-    pnlPercent = -100;
+    rawPnlPercent = -100;
+    impactPnlPercent = -100;
   }
 
   // Get realized PnL components from TradeFeesData
@@ -177,41 +186,61 @@ export const getComprehensivePnl = (
     context.tradeData.tradeFeesData
   );
 
-  // Calculate final trade value
-  const tradeValue = getTradeValue(
-    trade.collateralAmount,
-    pnlPercent,
-    totalFees
-  );
+  // Calculate raw PnL in collateral (using market price)
+  const rawPnlCollateral = trade.collateralAmount * (rawPnlPercent / 100);
 
-  // Calculate PnL in collateral
-  const pnlCollateral = trade.collateralAmount * (pnlPercent / 100);
+  // Calculate impact-adjusted PnL in collateral (using execution price)
+  const impactPnlCollateral = trade.collateralAmount * (impactPnlPercent / 100);
 
-  // Calculate leveraged position size
-  const leveragedPositionSize = trade.collateralAmount * trade.leverage;
+  // Calculate price impact
+  const priceImpactCollateral = impactPnlCollateral - rawPnlCollateral;
+  const priceImpactPercent = impactPnlPercent - rawPnlPercent;
 
-  // Calculate unrealized PnL (before closing fee, after holding fees)
+  // Calculate unrealized PnL (before closing fee, after holding fees, using market price)
+  // This is what the trader sees for open positions
   const uPnlCollateral =
-    pnlCollateral - totalHoldingFees + totalRealizedPnlCollateral;
+    rawPnlCollateral - totalHoldingFees + totalRealizedPnlCollateral;
   const uPnlPercent = (uPnlCollateral / trade.collateralAmount) * 100;
 
-  // Realized PnL (after all fees including closing)
+  // Calculate realized PnL (after all fees including closing, using execution price)
+  // This is what the trader would get if closing the position
   const realizedPnlCollateral =
-    pnlCollateral - totalFees + totalRealizedPnlCollateral;
+    impactPnlCollateral - totalFees + totalRealizedPnlCollateral;
   const realizedPnlPercent =
     (realizedPnlCollateral / trade.collateralAmount) * 100;
 
+  // Calculate trade value using execution price (what trader would receive)
+  const tradeValue = getTradeValue(
+    trade.collateralAmount,
+    impactPnlPercent,
+    totalFees
+  );
+
   return {
-    // Core PnL values
-    pnlPercent,
-    pnlCollateral,
+    // Raw PnL values (using market price, no price impact)
+    pnlPercent: rawPnlPercent,
+    pnlCollateral: rawPnlCollateral,
+
+    // Impact-adjusted PnL values (using execution price)
+    impactPnlPercent,
+    impactPnlCollateral,
+
+    // Price impact
+    priceImpact: {
+      percent: priceImpactPercent,
+      collateral: priceImpactCollateral,
+    },
+
+    // Trade value (what trader would receive if closing)
     tradeValue,
 
-    // Unrealized PnL (after holding fees, before closing fee)
+    // Unrealized PnL (after holding fees, before closing fee, using market price)
+    // Use for open position display
     uPnlCollateral,
     uPnlPercent,
 
-    // Realized PnL (after all fees)
+    // Realized PnL (after all fees, using execution price)
+    // Use for closing preview
     realizedPnlCollateral,
     realizedPnlPercent,
 
@@ -226,10 +255,7 @@ export const getComprehensivePnl = (
 
     // Status flags
     isLiquidated,
-    isProfitable: pnlPercent > 0,
-
-    // Additional info
-    leveragedPositionSize,
+    isProfitable: rawPnlPercent > 0, // Based on raw PnL
   };
 };
 

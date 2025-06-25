@@ -49,31 +49,39 @@ export type PriceImpactBreakdown = {
  * @dev Comprehensive PnL result with all details
  */
 export type ComprehensivePnlResult = {
-  // Core PnL values
+  // Raw PnL values (using market price, no price impact)
   pnlPercent: number;
   pnlCollateral: number;
+
+  // Impact-adjusted PnL values (using execution price)
+  impactPnlPercent: number;
+  impactPnlCollateral: number;
+
+  // Price impact
+  priceImpact: {
+    percent: number;
+    collateral: number;
+  };
+
+  // Trade value (what trader would receive if closing)
   tradeValue: number;
 
-  // Unrealized PnL (after holding fees, before closing fee)
+  // Unrealized PnL (after holding fees, before closing fee, using market price)
+  // This is PnL #2 - what trader sees for open positions
   uPnlCollateral: number;
   uPnlPercent: number;
 
-  // Realized PnL (after all fees)
+  // Realized PnL (after all fees, using execution price)
+  // This is PnL #6 - what trader would get if closing now
   realizedPnlCollateral: number;
   realizedPnlPercent: number;
 
   // Fee breakdown
   fees: FeeBreakdown;
 
-  // Price impact (v10+)
-  priceImpact?: PriceImpactBreakdown;
-
   // Status flags
   isLiquidated: boolean;
   isProfitable: boolean;
-
-  // Additional info
-  leveragedPositionSize: number;
 };
 
 /**
