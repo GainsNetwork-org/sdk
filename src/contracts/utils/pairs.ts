@@ -539,4 +539,7 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.PLTRUSD]: "Palantir Technologies to US Dollar",
   [PairIndex.BIDUUSD]: "Baidu to US Dollar",
   [PairIndex.ROKUUSD]: "Roku to US Dollar",
+  [PairIndex.LMTUSD]: "Lockheed Martin to US Dollar",
+  [PairIndex.RIOTUSD]: "Riot Platforms to US Dollar",
+  [PairIndex.MARAUSD]: "MARA Holdings to US Dollar",
 };

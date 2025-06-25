@@ -658,4 +658,7 @@ export enum PairIndex {
   PLTRUSD,
   BIDUUSD,
   ROKUUSD,
+  LMTUSD,
+  RIOTUSD,
+  MARAUSD,
 }
