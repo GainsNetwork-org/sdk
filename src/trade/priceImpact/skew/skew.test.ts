@@ -3,7 +3,6 @@ import {
   getTradeSkewDirection,
   calculateSkewPriceImpactP,
   getTradeSkewPriceImpact,
-  getTradeSkewPriceImpactWithChecks,
   calculatePartialSizeToken,
 } from "./index";
 import {
@@ -199,63 +198,6 @@ describe("Skew Price Impact", () => {
 
       expect(result.priceImpactP).toBe(0);
       expect(result.tradeDirection).toBe("neutral");
-    });
-  });
-
-  describe("getTradeSkewPriceImpactWithChecks", () => {
-    const context: SkewPriceImpactContext = {
-      skewDepth: 10000,
-      pairOiToken: {
-        oiLongToken: 100,
-        oiShortToken: 100,
-      },
-    };
-
-    it("should return 0 for pre-v10 trades", () => {
-      const params: TradeSkewParams = {
-        collateralIndex: 0,
-        pairIndex: 1,
-        long: true,
-        open: true,
-        positionSizeCollateral: 1000,
-        currentPrice: 50,
-        contractsVersion: ContractsVersion.BEFORE_V9_2,
-      };
-
-      expect(getTradeSkewPriceImpactWithChecks(params, context)).toBe(0);
-    });
-
-    it("should return 0 for counter trades", () => {
-      const params: TradeSkewParams = {
-        collateralIndex: 0,
-        pairIndex: 1,
-        long: true,
-        open: true,
-        positionSizeCollateral: 1000,
-        currentPrice: 50,
-        contractsVersion: ContractsVersion.V10,
-        isCounterTrade: true,
-      };
-
-      expect(getTradeSkewPriceImpactWithChecks(params, context)).toBe(0);
-    });
-
-    it("should calculate impact for v10+ non-counter trades", () => {
-      const params: TradeSkewParams = {
-        collateralIndex: 0,
-        pairIndex: 1,
-        long: true,
-        open: true,
-        positionSizeCollateral: 1000,
-        currentPrice: 50,
-        contractsVersion: ContractsVersion.V10,
-      };
-
-      const impact = getTradeSkewPriceImpactWithChecks(params, context);
-      // Position size in tokens: 1000 / 50 = 20
-      // Net skew: 100 - 100 = 0
-      // Impact: (0 + 20/2) / 10000 * 100 / 2 = 0.05%
-      expect(impact).toBeCloseTo(0.05, 6);
     });
   });
 

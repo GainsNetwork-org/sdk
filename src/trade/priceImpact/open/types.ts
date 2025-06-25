@@ -38,7 +38,6 @@ export type TradeOpeningPriceImpactContext = {
  */
 export type TradeOpeningPriceImpactResult = {
   priceAfterImpact: number; // Final execution price after all impacts
-  priceImpactP: number; // Total price impact percentage (absolute value)
   percentProfitP: number; // Percent profit/loss from price impact
   cumulVolPriceImpactP: number; // Cumulative volume impact component
   skewPriceImpactP: number; // Skew impact component (v10+)

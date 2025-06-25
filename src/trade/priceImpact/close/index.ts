@@ -9,7 +9,7 @@ import {
   TradeClosingPriceImpactResult,
 } from "./types";
 import { getFixedSpreadP, getTradeCumulVolPriceImpactP } from "../cumulVol";
-import { getTradeSkewPriceImpactWithChecks } from "../skew";
+import { getTradeSkewPriceImpact } from "../skew";
 import { ContractsVersion } from "../../../contracts/types";
 import { getPnlPercent, getTradeValue } from "../../pnl";
 import { getPriceAfterImpact } from "../";
@@ -41,7 +41,7 @@ const calculateClosingPositionSizeToken = (
   const totalPositionSizeCollateral = originalCollateral * originalLeverage;
   if (totalPositionSizeCollateral === 0) return 0;
 
-  // Match contract logic: (positionSizeCollateral * originalPositionSizeToken) / totalPositionSizeCollateral
+  // (positionSizeCollateral * originalPositionSizeToken) / totalPositionSizeCollateral
   return (
     (positionSizeCollateral * originalPositionSizeToken) /
     totalPositionSizeCollateral
@@ -151,20 +151,17 @@ export const getTradeClosingPriceImpact = (
 
   // Calculate skew price impact (v10+ only)
   const skewPriceImpactP =
-    input.contractsVersion === ContractsVersion.V10
-      ? getTradeSkewPriceImpactWithChecks(
+    input.contractsVersion >= ContractsVersion.V10
+      ? getTradeSkewPriceImpact(
           {
             collateralIndex: input.collateralIndex,
             pairIndex: input.pairIndex,
             long: input.trade.long,
             open: false, // closing
-            positionSizeCollateral: input.positionSizeCollateral,
-            currentPrice: input.currentPairPrice,
-            contractsVersion: input.contractsVersion,
-            isCounterTrade: input.trade.isCounterTrade,
+            positionSizeToken,
           },
           context.skewContext
-        )
+        ).priceImpactP
       : 0;
 
   // Total price impact (all components)
@@ -172,7 +169,6 @@ export const getTradeClosingPriceImpact = (
     fixedSpreadP + cumulVolPriceImpactP + skewPriceImpactP;
 
   // Calculate final price after all impacts
-  // The direction is already handled by getFixedSpreadP (reverses for closing)
   const priceAfterImpact = getPriceAfterImpact(
     input.currentPairPrice,
     totalPriceImpactP

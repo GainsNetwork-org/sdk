@@ -1,5 +1,8 @@
 import { Trade } from "../types";
-import { ValidateCounterTradeContext, ValidateCounterTradeResult } from "./types";
+import {
+  ValidateCounterTradeContext,
+  ValidateCounterTradeResult,
+} from "./types";
 
 /**
  * Validates a counter trade based on pair OI skew, matching the contract's validateCounterTrade logic
@@ -14,10 +17,11 @@ export function validateCounterTrade(
   context: ValidateCounterTradeContext
 ): ValidateCounterTradeResult {
   const { pairOiSkewCollateral } = context;
-  
+
   // Calculate signed position size based on trade direction
-  const positionSizeCollateralSigned = positionSizeCollateral * (trade.long ? 1 : -1);
-  
+  const positionSizeCollateralSigned =
+    positionSizeCollateral * (trade.long ? 1 : -1);
+
   // Check if position improves skew (opposite signs)
   if (
     pairOiSkewCollateral === 0 ||
@@ -26,15 +30,15 @@ export function validateCounterTrade(
   ) {
     return { isValidated: false, exceedingPositionSizeCollateral: 0 };
   }
-  
+
   // Calculate maximum position size that brings skew to 0
   const maxPositionSizeCollateral = Math.abs(pairOiSkewCollateral);
-  
+
   // Calculate exceeding amount
-  const exceedingPositionSizeCollateral = 
+  const exceedingPositionSizeCollateral =
     positionSizeCollateral > maxPositionSizeCollateral
       ? positionSizeCollateral - maxPositionSizeCollateral
       : 0;
-  
+
   return { isValidated: true, exceedingPositionSizeCollateral };
 }

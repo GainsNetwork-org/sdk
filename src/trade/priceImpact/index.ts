@@ -82,7 +82,6 @@ export {
   getTradeSkewDirection,
   calculateSkewPriceImpactP,
   getTradeSkewPriceImpact,
-  getTradeSkewPriceImpactWithChecks,
   calculatePartialSizeToken,
   // Types namespace
   SkewPriceImpact,

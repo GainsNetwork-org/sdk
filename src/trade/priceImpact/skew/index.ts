@@ -58,25 +58,25 @@ export const getTradeSkewDirection = (
  * @param existingSkewToken Current net skew in tokens (signed)
  * @param tradeSizeToken Trade size in tokens (always positive)
  * @param skewDepth Skew depth in tokens
- * @param tradeIncreasesSkew Whether trade increases skew in its direction
+ * @param tradePositiveSkew Whether trade increases skew in its direction
  * @returns Price impact percentage (can be positive or negative)
  */
 export const calculateSkewPriceImpactP = (
   existingSkewToken: number,
   tradeSizeToken: number,
   skewDepth: number,
-  tradeIncreasesSkew: boolean
+  tradePositiveSkew: boolean
 ): number => {
   if (skewDepth === 0) {
     return 0; // No impact if depth is 0
   }
 
   // Convert signed values based on trade direction
-  const tradeSkewMultiplier = tradeIncreasesSkew ? 1 : -1;
+  const tradeSkewMultiplier = tradePositiveSkew ? 1 : -1;
   const signedExistingSkew = existingSkewToken;
   const signedTradeSize = tradeSizeToken * tradeSkewMultiplier;
 
-  // Formula: (existingSkew + tradeSize/2) / skewDepth
+  // (existingSkew + tradeSize/2) / skewDepth
   const numerator = signedExistingSkew + signedTradeSize / 2;
   const priceImpactP = numerator / skewDepth;
 
@@ -100,15 +100,15 @@ export const getTradeSkewPriceImpact = (
   // Calculate net skew
   const netSkewToken = getNetSkewToken(pairOi);
 
-  // Determine trade direction impact
-  const tradeIncreasesSkew = getTradeSkewDirection(input.long, input.open);
+  // Determine trade direction
+  const tradePositiveSkew = getTradeSkewDirection(input.long, input.open);
 
   // Calculate price impact
   const priceImpactP = calculateSkewPriceImpactP(
     netSkewToken,
     input.positionSizeToken,
     skewDepth,
-    tradeIncreasesSkew
+    tradePositiveSkew
   );
 
   // Determine trade direction relative to skew
@@ -127,47 +127,6 @@ export const getTradeSkewPriceImpact = (
     netSkewCollateral: 0, // To be calculated with price if needed
     tradeDirection,
   };
-};
-
-/**
- * @dev Calculate skew price impact for a trade with all parameters
- * @param params Trade parameters including price and version checks
- * @param context Skew price impact context
- * @returns Price impact percentage or 0 if not applicable
- */
-export const getTradeSkewPriceImpactWithChecks = (
-  params: TradeSkewParams,
-  context: SkewPriceImpactContext
-): number => {
-  // v10+ trades only
-  if (params.contractsVersion < ContractsVersion.V10) {
-    return 0;
-  }
-
-  // Counter trades don't pay skew impact
-  if (params.isCounterTrade) {
-    return 0;
-  }
-
-  // Calculate position size in tokens
-  const positionSizeToken = calculatePositionSizeToken(
-    params.positionSizeCollateral,
-    params.currentPrice
-  );
-
-  // Get skew price impact
-  const result = getTradeSkewPriceImpact(
-    {
-      collateralIndex: params.collateralIndex,
-      pairIndex: params.pairIndex,
-      long: params.long,
-      open: params.open,
-      positionSizeToken,
-    },
-    context
-  );
-
-  return result.priceImpactP;
 };
 
 /**

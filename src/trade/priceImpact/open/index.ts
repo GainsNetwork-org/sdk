@@ -9,7 +9,7 @@ import {
   TradeOpeningPriceImpactResult,
 } from "./types";
 import { getFixedSpreadP, getTradeCumulVolPriceImpactP } from "../cumulVol";
-import { getTradeSkewPriceImpactWithChecks } from "../skew";
+import { getTradeSkewPriceImpact } from "../skew";
 import { getPriceAfterImpact } from "../";
 
 // Re-export types
@@ -57,23 +57,30 @@ export const getTradeOpeningPriceImpact = (
     context.cumulVolContext
   );
 
+  // Calculate price after spread and cumulative volume impact (before skew)
+  const priceAfterSpreadAndCumulVolPriceImpact = getPriceAfterImpact(
+    input.openPrice,
+    spreadP + cumulVolPriceImpactP
+  );
+
+  // Calculate position size in tokens using the price after fixed spread and cumul vol impact
+  const positionSizeToken =
+    positionSizeCollateral / priceAfterSpreadAndCumulVolPriceImpact;
+
   // Calculate skew price impact (v10+ only)
-  const skewPriceImpactP = getTradeSkewPriceImpactWithChecks(
+  const skewResult = getTradeSkewPriceImpact(
     {
       collateralIndex: input.collateralIndex,
       pairIndex: input.pairIndex,
       long: input.long,
       open: true,
-      positionSizeCollateral,
-      currentPrice: input.openPrice,
-      contractsVersion: input.contractsVersion,
-      isCounterTrade: input.isCounterTrade,
+      positionSizeToken,
     },
     context.skewContext
   );
+  const skewPriceImpactP = skewResult.priceImpactP;
 
   // Total price impact (signed - can be positive or negative)
-  // Spread is always positive, impacts can be negative
   const totalPriceImpactP = spreadP + cumulVolPriceImpactP + skewPriceImpactP;
 
   // Calculate final price after impact using the same formula as Solidity
@@ -89,7 +96,6 @@ export const getTradeOpeningPriceImpact = (
 
   return {
     priceAfterImpact,
-    priceImpactP: Math.abs(totalPriceImpactP), // Absolute value for compatibility
     percentProfitP,
     cumulVolPriceImpactP,
     skewPriceImpactP,
