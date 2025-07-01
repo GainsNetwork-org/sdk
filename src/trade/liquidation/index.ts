@@ -145,7 +145,7 @@ export const getLiquidationPriceAfterPositionUpdate = (
   const { currentPairPrice, isCounterTrade = false } =
     context.liquidationSpecific;
 
-  // 1. Calculate closing fees on the NEW position size
+  // 1. Calculate closing fees on the new position size
   const closingFeeCollateral = getTotalTradeFeesCollateral(
     existingTrade.collateralIndex,
     "", // No fee tiers applied for liquidation calculation
@@ -194,10 +194,10 @@ export const getLiquidationPriceAfterPositionUpdate = (
   let partialCloseMultiplier: number;
 
   if (isIncrease) {
-    // For position increases: use additional fees from context (e.g., opening fees), no partial close
+    // For position increases: use additional fees from context (e.g., opening fees)
     additionalFeeCollateral =
       context.liquidationSpecific.additionalFeeCollateral || 0;
-    partialCloseMultiplier = 0; // Not a partial close
+    partialCloseMultiplier = 1; // Set to 1
   } else if (isLeverageUpdate) {
     // For leverage decreases: additional fee includes closing fee minus PnL to realize
     additionalFeeCollateral = closingFeeCollateral - pnlToRealizeCollateral;
