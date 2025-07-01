@@ -40,6 +40,9 @@ export type TradeOpeningPriceImpactResult = {
   priceAfterImpact: number; // Final execution price after all impacts
   percentProfitP: number; // Percent profit/loss from price impact
   cumulVolPriceImpactP: number; // Cumulative volume impact component
-  skewPriceImpactP: number; // Skew impact component (v10+)
+  baseSkewPriceImpactP: number; // Skew impact component (v10+)
+  tradeSkewPriceImpactP: number; // Skew impact component (v10+)
+  totalSkewPriceImpactP: number; // Sum of all skew impacts (v10+)
   totalPriceImpactP: number; // spreadP + cumulVol + skew (signed)
+  totalPriceImpactPFromMarketPrice: number; // spreadP + cumulVol + trader skew (signed)
 };

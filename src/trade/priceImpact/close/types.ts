@@ -45,8 +45,11 @@ export type TradeClosingPriceImpactResult = {
   positionSizeToken: number; // Position size in tokens
   fixedSpreadP: number; // Fixed spread percentage (reversed for closing)
   cumulVolPriceImpactP: number; // Cumulative volume impact component
-  skewPriceImpactP: number; // Skew impact component (v10+)
+  baseSkewPriceImpactP: number; // Skew impact component (v10+)
+  tradeSkewPriceImpactP: number; // Skew impact component (v10+)
+  totalSkewPriceImpactP: number; // Sum of all skew impacts (v10+)
   totalPriceImpactP: number; // Sum of all impacts
+  totalPriceImpactPFromMarketPrice: number; // Sum of all impacts from market price
   priceAfterImpact: number; // Final execution price after all impacts
 
   // Additional return value

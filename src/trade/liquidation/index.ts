@@ -121,6 +121,147 @@ export const getLiquidationPrice = (
     : Math.max(trade.openPrice + liqPriceDistance, 0);
 };
 
+/**
+ * @dev Calculate liquidation price after a position size update
+ * @dev Mirrors the contract's IncreasePositionSizeUtils.sol and DecreasePositionSizeUtils.sol logic
+ * @param existingTrade The current trade before the update
+ * @param newCollateralAmount New collateral amount after the update
+ * @param newLeverage New leverage after the update
+ * @param isLeverageUpdate Whether this is a leverage update vs regular position change
+ * @param positionSizeCollateralDelta The absolute change in position size (in collateral terms)
+ * @param pnlToRealizeCollateral PnL to be realized (only relevant for leverage decrease)
+ * @param context Structured context with all required data (including additionalFeesCollateral for increases)
+ * @returns New liquidation price after the update
+ */
+export const getLiquidationPriceAfterPositionUpdate = (
+  existingTrade: Trade,
+  newCollateralAmount: number,
+  newLeverage: number,
+  isLeverageUpdate: boolean,
+  positionSizeCollateralDelta: number,
+  pnlToRealizeCollateral: number,
+  context: GetLiquidationPriceContext
+): number => {
+  const { currentPairPrice, isCounterTrade = false } =
+    context.liquidationSpecific;
+
+  // 1. Calculate closing fees on the NEW position size
+  const closingFeeCollateral = getTotalTradeFeesCollateral(
+    existingTrade.collateralIndex,
+    "", // No fee tiers applied for liquidation calculation
+    existingTrade.pairIndex,
+    newCollateralAmount * newLeverage,
+    isCounterTrade,
+    {
+      fee: context.trading.fee,
+      collateralPriceUsd: context.core.collateralPriceUsd,
+      globalTradeFeeParams: context.trading.globalTradeFeeParams,
+      traderFeeMultiplier: 1,
+      counterTradeSettings: context.trading.counterTradeSettings,
+    }
+  );
+
+  // 2. Calculate holding fees on the EXISTING trade (full position)
+  const holdingFees = getTradePendingHoldingFeesCollateral(
+    existingTrade,
+    context.tradeData.tradeInfo,
+    context.tradeData.tradeFeesData,
+    currentPairPrice,
+    {
+      contractsVersion: context.core.contractsVersion,
+      currentTimestamp: context.core.currentTimestamp,
+      collateralPriceUsd: context.core.collateralPriceUsd,
+      borrowingV1: context.borrowingV1,
+      borrowingV2: context.borrowingV2,
+      funding: context.funding,
+      initialAccFees: context.tradeData.initialAccFees,
+    }
+  );
+
+  // 3. Calculate total realized PnL
+  const totalRealizedPnlCollateral =
+    context.tradeData.tradeFeesData.realizedPnlCollateral -
+    context.tradeData.tradeFeesData.realizedTradingFeesCollateral;
+
+  // 4. Determine if this is an increase or decrease
+  const existingPositionSizeCollateral =
+    existingTrade.collateralAmount * existingTrade.leverage;
+  const newPositionSizeCollateral = newCollateralAmount * newLeverage;
+  const isIncrease = newPositionSizeCollateral > existingPositionSizeCollateral;
+
+  // 5. Calculate additional fee and partial close multiplier based on update type
+  let additionalFeeCollateral: number;
+  let partialCloseMultiplier: number;
+
+  if (isIncrease) {
+    // For position increases: use additional fees from context (e.g., opening fees), no partial close
+    additionalFeeCollateral =
+      context.liquidationSpecific.additionalFeeCollateral || 0;
+    partialCloseMultiplier = 0; // Not a partial close
+  } else if (isLeverageUpdate) {
+    // For leverage decreases: additional fee includes closing fee minus PnL to realize
+    additionalFeeCollateral = closingFeeCollateral - pnlToRealizeCollateral;
+    partialCloseMultiplier = 1; // Full multiplier for leverage updates
+  } else {
+    // For regular position decreases: no additional fee, scaled multiplier
+    additionalFeeCollateral = 0;
+    partialCloseMultiplier =
+      (existingPositionSizeCollateral - positionSizeCollateralDelta) /
+      existingPositionSizeCollateral;
+  }
+
+  // 6. Calculate total fees
+  const totalFeesCollateral =
+    closingFeeCollateral +
+    (holdingFees.totalFeeCollateral - totalRealizedPnlCollateral) *
+      partialCloseMultiplier +
+    additionalFeeCollateral;
+
+  // 7. Calculate liquidation threshold
+  const liqThresholdP = getLiqPnlThresholdP(
+    context.tradeData.liquidationParams,
+    newLeverage
+  );
+
+  // 8. Calculate liquidation price distance
+  const collateralLiqNegativePnl = newCollateralAmount * liqThresholdP;
+
+  // For increases, we need to use the new weighted average open price
+  // For decreases, we use the existing open price
+  const openPriceToUse = isIncrease
+    ? context.liquidationSpecific.newOpenPrice || existingTrade.openPrice
+    : existingTrade.openPrice;
+
+  let liqPriceDistance =
+    (openPriceToUse * (collateralLiqNegativePnl - totalFeesCollateral)) /
+    newCollateralAmount /
+    newLeverage;
+
+  // 9. Apply closing spread for v9.2+
+  if (
+    context.core.contractsVersion >= ContractsVersion.V9_2 &&
+    ((context.tradeData.liquidationParams?.maxLiqSpreadP !== undefined &&
+      context.tradeData.liquidationParams.maxLiqSpreadP > 0) ||
+      (context.liquidationSpecific.userPriceImpact?.fixedSpreadP !==
+        undefined &&
+        context.liquidationSpecific.userPriceImpact.fixedSpreadP > 0))
+  ) {
+    const closingSpreadP = getSpreadP(
+      context.core.spreadP,
+      true,
+      context.tradeData.liquidationParams,
+      context.liquidationSpecific.userPriceImpact
+    );
+
+    liqPriceDistance -= openPriceToUse * closingSpreadP;
+  }
+
+  // 10. Calculate final liquidation price
+  return existingTrade.long
+    ? Math.max(openPriceToUse - liqPriceDistance, 0)
+    : Math.max(openPriceToUse + liqPriceDistance, 0);
+};
+
 export const getLiqPnlThresholdP = (
   liquidationParams: LiquidationParams | undefined,
   leverage: number | undefined

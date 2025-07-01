@@ -65,8 +65,11 @@ export const getTradeClosingPriceImpact = (
       positionSizeToken: 0,
       fixedSpreadP: 0,
       cumulVolPriceImpactP: 0,
-      skewPriceImpactP: 0,
+      baseSkewPriceImpactP: 0,
+      tradeSkewPriceImpactP: 0,
+      totalSkewPriceImpactP: 0,
       totalPriceImpactP: 0,
+      totalPriceImpactPFromMarketPrice: 0,
       priceAfterImpact: input.oraclePrice,
       tradeValueCollateralNoFactor: 0,
     };
@@ -150,7 +153,7 @@ export const getTradeClosingPriceImpact = (
   }
 
   // Calculate skew price impact (v10+ only)
-  const skewPriceImpactP =
+  const skewPriceImpactObject =
     input.contractsVersion >= ContractsVersion.V10
       ? getTradeSkewPriceImpact(
           {
@@ -161,12 +164,23 @@ export const getTradeClosingPriceImpact = (
             positionSizeToken,
           },
           context.skewContext
-        ).priceImpactP
-      : 0;
+        )
+      : {
+          basePriceImpactP: 0,
+          tradePriceImpactP: 0,
+          totalPriceImpactP: 0,
+        };
 
   // Total price impact (all components)
   const totalPriceImpactP =
-    fixedSpreadP + cumulVolPriceImpactP + skewPriceImpactP;
+    fixedSpreadP +
+    cumulVolPriceImpactP +
+    skewPriceImpactObject.totalPriceImpactP;
+
+  const totalPriceImpactPFromMarketPrice =
+    fixedSpreadP +
+    cumulVolPriceImpactP +
+    skewPriceImpactObject.tradePriceImpactP;
 
   // Calculate final price after all impacts
   const priceAfterImpact = getPriceAfterImpact(
@@ -178,8 +192,11 @@ export const getTradeClosingPriceImpact = (
     positionSizeToken,
     fixedSpreadP,
     cumulVolPriceImpactP,
-    skewPriceImpactP,
+    baseSkewPriceImpactP: skewPriceImpactObject.basePriceImpactP,
+    tradeSkewPriceImpactP: skewPriceImpactObject.tradePriceImpactP,
+    totalSkewPriceImpactP: skewPriceImpactObject.totalPriceImpactP,
     totalPriceImpactP,
+    totalPriceImpactPFromMarketPrice,
     priceAfterImpact,
     tradeValueCollateralNoFactor,
   };

@@ -7,6 +7,7 @@ import { getTradeSkewPriceImpact } from "../../trade/priceImpact/skew";
 
 /**
  * @dev Calculates the current market price adjusted for skew impact
+ * @dev Please always provide oracle price to this and other functions in the sdk. Market price is displayed in the UI.
  * @param pairIndex Trading pair index
  * @param oraclePrice Oracle price for the pair
  * @param context Market price context with depths and OI data
@@ -31,7 +32,7 @@ export const getCurrentMarketPrice = (
       context
     );
 
-    skewImpactP = skewResult.priceImpactP;
+    skewImpactP = skewResult.basePriceImpactP;
   }
 
   const marketPrice = oraclePrice * (1 + skewImpactP / 100);

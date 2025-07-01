@@ -24,7 +24,9 @@ export type SkewPriceImpactInput = {
 
 // Skew price impact calculation result
 export type SkewPriceImpactResult = {
-  priceImpactP: number; // Price impact percentage (positive or negative)
+  basePriceImpactP: number; // Price impact percentage (positive or negative) for market price
+  tradePriceImpactP: number; // Price impact percentage (positive or negative) of additional position size
+  totalPriceImpactP: number; // Total price impact percentage (positive or negative)
   netSkewToken: number; // Current net skew in tokens (signed)
   netSkewCollateral: number; // Current net skew in collateral (signed)
   tradeDirection: "increase" | "decrease" | "neutral"; // Impact on skew

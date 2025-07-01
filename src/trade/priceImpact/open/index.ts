@@ -68,7 +68,7 @@ export const getTradeOpeningPriceImpact = (
     positionSizeCollateral / priceAfterSpreadAndCumulVolPriceImpact;
 
   // Calculate skew price impact (v10+ only)
-  const skewResult = getTradeSkewPriceImpact(
+  const skewPriceImpactObject = getTradeSkewPriceImpact(
     {
       collateralIndex: input.collateralIndex,
       pairIndex: input.pairIndex,
@@ -78,10 +78,12 @@ export const getTradeOpeningPriceImpact = (
     },
     context.skewContext
   );
-  const skewPriceImpactP = skewResult.priceImpactP;
+  const skewPriceImpactP = skewPriceImpactObject.totalPriceImpactP;
 
   // Total price impact (signed - can be positive or negative)
   const totalPriceImpactP = spreadP + cumulVolPriceImpactP + skewPriceImpactP;
+  const totalPriceImpactPFromMarketPrice =
+    spreadP + cumulVolPriceImpactP + skewPriceImpactObject.tradePriceImpactP;
 
   // Calculate final price after impact using the same formula as Solidity
   const priceAfterImpact = getPriceAfterImpact(
@@ -98,8 +100,11 @@ export const getTradeOpeningPriceImpact = (
     priceAfterImpact,
     percentProfitP,
     cumulVolPriceImpactP,
-    skewPriceImpactP,
+    baseSkewPriceImpactP: skewPriceImpactObject.basePriceImpactP,
+    tradeSkewPriceImpactP: skewPriceImpactObject.tradePriceImpactP,
+    totalSkewPriceImpactP: skewPriceImpactObject.totalPriceImpactP,
     totalPriceImpactP,
+    totalPriceImpactPFromMarketPrice,
   };
 };
 

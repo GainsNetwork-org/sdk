@@ -50,10 +50,11 @@ export type GetLiquidationPriceContext = {
   // Additional parameters specific to liquidation calculation
   liquidationSpecific: {
     currentPairPrice: number;
-    additionalFeeCollateral: number;
+    additionalFeeCollateral: number; // Additional fees to include (e.g., opening fees for increases)
     partialCloseMultiplier: number;
     beforeOpened: boolean;
     isCounterTrade: boolean;
     userPriceImpact?: UserPriceImpact;
+    newOpenPrice?: number; // For position increases (weighted average open price)
   };
 };

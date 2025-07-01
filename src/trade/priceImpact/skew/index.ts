@@ -104,25 +104,37 @@ export const getTradeSkewPriceImpact = (
   const tradePositiveSkew = getTradeSkewDirection(input.long, input.open);
 
   // Calculate price impact
-  const priceImpactP = calculateSkewPriceImpactP(
+  const basePriceImpactP = calculateSkewPriceImpactP(
+    netSkewToken,
+    0,
+    skewDepth,
+    tradePositiveSkew
+  );
+
+  // Calculate price impact
+  const totalPriceImpactP = calculateSkewPriceImpactP(
     netSkewToken,
     input.positionSizeToken,
     skewDepth,
     tradePositiveSkew
   );
 
+  const tradePriceImpactP = totalPriceImpactP - basePriceImpactP;
+
   // Determine trade direction relative to skew
   let tradeDirection: "increase" | "decrease" | "neutral";
-  if (priceImpactP > 0) {
+  if (totalPriceImpactP > 0) {
     tradeDirection = "increase";
-  } else if (priceImpactP < 0) {
+  } else if (totalPriceImpactP < 0) {
     tradeDirection = "decrease";
   } else {
     tradeDirection = "neutral";
   }
 
   return {
-    priceImpactP,
+    basePriceImpactP,
+    tradePriceImpactP,
+    totalPriceImpactP,
     netSkewToken,
     netSkewCollateral: 0, // To be calculated with price if needed
     tradeDirection,
