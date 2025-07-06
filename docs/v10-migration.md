@@ -1,5 +1,7 @@
 # v10 migration
 
+Current version: 1.0.0-rc1
+
 ## v10 Changes - Overview
 
 - New funding fees (skew-based, only on v10 positions)
