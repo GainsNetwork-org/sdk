@@ -141,6 +141,99 @@ export type TradeHistoryRecord = {
   collateralDelta: number | null;
   leverageDelta: number | null;
   marketPrice: number | null;
+  meta:
+    | OpenTradeHistoryMetaData
+    | CloseTradeHistoryMetaData
+    | PartialCloseTradeHistoryMetaData
+    | PartialOpenTradeHistoryMetaData
+    | WithdrawPnLHistoryMetaData
+    | LeverageUpdateHistoryMetaData;
+};
+
+export type HistoryPriceImpact = {
+  fixedSpreadP: number;
+  priceAfterImpact: number;
+  skewPriceImpactP: number;
+  positionSizeToken: number;
+  totalPriceImpactP: number;
+  cumulVolPriceImpactP: number;
+};
+
+export type OpenTradeHistoryMetaData = {
+  liqPrice: number;
+  amountSentToTrader: number;
+  percentProfit: number;
+  priceImpact: HistoryPriceImpact;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
+};
+
+export type CloseTradeHistoryMetaData = OpenTradeHistoryMetaData;
+
+export type PartialOpenTradeHistoryMetaData = {
+  newLeverage: number;
+  newLiqPrice: number;
+  newOpenPrice: number;
+  existingLiqPrice: number;
+  newCollateralAmount: number;
+  newEffectiveLeverage: number;
+  existingPnlCollateral: number;
+  openingFeesCollateral: number;
+  isCounterTradeValidated: boolean;
+  newPositionSizeCollateral: number;
+  oldPosSizePlusPnlCollateral: number;
+  positionSizeCollateralDelta: number;
+  counterTradeCollateralToReturn: number;
+  existingPositionSizeCollateral: number;
+  exceedingPositionSizeCollateral: number;
+  priceImpact: HistoryPriceImpact;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
+};
+
+export type PartialCloseTradeHistoryMetaData = {
+  newLeverage: number;
+  newLiqPrice: number;
+  existingLiqPrice: number;
+  isLeverageUpdate: boolean;
+  existingPnlPercent: number;
+  newCollateralAmount: number;
+  closingFeeCollateral: number;
+  collateralSentToTrader: number;
+  pnlToRealizeCollateral: number;
+  partialNetPnlCollateral: number;
+  partialRawPnlCollateral: number;
+  positionSizeCollateralDelta: number;
+  availableCollateralInDiamond: number;
+  existingPositionSizeCollateral: number;
+  totalAvailableCollateralInDiamond: number;
+  priceImpact: HistoryPriceImpact;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
+};
+
+export type LeverageUpdateHistoryMetaData = {
+  availableCollateralInDiamond: number;
+  existingLiqPrice: number;
+  govFeeCollateral: number;
+  newCollateralAmount: number;
+  newEffectiveLeverage: number;
+  newLeverage: number;
+  newLiqPrice: number;
+  totalTradeAvailableCollateralInDiamond: number;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
+};
+
+export type WithdrawPnLHistoryMetaData = {
+  pnlPercent: number;
+  currentPairPrice: number;
+  pnlInputCollateral: number;
+  pnlWithdrawnCollateral: number;
+  withdrawablePositivePnlCollateral: number;
+  priceImpact: HistoryPriceImpact;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
 };
 
 export type MarketOrder = {
