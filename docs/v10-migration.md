@@ -6,14 +6,14 @@ Current version: 1.0.0-rc1
 
 - New funding fees (skew-based, only on v10 positions)
 - New borrowing fees v2 (alongside existing v1)
-- Modified borrowing fees v1 (uses dynamic OI)
 - New P&L withdrawal feature (withdraw profits without closing)
 - New counter trade type (fee discounts for improving skew)
 - New skew price impact
 - New market max skew limits
+- Fees no longer impact position size (exact position sizes)
+- Modified borrowing fees v1 (uses dynamic OI)
 - Modified partial update requirements (use effective leverage)
 - Modified liquidation, pnl, fees calculations
-- Fees no longer impact position size (exact position sizes)
 - Pre and post v10 OI stored separately
 - Pre-v10 trades cannot partial add
 - New accounting: TradeFeesData and UiRealizedPnlData
@@ -131,7 +131,204 @@ import { borrowingRateToAPR } from "@gainsnetworks/sdk/trade/fees/borrowingV2/co
 const borrowingAPR = borrowingRateToAPR(borrowingRatePerSecond);
 ```
 
-### 3. Modified Borrowing Fees v1
+### 3. P&L Withdrawal Feature
+
+Users can withdraw profits without closing their position. This maintains leverage while extracting gains.
+
+**Contract Interaction:**
+
+```typescript
+// Direct contract call (no SDK wrapper currently)
+const tx = await gnsMultiCollatDiamond.withdrawPositivePnl(
+  tradeIndex,
+  amountCollateral // in collateral precision (e.g., 6 decimals for USDC)
+);
+```
+
+**Important behavior:** If `amountCollateral` exceeds available positive PnL, the contract will automatically withdraw only the maximum available amount (no revert).
+
+**To withdraw all available PnL:**
+
+```typescript
+const MAX_UINT120 = BigNumber.from(2).pow(120).sub(1);
+const tx = await gnsMultiCollatDiamond.withdrawPositivePnl(
+  tradeIndex,
+  MAX_UINT120 // Will be capped to available PnL
+);
+```
+
+**Integration requirements:**
+
+- Calculate withdrawable P&L: `tradeValue - initialCollateral` (when positive)
+- Show withdrawable amount in UI when position is in profit
+- Listen for `TradePositivePnlWithdrawn` event to update UI
+- Update position display after withdrawal:
+  - `collateralAmount` increases
+  - `positionSizeToken` remains unchanged
+  - Track `pnlWithdrawnCollateral` for total withdrawn
+
+### 4. Counter Trade Type
+
+Counter trades improve market balance and receive fee discounts.
+
+**Creating a Counter Trade:**
+
+```typescript
+// When opening a trade, set the isCounterTrade flag
+const tradeStruct = {
+  // ... other trade parameters ...
+  isCounterTrade: true, // Request counter trade discount
+};
+
+// Open trade with counter trade flag
+const tx = await gnsMultiCollatDiamond.openTrade(
+  tradeStruct,
+  slippagePercent,
+  referrer
+);
+```
+
+**Note:** The contract will validate if the trade actually qualifies as a counter trade. If not, it will be rejected. If the trade size is larger than the max skew limit, it will be reduced in size but still opened.
+
+**Pre-validation:**
+
+```typescript
+import { validateCounterTrade } from "@gainsnetworks/sdk/trade/counterTrade/validateCounterTrade";
+
+// Check if trade qualifies as counter trade before submitting
+const validation = validateCounterTrade(
+  isLong,
+  positionSizeCollateral,
+  leverage,
+  pairIndex,
+  tradingVariables
+);
+```
+
+**Detection (for existing trades):**
+
+```typescript
+// Check Trade struct field
+const isCounterTrade = trade.isCounterTrade; // boolean field in v10 trades
+```
+
+### 5. Skew Price Impact
+
+Price impact based on market skew (imbalance between long/short OI).
+
+**NOTE:** The SDK offers wrapper utilities for open and close price impact which can be used to calculate all price impact data. More in SDK convenience functions.
+
+**Context Builder & Calculation:**
+
+```typescript
+import { buildSkewPriceImpactContext } from "@gainsnetwork/sdk/trade/priceImpact/skew/builder";
+import { getTradeSkewPriceImpact } from "@gainsnetwork/sdk/trade/priceImpact/skew";
+
+// Build context
+const skewContext = buildSkewPriceImpactContext(
+  tradingVariables,
+  collateralIndex,
+  pairIndex
+);
+
+// Calculate skew price impact
+const skewImpact = getTradeSkewPriceImpact(
+  isLong,
+  oraclePrice,
+  positionSizeToken,
+  skewContext
+);
+```
+
+**Helper functions:**
+
+```typescript
+import {
+  getNetSkewToken,
+  getNetSkewCollateral,
+} from "@gainsnetwork/sdk/trade/priceImpact/skew";
+
+// Get current market skew
+const skewToken = getNetSkewToken(pairOiData);
+const skewCollateral = getNetSkewCollateral(pairOiData, oraclePrice);
+```
+
+### 6. Market Max Skew Limits
+
+Markets have maximum allowed skew to prevent excessive imbalance.
+
+**Check skew using computeOiValues:**
+
+```typescript
+import { computeOiValues } from "@gainsnetworks/sdk/markets/oi/converter";
+
+// Compute current OI values including skew
+const { skewToken } = computeOiValues(
+  pairOi,
+  oraclePrice / collateralPriceUsd // Convert to token price in collateral
+);
+
+// Get max skew from trading variables
+const maxSkewCollateral =
+  tradingVariables.pairs[pairIndex]?.params?.maxSkewCollateral;
+
+// Convert skewToken to collateral for comparison
+const skewCollateral = Math.abs(skewToken) * (oraclePrice / collateralPriceUsd);
+const skewExceeded = skewCollateral > maxSkewCollateral;
+```
+
+**Note:** For counter trade validation and position sizing, use `validateCounterTrade` (see section 5).
+
+### 7. Effective Leverage in Partial Updates
+
+Partial position updates now validate against effective leverage (accounts for unrealized P&L).
+
+**Calculation:**
+
+```typescript
+import { getEffectiveLeverage } from "@gainsnetworks/sdk/trade/effectiveLeverage";
+
+// Calculate effective leverage
+const effectiveLeverage = getEffectiveLeverage(
+  trade.leverage,
+  trade.collateralAmount,
+  pnlCollateral
+);
+```
+
+**Validation Requirements:**
+
+**For Position Increases (Partial Add):**
+
+- Effective leverage must not exceed `pairMaxLeverage`
+- Counter trades must not exceed `pairCounterTradeMaxLeverage`
+- Adjusted initial leverage must be between 0.1x and max uint24 (~16,777x)
+- Pre-v10 trades cannot partial add
+
+**For Position Decreases (Partial Close):**
+
+- No effective leverage maximum check
+- Only validates adjusted initial leverage (≥ 0.1x)
+
+**For Leverage Increases:**
+
+- Same as position increases - effective leverage validated
+
+**For Leverage Decreases (Add Collateral):**
+
+- Same as position decreases - no effective leverage check
+
+```typescript
+// Example validation
+const maxLeverage = isCounterTrade
+  ? tradingVariables.pairs[pairIndex].maxLeverageCounterTrade
+  : tradingVariables.pairs[pairIndex].maxLeverage;
+
+const isValid = effectiveLeverage <= maxLeverage;
+const MIN_LEVERAGE = 0.1; // 0.1x minimum
+```
+
+### 8. Modified Borrowing Fees v1
 
 Borrowing fees v1 now use dynamic OI (position size adjusted by current price vs entry price).
 
@@ -183,203 +380,6 @@ const withinLimit = borrowingFeeUtils.withinMaxGroupOi(
   pairIndex,
   isLong
 );
-```
-
-### 4. P&L Withdrawal Feature
-
-Users can withdraw profits without closing their position. This maintains leverage while extracting gains.
-
-**Contract Interaction:**
-
-```typescript
-// Direct contract call (no SDK wrapper currently)
-const tx = await gnsMultiCollatDiamond.withdrawPositivePnl(
-  tradeIndex,
-  amountCollateral // in collateral precision (e.g., 6 decimals for USDC)
-);
-```
-
-**Important behavior:** If `amountCollateral` exceeds available positive PnL, the contract will automatically withdraw only the maximum available amount (no revert).
-
-**To withdraw all available PnL:**
-
-```typescript
-const MAX_UINT120 = BigNumber.from(2).pow(120).sub(1);
-const tx = await gnsMultiCollatDiamond.withdrawPositivePnl(
-  tradeIndex,
-  MAX_UINT120 // Will be capped to available PnL
-);
-```
-
-**Integration requirements:**
-
-- Calculate withdrawable P&L: `tradeValue - initialCollateral` (when positive)
-- Show withdrawable amount in UI when position is in profit
-- Listen for `TradePositivePnlWithdrawn` event to update UI
-- Update position display after withdrawal:
-  - `collateralAmount` increases
-  - `positionSizeToken` remains unchanged
-  - Track `pnlWithdrawnCollateral` for total withdrawn
-
-### 5. Counter Trade Type
-
-Counter trades improve market balance and receive fee discounts.
-
-**Creating a Counter Trade:**
-
-```typescript
-// When opening a trade, set the isCounterTrade flag
-const tradeStruct = {
-  // ... other trade parameters ...
-  isCounterTrade: true, // Request counter trade discount
-};
-
-// Open trade with counter trade flag
-const tx = await gnsMultiCollatDiamond.openTrade(
-  tradeStruct,
-  slippagePercent,
-  referrer
-);
-```
-
-**Note:** The contract will validate if the trade actually qualifies as a counter trade. If not, it will be opened as a regular trade.
-
-**Pre-validation:**
-
-```typescript
-import { validateCounterTrade } from "@gainsnetworks/sdk/trade/counterTrade/validateCounterTrade";
-
-// Check if trade qualifies as counter trade before submitting
-const validation = validateCounterTrade(
-  isLong,
-  positionSizeCollateral,
-  leverage,
-  pairIndex,
-  tradingVariables
-);
-```
-
-**Detection (for existing trades):**
-
-```typescript
-// Check Trade struct field
-const isCounterTrade = trade.isCounterTrade; // boolean field in v10 trades
-```
-
-### 6. Skew Price Impact
-
-Price impact based on market skew (imbalance between long/short OI).
-
-**NOTE:** The SDK offers wrapper utilities for open and close price impact which can be used to calculate all price impact data. More in SDK convenience functions.
-
-**Context Builder & Calculation:**
-
-```typescript
-import { buildSkewPriceImpactContext } from "@gainsnetwork/sdk/trade/priceImpact/skew/builder";
-import { getTradeSkewPriceImpact } from "@gainsnetwork/sdk/trade/priceImpact/skew";
-
-// Build context
-const skewContext = buildSkewPriceImpactContext(
-  tradingVariables,
-  collateralIndex,
-  pairIndex
-);
-
-// Calculate skew price impact
-const skewImpact = getTradeSkewPriceImpact(
-  isLong,
-  oraclePrice,
-  positionSizeToken,
-  skewContext
-);
-```
-
-**Helper functions:**
-
-```typescript
-import {
-  getNetSkewToken,
-  getNetSkewCollateral,
-} from "@gainsnetwork/sdk/trade/priceImpact/skew";
-
-// Get current market skew
-const skewToken = getNetSkewToken(pairOiData);
-const skewCollateral = getNetSkewCollateral(pairOiData, oraclePrice);
-```
-
-### 7. Market Max Skew Limits
-
-Markets have maximum allowed skew to prevent excessive imbalance.
-
-**Check skew using computeOiValues:**
-
-```typescript
-import { computeOiValues } from "@gainsnetworks/sdk/markets/oi/converter";
-
-// Compute current OI values including skew
-const { skewToken } = computeOiValues(
-  pairOi,
-  oraclePrice / collateralPriceUsd // Convert to token price in collateral
-);
-
-// Get max skew from trading variables
-const maxSkewCollateral =
-  tradingVariables.pairs[pairIndex]?.params?.maxSkewCollateral;
-
-// Convert skewToken to collateral for comparison
-const skewCollateral = Math.abs(skewToken) * (oraclePrice / collateralPriceUsd);
-const skewExceeded = skewCollateral > maxSkewCollateral;
-```
-
-**Note:** For counter trade validation and position sizing, use `validateCounterTrade` (see section 5).
-
-### 8. Effective Leverage in Partial Updates
-
-Partial position updates now validate against effective leverage (accounts for unrealized P&L).
-
-**Calculation:**
-
-```typescript
-import { getEffectiveLeverage } from "@gainsnetworks/sdk/trade/effectiveLeverage";
-
-// Calculate effective leverage
-const effectiveLeverage = getEffectiveLeverage(
-  trade.leverage,
-  trade.collateralAmount,
-  pnlCollateral
-);
-```
-
-**Validation Requirements:**
-
-**For Position Increases (Partial Add):**
-
-- Effective leverage must not exceed `pairMaxLeverage`
-- Counter trades must not exceed `pairCounterTradeMaxLeverage`
-- Adjusted initial leverage must be between 0.1x and max uint24 (~16,777x)
-- Pre-v10 trades cannot partial add
-
-**For Position Decreases (Partial Close):**
-
-- No effective leverage maximum check
-- Only validates adjusted initial leverage (≥ 0.1x)
-
-**For Leverage Increases:**
-
-- Same as position increases - effective leverage validated
-
-**For Leverage Decreases (Add Collateral):**
-
-- Same as position decreases - no effective leverage check
-
-```typescript
-// Example validation
-const maxLeverage = isCounterTrade
-  ? tradingVariables.pairs[pairIndex].maxLeverageCounterTrade
-  : tradingVariables.pairs[pairIndex].maxLeverage;
-
-const isValid = effectiveLeverage <= maxLeverage;
-const MIN_LEVERAGE = 0.1; // 0.1x minimum
 ```
 
 ### 9. Modified Liquidation Calculations
