@@ -3,12 +3,12 @@ import { TradeContainerBackend } from "./../tradingVariables/backend.types";
 import { convertTradesAndLimitOrders } from "./../tradingVariables/converter";
 import { TradingVariablesCollateral } from "./../tradingVariables/types";
 
-export interface ITransformedGlobalTradingVariables {
+export type TransformedGlobalTrades = {
   allTrades: Map<string, NestedTrade>;
   allLimitOrders: Map<string, NestedTrade>;
   trades: NestedTrade;
   limitOrders: NestedTrade;
-}
+};
 
 export type NestedTrade = Map<number, Map<number, TradeContainer>>;
 
@@ -17,12 +17,12 @@ export const transformGlobalTrades = (
   pairs: Pair[],
   currentAddress: string | undefined,
   collaterals: TradingVariablesCollateral[]
-): ITransformedGlobalTradingVariables | undefined => {
+): TransformedGlobalTrades | undefined => {
   if (rawTrades === undefined) return;
 
   const r = convertTradesAndLimitOrders(rawTrades, collaterals);
 
-  const returnObject: ITransformedGlobalTradingVariables = {
+  const returnObject: TransformedGlobalTrades = {
     allTrades: new Map<string, NestedTrade>(),
     allLimitOrders: new Map<string, NestedTrade>(),
     trades: new Map<number, Map<number, TradeContainer>>(),

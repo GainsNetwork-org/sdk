@@ -1,7 +1,4 @@
-import {
-  transformGlobalTrades,
-  ITransformedGlobalTradingVariables,
-} from "./index";
+import { transformGlobalTrades, TransformedGlobalTrades } from "./index";
 import { TradeContainerBackend } from "../tradingVariables/backend.types";
 import fs from "fs";
 import path from "path";
@@ -148,7 +145,7 @@ describe("transformGlobalTrades", () => {
       },
     ];
 
-    let result: ITransformedGlobalTradingVariables | undefined;
+    let result: TransformedGlobalTrades | undefined;
     expect(() => {
       result = transformGlobalTrades(
         rawData,
