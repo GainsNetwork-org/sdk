@@ -119,9 +119,9 @@ export const getPairHoldingFeeRates = (
   if (borrowingParams && borrowingData) {
     currentBorrowingRatePerSecondP = borrowingParams.borrowingRatePerSecondP;
 
-    // Borrowing rate * seconds per hour * current price / 100
+    // Borrowing rate * seconds per hour / 100
     borrowingFeeHourlyRate =
-      (currentBorrowingRatePerSecondP * SECONDS_PER_HOUR * currentPairPrice) /
+      (currentBorrowingRatePerSecondP * SECONDS_PER_HOUR) /
       PERCENTAGE_PRECISION;
   }
 

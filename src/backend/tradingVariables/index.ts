@@ -64,11 +64,11 @@ export const transformGlobalTradingVariables = (
     feeTiers: convertFeeTiers(rawData.feeTiers),
     liquidationParams: {
       groups:
-        rawData.liquidationParams?.groups.map(liqParams =>
+        rawData.liquidationParams?.groups?.map(liqParams =>
           convertLiquidationParams(liqParams as any)
         ) || [],
       pairs:
-        rawData.liquidationParams?.pairs.map(liqParams =>
+        rawData.liquidationParams?.pairs?.map(liqParams =>
           convertLiquidationParams(liqParams as any)
         ) || [],
     },
