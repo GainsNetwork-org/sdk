@@ -324,7 +324,6 @@ export const getPairPendingAccFundingFees = (
     accFundingFeeLongP += fundingFeesDeltaP * longAprMultiplier;
     accFundingFeeShortP -= fundingFeesDeltaP * shortAprMultiplier;
   }
-
   return {
     accFundingFeeLongP,
     accFundingFeeShortP,
