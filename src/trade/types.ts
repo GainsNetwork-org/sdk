@@ -661,4 +661,12 @@ export enum PairIndex {
   LMTUSD,
   RIOTUSD,
   MARAUSD,
+  LOKAUSD,
+  STOUSD,
+  FUNUSD,
+  KNCUSD,
+  HUSD,
+  ICNTUSD,
+  NEWTUSD,
+  PUMPUSD,
 }

@@ -542,4 +542,12 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.LMTUSD]: "Lockheed Martin to US Dollar",
   [PairIndex.RIOTUSD]: "Riot Platforms to US Dollar",
   [PairIndex.MARAUSD]: "MARA Holdings to US Dollar",
+  [PairIndex.LOKAUSD]: "League of Kingdoms Arena to US Dollar",
+  [PairIndex.STOUSD]: "StakeStone to US Dollar",
+  [PairIndex.FUNUSD]: "FUNToken to US Dollar",
+  [PairIndex.KNCUSD]: "Kyber Network Crystal v2 to US Dollar",
+  [PairIndex.HUSD]: "Humanity Protocol to US Dollar",
+  [PairIndex.ICNTUSD]: "Impossible Cloud Network to US Dollar",
+  [PairIndex.NEWTUSD]: "Newton Protocol to US Dollar",
+  [PairIndex.PUMPUSD]: "Pump.fun to US Dollar",
 };
