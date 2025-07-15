@@ -412,7 +412,7 @@ export const pairs = {
   "H/USD": CRYPTO,
   "ICNT/USD": CRYPTO,
   "NEWT/USD": CRYPTO,
-  "PUMP/USD": STOCKS,
+  "PUMP/USD": CRYPTO,
 };
 
 export const syntheticPairs = new Set([

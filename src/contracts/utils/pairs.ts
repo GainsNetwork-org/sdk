@@ -549,5 +549,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.HUSD]: "Humanity Protocol to US Dollar",
   [PairIndex.ICNTUSD]: "Impossible Cloud Network to US Dollar",
   [PairIndex.NEWTUSD]: "Newton Protocol to US Dollar",
-  [PairIndex.PUMPUSD]: "Propetro Holding to US Dollar",
+  [PairIndex.PUMPUSD]: "Pump.fun to US Dollar",
 };
