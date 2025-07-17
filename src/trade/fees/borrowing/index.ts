@@ -1,3 +1,4 @@
+import { getPairTotalOisDynamicCollateral, UnifiedPairOi } from "../../..";
 import { OpenInterest, PairIndex } from "../../types";
 import * as BorrowingFee from "./types";
 
@@ -6,6 +7,7 @@ export type GetBorrowingFeeContext = {
   groups: BorrowingFee.Group[];
   pairs: BorrowingFee.Pair[];
   collateralPriceUsd: number;
+  pairOis: UnifiedPairOi[];
 };
 
 /**
@@ -24,6 +26,7 @@ export const getBorrowingFee = (
   pairIndex: PairIndex | undefined,
   long: boolean,
   initialAccFees: BorrowingFee.InitialAccFees,
+  currentPairPrice: number,
   context: GetBorrowingFeeContext
 ): number => {
   if (pairIndex === undefined) {
@@ -40,12 +43,19 @@ export const getBorrowingFee = (
 
   let fee = 0;
   if (!firstPairGroup || firstPairGroup.block > initialAccFees.block) {
-    const openInterest = pairs[pairIndex].oi;
+    const openInterest = getPairTotalOisDynamicCollateral(pairIndex, {
+      pairOis: context.pairOis,
+      currentPairPrice,
+    });
     fee =
       (!firstPairGroup
         ? getPairPendingAccFee(pairIndex, context.currentBlock, long, {
             pairs,
-            openInterest,
+            openInterest: {
+              long: openInterest.long,
+              short: openInterest.short,
+              max: context.pairOis[pairIndex].maxCollateral,
+            },
             collateralPriceUsd: context.collateralPriceUsd,
           })
         : long
@@ -61,11 +71,13 @@ export const getBorrowingFee = (
         initialAccFees,
         pairIndex,
         long,
+        currentPairPrice,
         {
           currentBlock: context.currentBlock,
           groups,
           pairs,
           collateralPriceUsd: context.collateralPriceUsd,
+          pairOis: context.pairOis,
         }
       );
     fee += Math.max(deltaGroup, deltaPair);
@@ -141,7 +153,7 @@ const getPairPendingAccFees = (
     pair.feePerBlock,
     currentBlock,
     pair.accLastUpdatedBlock,
-    pair.oi.max,
+    context.openInterest.max,
     pair.feeExponent,
     pair.feePerBlockCap,
     collateralPriceUsd
@@ -213,6 +225,7 @@ const getPairGroupAccFeesDeltas = (
   initialFees: BorrowingFee.InitialAccFees,
   pairIndex: PairIndex,
   long: boolean,
+  currentPairPrice: number,
   context: GetBorrowingFeeContext
 ): { deltaGroup: number; deltaPair: number; beforeTradeOpen: boolean } => {
   const group = pairGroups[i];
@@ -221,14 +234,21 @@ const getPairGroupAccFeesDeltas = (
   let deltaGroup, deltaPair;
   if (i == pairGroups.length - 1) {
     const { currentBlock, groups, pairs, collateralPriceUsd } = context;
-    const openInterest = pairs[pairIndex].oi;
+    const openInterest = getPairTotalOisDynamicCollateral(pairIndex, {
+      pairOis: context.pairOis,
+      currentPairPrice,
+    });
     deltaGroup = getGroupPendingAccFee(group.groupIndex, currentBlock, long, {
       groups,
       collateralPriceUsd,
     });
     deltaPair = getPairPendingAccFee(pairIndex, currentBlock, long, {
       pairs,
-      openInterest,
+      openInterest: {
+        long: openInterest.long,
+        short: openInterest.short,
+        max: context.pairOis[pairIndex].maxCollateral,
+      },
       collateralPriceUsd,
     });
   } else {
@@ -306,7 +326,7 @@ const getPendingAccFees = (
       ? getPendingAccFeesDelta(
           blockDistance,
           feePerBlock,
-          netOi,
+          minNetOi,
           maxOiUsd,
           feeExponent
         )

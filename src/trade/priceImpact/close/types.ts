@@ -43,7 +43,7 @@ export type TradeClosingPriceImpactContext = {
 export type TradeClosingPriceImpactResult = {
   // Price impact breakdown
   positionSizeToken: number; // Position size in tokens
-  fixedSpreadP: number; // Fixed spread percentage (reversed for closing)
+  fixedSpreadP: number; // Fixed spread percentage
   cumulVolPriceImpactP: number; // Cumulative volume impact component
   baseSkewPriceImpactP: number; // Skew impact component (v10+)
   tradeSkewPriceImpactP: number; // Skew impact component (v10+)

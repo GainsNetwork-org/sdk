@@ -99,6 +99,7 @@ export const getTradeOpeningPriceImpact = (
   return {
     priceAfterImpact,
     percentProfitP,
+    fixedSpreadP: spreadP,
     cumulVolPriceImpactP,
     baseSkewPriceImpactP: skewPriceImpactObject.basePriceImpactP,
     tradeSkewPriceImpactP: skewPriceImpactObject.tradePriceImpactP,

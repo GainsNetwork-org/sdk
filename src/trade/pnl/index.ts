@@ -19,6 +19,7 @@ import {
 } from "../fees/trading";
 import { getLiqPnlThresholdP } from "../liquidation";
 import { ContractsVersion } from "../../contracts/types";
+import { UnifiedPairOi } from "src/markets";
 
 /**
  * @dev Gets trade realized PnL components from TradeFeesData
@@ -273,6 +274,7 @@ export type GetPnlContext = {
   fee: Fee;
   globalTradeFeeParams: GlobalTradeFeeParams;
   traderFeeMultiplier?: number;
+  pairOis: UnifiedPairOi[];
 };
 
 /**
@@ -318,11 +320,13 @@ export const getPnl = (
       trade.pairIndex,
       trade.long,
       initialAccFees,
+      price,
       {
         currentBlock: context.currentBlock,
         groups: context.groups,
         pairs: context.pairs,
         collateralPriceUsd: context.collateralPriceUsd,
+        pairOis: context.pairOis,
       }
     );
   }

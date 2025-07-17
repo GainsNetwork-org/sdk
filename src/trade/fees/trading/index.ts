@@ -230,12 +230,14 @@ export const getTradePendingHoldingFeesCollateral = (
 
   // Calculate v1 borrowing fees (some markets use v1 indefinitely)
   let borrowingFeeCollateral_old = 0;
+
   if (context.borrowingV1 && context.initialAccFees) {
     borrowingFeeCollateral_old = getBorrowingFee(
       positionSizeCollateral,
       trade.pairIndex,
       trade.long,
       context.initialAccFees,
+      currentPairPrice,
       context.borrowingV1
     );
   }

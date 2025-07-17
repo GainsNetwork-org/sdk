@@ -35,5 +35,6 @@ export const buildBorrowingV1Context = (
     pairs,
     groups,
     collateralPriceUsd: collateral.prices?.collateralPriceUsd || 1,
+    pairOis: collateral.pairOis,
   };
 };
