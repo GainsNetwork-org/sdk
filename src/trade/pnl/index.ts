@@ -133,7 +133,7 @@ export const getComprehensivePnl = (
     trade,
     tradeInfo,
     context.tradeData.tradeFeesData,
-    executionPrice,
+    marketPrice,
     {
       contractsVersion: context.core.contractsVersion,
       currentTimestamp: context.core.currentTimestamp,
