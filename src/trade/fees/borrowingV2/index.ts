@@ -128,5 +128,4 @@ export const borrowingFeeV2Utils = {
 export * as BorrowingFeeV2 from "./types";
 export { GetPairBorrowingFeeV2Context } from "./types";
 export * from "./converter";
-export * from "./builder";
 export * from "./fetcher";

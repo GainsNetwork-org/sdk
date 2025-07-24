@@ -49,6 +49,8 @@ export {
   fetchBorrowingV2DataForPairs,
 } from "./borrowingV2/fetcher";
 
+export { buildBorrowingV2Context } from "./borrowingV2/builder";
+
 // Funding Fees exports
 export {
   FundingFees,
