@@ -1,6 +1,9 @@
 import { FeeTiers, TraderFeeTiers } from "../../types";
 import { FeeTier, TraderEnrollmentStatus } from "./types";
 
+export * from "./types";
+export * from "./converter";
+
 export const TRAILING_PERIOD_DAYS = 30;
 
 export const FEE_MULTIPLIER_SCALE = 1;
@@ -73,4 +76,40 @@ export const computeFeeMultiplier = (
     feeMultiplier,
     trailingPoints: curTrailingPoints,
   };
+};
+
+/**
+ * @dev Calculates the final fee amount after applying the trader's fee tier discount
+ * @dev Mirrors the contract's calculateFeeAmount function
+ * @param trader The address of the trader (not used in SDK, for consistency)
+ * @param normalFeeAmountCollateral The base fee amount before any discounts
+ * @param feeMultiplier The trader's fee multiplier (e.g., 0.8 = 80% of normal fee)
+ * @returns The final fee amount after applying discount
+ */
+export const calculateFeeAmount = (
+  trader: string,
+  normalFeeAmountCollateral: number,
+  feeMultiplier?: number
+): number => {
+  // If no fee multiplier provided or it's 0, return normal fee
+  if (!feeMultiplier || feeMultiplier === 0) {
+    return normalFeeAmountCollateral;
+  }
+
+  // Apply fee multiplier discount
+  return (feeMultiplier * normalFeeAmountCollateral) / FEE_MULTIPLIER_SCALE;
+};
+
+/**
+ * @dev Helper function to get trader's fee multiplier from fee tiers data
+ * @param feeTiers System fee tiers configuration
+ * @param traderFeeTiers Trader's fee tier data
+ * @returns Fee multiplier (1e3 precision)
+ */
+export const getTraderFeeMultiplier = (
+  feeTiers: FeeTiers,
+  traderFeeTiers: TraderFeeTiers
+): number => {
+  const { feeMultiplier } = computeFeeMultiplier(feeTiers, traderFeeTiers);
+  return feeMultiplier;
 };

@@ -3,3 +3,8 @@ export * from "./forex";
 export * from "./stocks";
 export * from "./indices";
 export * from "./commodities";
+export * from "./oi";
+export * from "./collateral";
+export * from "./price";
+export * from "./holdingFees";
+export * from "./leverage";

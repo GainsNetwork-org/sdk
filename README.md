@@ -6,6 +6,6 @@
 npm install @gainsnetwork/sdk
 ```
 
-## Usage
+## v10 Migration
 
-## API
+See [v10-migration.md](docs/v10-migration.md)
