@@ -550,4 +550,9 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.ICNTUSD]: "Impossible Cloud Network to US Dollar",
   [PairIndex.NEWTUSD]: "Newton Protocol to US Dollar",
   [PairIndex.PUMPUSD]: "Pump.fun to US Dollar",
+  [PairIndex.SAROSUSD]: "Saros to US Dollar",
+  [PairIndex.SPKUSD]: "Spark to US Dollar",
+  [PairIndex.ERAUSD]: "Caldera to US Dollar",
+  [PairIndex.BGSCUSD]: "BugsCoin to US Dollar",
+  [PairIndex.TAGUSD]: "TAGGER to US Dollar",
 };
