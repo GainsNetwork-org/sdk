@@ -98,7 +98,7 @@ export const convertPairGlobalParams = (
   contractParams: IFundingFees.PairGlobalParamsStruct
 ): PairGlobalParams => {
   return {
-    maxSkewCollateral: Number(contractParams.maxSkewCollateral),
+    maxSkewCollateral: Number(contractParams.maxSkewCollateral) / 1e10,
   };
 };
 
