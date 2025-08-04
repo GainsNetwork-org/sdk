@@ -413,6 +413,11 @@ export const pairs = {
   "ICNT/USD": CRYPTO,
   "NEWT/USD": CRYPTO,
   "PUMP/USD": CRYPTO,
+  "SAROS/USD": CRYPTO,
+  "SPK/USD": CRYPTO,
+  "ERA/USD": CRYPTO,
+  "BGSC/USD": CRYPTO,
+  "TAG/USD": CRYPTO,
 };
 
 export const syntheticPairs = new Set([

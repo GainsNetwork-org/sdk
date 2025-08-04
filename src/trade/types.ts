@@ -785,4 +785,9 @@ export enum PairIndex {
   ICNTUSD,
   NEWTUSD,
   PUMPUSD,
+  SAROSUSD,
+  SPKUSD,
+  ERAUSD,
+  BGSCUSD,
+  TAGUSD,
 }
