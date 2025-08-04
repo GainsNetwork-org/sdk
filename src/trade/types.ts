@@ -2,6 +2,7 @@ import {
   ITradingStorage,
   IBorrowingFees,
   IPairsStorage,
+  IFundingFees,
 } from "../contracts/types/generated/GNSMultiCollatDiamond";
 import { BorrowingFee } from "./fees/borrowing";
 import { FeeTier, TraderEnrollment, TraderInfo } from "./fees/tiers/types";
@@ -10,11 +11,37 @@ export type PairIndexes = {
   [key: string]: PairIndex;
 };
 
+export type TradeFeesData = {
+  realizedTradingFeesCollateral: number;
+  realizedPnlCollateral: number;
+  manuallyRealizedNegativePnlCollateral: number;
+  alreadyTransferredNegativePnlCollateral: number;
+  virtualAvailableCollateralInDiamond: number;
+  initialAccFundingFeeP: number;
+  initialAccBorrowingFeeP: number;
+};
+
+export type UiRealizedPnlData = {
+  realizedTradingFeesCollateral: number;
+  realizedOldBorrowingFeesCollateral: number;
+  realizedNewBorrowingFeesCollateral: number;
+  realizedFundingFeesCollateral: number;
+  realizedPnlPartialCloseCollateral: number;
+  pnlWithdrawnCollateral: number;
+};
+
+export type CounterTradeSettings = {
+  maxLeverage: number; // e.g., 10 = 10x
+  feeRateMultiplier: number; // e.g., 0.1 = 10% of normal fee, 1 = 100%
+};
+
 export type TradeContainer = {
   trade: Trade;
   tradeInfo: TradeInfo;
   liquidationParams: LiquidationParams;
   initialAccFees: TradeInitialAccFees;
+  tradeFeesData?: TradeFeesData;
+  uiRealizedPnlData?: UiRealizedPnlData;
   receivedAt?: number;
 };
 
@@ -31,6 +58,8 @@ export type Trade = {
   openPrice: number;
   sl: number;
   tp: number;
+  isCounterTrade?: boolean;
+  positionSizeToken?: number;
 };
 
 export type TradeInfo = {
@@ -112,6 +141,99 @@ export type TradeHistoryRecord = {
   collateralDelta: number | null;
   leverageDelta: number | null;
   marketPrice: number | null;
+  meta:
+    | OpenTradeHistoryMetaData
+    | CloseTradeHistoryMetaData
+    | PartialCloseTradeHistoryMetaData
+    | PartialOpenTradeHistoryMetaData
+    | WithdrawPnLHistoryMetaData
+    | LeverageUpdateHistoryMetaData;
+};
+
+export type HistoryPriceImpact = {
+  fixedSpreadP: number;
+  priceAfterImpact: number;
+  skewPriceImpactP: number;
+  positionSizeToken: number;
+  totalPriceImpactP: number;
+  cumulVolPriceImpactP: number;
+};
+
+export type OpenTradeHistoryMetaData = {
+  liqPrice: number;
+  amountSentToTrader: number;
+  percentProfit: number;
+  priceImpact: HistoryPriceImpact;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
+};
+
+export type CloseTradeHistoryMetaData = OpenTradeHistoryMetaData;
+
+export type PartialOpenTradeHistoryMetaData = {
+  newLeverage: number;
+  newLiqPrice: number;
+  newOpenPrice: number;
+  existingLiqPrice: number;
+  newCollateralAmount: number;
+  newEffectiveLeverage: number;
+  existingPnlCollateral: number;
+  openingFeesCollateral: number;
+  isCounterTradeValidated: boolean;
+  newPositionSizeCollateral: number;
+  oldPosSizePlusPnlCollateral: number;
+  positionSizeCollateralDelta: number;
+  counterTradeCollateralToReturn: number;
+  existingPositionSizeCollateral: number;
+  exceedingPositionSizeCollateral: number;
+  priceImpact: HistoryPriceImpact;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
+};
+
+export type PartialCloseTradeHistoryMetaData = {
+  newLeverage: number;
+  newLiqPrice: number;
+  existingLiqPrice: number;
+  isLeverageUpdate: boolean;
+  existingPnlPercent: number;
+  newCollateralAmount: number;
+  closingFeeCollateral: number;
+  collateralSentToTrader: number;
+  pnlToRealizeCollateral: number;
+  partialNetPnlCollateral: number;
+  partialRawPnlCollateral: number;
+  positionSizeCollateralDelta: number;
+  availableCollateralInDiamond: number;
+  existingPositionSizeCollateral: number;
+  totalAvailableCollateralInDiamond: number;
+  priceImpact: HistoryPriceImpact;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
+};
+
+export type LeverageUpdateHistoryMetaData = {
+  availableCollateralInDiamond: number;
+  existingLiqPrice: number;
+  govFeeCollateral: number;
+  newCollateralAmount: number;
+  newEffectiveLeverage: number;
+  newLeverage: number;
+  newLiqPrice: number;
+  totalTradeAvailableCollateralInDiamond: number;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
+};
+
+export type WithdrawPnLHistoryMetaData = {
+  pnlPercent: number;
+  currentPairPrice: number;
+  pnlInputCollateral: number;
+  pnlWithdrawnCollateral: number;
+  withdrawablePositivePnlCollateral: number;
+  priceImpact: HistoryPriceImpact;
+  tradeFeesData: TradeFeesData;
+  uiRealizedPnlData: UiRealizedPnlData;
 };
 
 export type MarketOrder = {
@@ -165,6 +287,8 @@ export type TradeContainerRaw = {
   tradeInfo: ITradingStorage.TradeInfoStruct;
   liquidationParams: IPairsStorage.GroupLiquidationParamsStruct;
   initialAccFees: IBorrowingFees.BorrowingInitialAccFeesStruct;
+  tradeFeesData: IFundingFees.TradeFeesDataStruct;
+  uiRealizedPnlData?: IFundingFees.UiRealizedPnlDataStruct;
 };
 
 export type OiWindowsSettings = {
@@ -182,14 +306,6 @@ export type OiWindow = PairOi;
 
 export type OiWindows = {
   [key: string]: OiWindow;
-};
-
-export type CollateralConfig = {
-  collateral: string;
-  isActive: boolean;
-  precision: number;
-  precisionDelta: number;
-  decimals?: number;
 };
 
 export type FeeTiers = {
