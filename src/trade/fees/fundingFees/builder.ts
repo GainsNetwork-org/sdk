@@ -2,6 +2,7 @@
  * @dev Builder functions for funding fees context
  */
 
+import { getPairV10OiTokenSkewCollateral } from "../../../markets/oi/index";
 import { GlobalTradingVariablesType } from "../../../backend/tradingVariables/types";
 import { GetPairFundingFeeContext } from "./pairContext";
 
@@ -22,6 +23,9 @@ export const buildFundingContext = (
   const params = collateral.pairFundingFees.params?.[pairIndex];
   const data = collateral.pairFundingFees.data?.[pairIndex];
   const pairOi = collateral.pairOis?.[pairIndex];
+  const netExposureToken = getPairV10OiTokenSkewCollateral(pairIndex, {
+    pairOis: collateral.pairOis,
+  });
 
   if (!params || !data) {
     return undefined;
@@ -37,6 +41,6 @@ export const buildFundingContext = (
         }
       : undefined,
     currentTimestamp,
-    // TODO: Add net exposure when available
+    netExposureToken,
   };
 };
