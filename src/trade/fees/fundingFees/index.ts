@@ -40,17 +40,12 @@ export const getCurrentFundingVelocityPerYear = (
     skewCoefficientPerYear === 0 ||
     absoluteVelocityPerYearCap === 0
   ) {
-    console.log("netExposureToken", netExposureToken);
-    console.log("skewCoefficientPerYear", skewCoefficientPerYear);
-    console.log("absoluteVelocityPerYearCap", absoluteVelocityPerYearCap);
     return 0;
   }
 
   // Check theta threshold
   const absNetExposureUsd = Math.abs(netExposureUsd);
   if (absNetExposureUsd < thetaThresholdUsd) {
-    console.log("absNetExposureUsd", absNetExposureUsd);
-    console.log("thetaThresholdUsd", thetaThresholdUsd);
     return 0;
   }
 
@@ -63,10 +58,6 @@ export const getCurrentFundingVelocityPerYear = (
     absoluteVelocityPerYear,
     absoluteVelocityPerYearCap
   );
-
-  console.log("absoluteVelocityPerYear", absoluteVelocityPerYear);
-  console.log("absoluteVelocityPerYearCap", absoluteVelocityPerYearCap);
-  console.log("cappedAbsoluteVelocity", cappedAbsoluteVelocity);
 
   // Return with proper sign
   return netExposureToken < 0
@@ -135,9 +126,6 @@ export const getAvgFundingRatePerSecondP = (
   const ratePerSecondCap =
     absoluteRatePerSecondCap * (currentVelocityPerYear < 0 ? -1 : 1);
 
-  console.log("ratePerSecondCap", ratePerSecondCap);
-  console.log("lastFundingRatePerSecondP", lastFundingRatePerSecondP);
-
   // If rate is already at cap, just return it
   if (ratePerSecondCap === lastFundingRatePerSecondP) {
     return {
@@ -149,8 +137,6 @@ export const getAvgFundingRatePerSecondP = (
   const secondsToReachCap =
     ((ratePerSecondCap - lastFundingRatePerSecondP) * ONE_YEAR) /
     currentVelocityPerYear;
-
-  console.log("secondsToReachCap", secondsToReachCap);
 
   if (secondsSinceLastUpdate > secondsToReachCap) {
     // Rate reached cap during this period
@@ -164,9 +150,6 @@ export const getAvgFundingRatePerSecondP = (
         ratePerSecondCap * (secondsSinceLastUpdate - secondsToReachCap)) /
       secondsSinceLastUpdate;
 
-    console.log("Reached cap");
-    console.log("avgFundingRatePerSecondP", avgFundingRatePerSecondP);
-
     return { avgFundingRatePerSecondP, currentFundingRatePerSecondP };
   } else {
     // Rate didn't reach cap
@@ -176,10 +159,6 @@ export const getAvgFundingRatePerSecondP = (
 
     const avgFundingRatePerSecondP =
       (lastFundingRatePerSecondP + currentFundingRatePerSecondP) / 2;
-
-    console.log("Not reached cap");
-    console.log("avgFundingRatePerSecondP", avgFundingRatePerSecondP);
-    console.log("currentFundingRatePerSecondP", currentFundingRatePerSecondP);
 
     return { avgFundingRatePerSecondP, currentFundingRatePerSecondP };
   }
@@ -261,8 +240,6 @@ export const getPairPendingAccFundingFees = (
 
   const secondsSinceLastUpdate = currentTimestamp - data.lastFundingUpdateTs;
 
-  console.log("secondsSinceLastUpdate", secondsSinceLastUpdate);
-
   // Calculate current velocity
   const currentVelocityPerYear = getCurrentFundingVelocityPerYear(
     netExposureToken,
@@ -280,10 +257,6 @@ export const getPairPendingAccFundingFees = (
       currentVelocityPerYear,
       secondsSinceLastUpdate
     );
-
-  console.log("currentVelocityPerYear", currentVelocityPerYear);
-  console.log("avgFundingRatePerSecondP", avgFundingRatePerSecondP);
-  console.log("currentFundingRatePerSecondP", currentFundingRatePerSecondP);
 
   // Check if we need to handle rate sign change
   const rateChangedSign =
@@ -336,10 +309,6 @@ export const getPairPendingAccFundingFees = (
 
     accFundingFeeLongP += fundingFeesDeltaP_2 * longMultiplier2;
     accFundingFeeShortP -= fundingFeesDeltaP_2 * shortMultiplier2;
-
-    console.log("Rate changed sign");
-    console.log("accFundingFeeLongP", accFundingFeeLongP);
-    console.log("accFundingFeeShortP", accFundingFeeShortP);
   } else {
     // Single period calculation
     const fundingFeesDeltaP =
@@ -354,10 +323,6 @@ export const getPairPendingAccFundingFees = (
 
     accFundingFeeLongP += fundingFeesDeltaP * longAprMultiplier;
     accFundingFeeShortP -= fundingFeesDeltaP * shortAprMultiplier;
-
-    console.log("Single period calculation");
-    console.log("accFundingFeeLongP", accFundingFeeLongP);
-    console.log("accFundingFeeShortP", accFundingFeeShortP);
   }
   return {
     accFundingFeeLongP,
@@ -420,18 +385,6 @@ export const getTradeFundingFeesCollateral = (
   const fundingFeeDelta =
     currentAccFundingFeeP - tradeFeesData.initialAccFundingFeeP;
 
-  console.log("currentAccFundingFeeP", currentAccFundingFeeP);
-  console.log(
-    "tradeFeesData.initialAccFundingFeeP",
-    tradeFeesData.initialAccFundingFeeP
-  );
-  console.log("fundingFeeDelta", fundingFeeDelta);
-  console.log("positionSizeCollateral", positionSizeCollateral);
-  console.log("trade.openPrice", trade.openPrice);
-  console.log(
-    "Final:",
-    (positionSizeCollateral * fundingFeeDelta) / trade.openPrice / 100
-  );
   return (positionSizeCollateral * fundingFeeDelta) / trade.openPrice / 100;
 };
 
