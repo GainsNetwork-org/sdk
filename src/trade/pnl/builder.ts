@@ -68,6 +68,7 @@ export const buildComprehensivePnlContext = (
             tradeFeesData: tradeContainer.tradeFeesData,
             liquidationParams: tradeContainer.liquidationParams,
             initialAccFees: tradeContainer.initialAccFees,
+            uiRealizedPnlData: tradeContainer.uiRealizedPnlData,
           }
         : undefined,
   };
