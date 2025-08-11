@@ -10,7 +10,7 @@ import {
 } from "../fees";
 import { GetPairBorrowingFeeV2Context } from "../fees/borrowingV2";
 import { GetPairFundingFeeContext } from "../fees/fundingFees";
-import { TradeFeesData, LiquidationParams } from "../types";
+import { TradeFeesData, LiquidationParams, UiRealizedPnlData } from "../types";
 
 /**
  * @dev Result of trade value calculation
@@ -31,6 +31,17 @@ export type FeeBreakdown = {
   funding: number;
   closing: number;
   opening?: number;
+  total: number;
+};
+
+/**
+ * @dev Realized fees breakdown
+ */
+export type RealizedFeesBreakdown = {
+  borrowingV1: number;
+  borrowingV2: number;
+  funding: number;
+  trading: number;
   total: number;
 };
 
@@ -79,6 +90,9 @@ export type ComprehensivePnlResult = {
   // Fee breakdown
   fees: FeeBreakdown;
 
+  // Realized fees breakdown (from UiRealizedPnlData)
+  realizedFees?: RealizedFeesBreakdown;
+
   // Status flags
   isLiquidated: boolean;
   isProfitable: boolean;
@@ -107,5 +121,6 @@ export type GetComprehensivePnlContext = {
     tradeFeesData: TradeFeesData;
     liquidationParams: LiquidationParams;
     initialAccFees?: BorrowingFee.InitialAccFees;
+    uiRealizedPnlData?: UiRealizedPnlData;
   };
 };

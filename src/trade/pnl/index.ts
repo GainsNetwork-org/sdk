@@ -187,6 +187,22 @@ export const getComprehensivePnl = (
     context.tradeData.tradeFeesData
   );
 
+  // Calculate realized fees from UiRealizedPnlData if available
+  const uiData = context.tradeData?.uiRealizedPnlData;
+  const realizedBorrowingV1 = uiData?.realizedOldBorrowingFeesCollateral || 0;
+  const realizedBorrowingV2 = uiData?.realizedNewBorrowingFeesCollateral || 0;
+  const realizedFunding = uiData?.realizedFundingFeesCollateral || 0;
+  const realizedTrading = uiData?.realizedTradingFeesCollateral || 0;
+  const realizedTotal = realizedBorrowingV1 + realizedBorrowingV2 + realizedFunding + realizedTrading;
+
+  const realizedFees = {
+    borrowingV1: realizedBorrowingV1,
+    borrowingV2: realizedBorrowingV2,
+    funding: realizedFunding,
+    trading: realizedTrading,
+    total: realizedTotal,
+  };
+
   // Calculate raw PnL in collateral (using market price)
   const rawPnlCollateral = trade.collateralAmount * (rawPnlPercent / 100);
 
@@ -253,6 +269,9 @@ export const getComprehensivePnl = (
       closing: closingFee,
       total: totalFees,
     },
+
+    // Realized fees breakdown (from UiRealizedPnlData)
+    realizedFees,
 
     // Status flags
     isLiquidated,
