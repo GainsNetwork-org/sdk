@@ -103,8 +103,7 @@ export const getPairHoldingFeeRates = (
     // Calculate hourly rates
     // Funding rate * seconds per hour * APR multiplier / 100
     const baseHourlyRate =
-      (currentFundingRatePerSecondP * SECONDS_PER_HOUR) /
-      PERCENTAGE_PRECISION;
+      (currentFundingRatePerSecondP * SECONDS_PER_HOUR) / PERCENTAGE_PRECISION;
 
     // Long side pays when rate is positive, earns when negative
     fundingFeeLongHourlyRate = baseHourlyRate * longAprMultiplier;

@@ -75,6 +75,24 @@ export interface ComputedOi {
   };
 
   /**
+   * @dev v10-only OI using static collateral values
+   * @dev Used for funding fee markets display
+   */
+  v10StaticCollateral: {
+    long: number;
+    short: number;
+  };
+
+  /**
+   * @dev v10-only OI using dynamic values: token * price
+   * @dev Used for funding fee markets real-time display
+   */
+  v10DynamicCollateral: {
+    long: number;
+    short: number;
+  };
+
+  /**
    * @dev Net skew in tokens (v10+ only)
    * @dev Positive = more longs, negative = more shorts
    */

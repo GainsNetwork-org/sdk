@@ -360,6 +360,7 @@ export const getTradeFundingFeesCollateral = (
     return 0;
   }
 
+  context.netExposureUsd = (context.netExposureToken || 0) * currentPairPrice;
   const positionSizeCollateral = trade.collateralAmount * trade.leverage;
 
   if (!context.params.fundingFeesEnabled) {

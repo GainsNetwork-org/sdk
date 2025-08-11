@@ -131,6 +131,15 @@ export const computeOiValues = (
       long: totalDynamicLong,
       short: totalDynamicShort,
     },
+    // v10-only values for funding fee markets
+    v10StaticCollateral: {
+      long: pairOi.collateral.long,
+      short: pairOi.collateral.short,
+    },
+    v10DynamicCollateral: {
+      long: tokenLongCollateral,
+      short: tokenShortCollateral,
+    },
     skewToken,
   };
 };

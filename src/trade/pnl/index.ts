@@ -210,12 +210,7 @@ export const getComprehensivePnl = (
   const realizedPnlPercent =
     (realizedPnlCollateral / trade.collateralAmount) * 100;
 
-  // Calculate trade value using execution price (what trader would receive)
-  const tradeValue = getTradeValue(
-    trade.collateralAmount,
-    impactPnlPercent,
-    totalFees
-  );
+  const tradeValue = trade.collateralAmount + realizedPnlCollateral;
 
   return {
     // Raw PnL values (using market price, no price impact)

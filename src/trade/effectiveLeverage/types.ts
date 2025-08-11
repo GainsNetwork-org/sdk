@@ -1,7 +1,7 @@
 /**
  * @dev Types for trade effective leverage calculations
  */
-import { Trade, TradeClosingPriceImpactContext } from "..";
+import { Trade } from "..";
 
 /**
  * @dev Input parameters for effective leverage calculation
@@ -13,16 +13,16 @@ export type TradeEffectiveLeverageInput = {
   newCollateralAmount: number;
   newLeverage: number;
   currentPairPrice: number;
-  openingFeesCollateral: number;
+  tradeValueCollateral: number; // Trade value including collateral + net PnL (with price impact) - fees
 };
 
 /**
  * @dev Context for effective leverage calculation
- * Includes closing price impact context for PnL calculations
+ * Simplified context since price impact is now included in tradeValueCollateral
  */
 export type TradeEffectiveLeverageContext = {
-  closingPriceImpactContext: TradeClosingPriceImpactContext;
-  baseSpreadP: number;
+  // Context can be extended if needed for future calculations
+  // Currently not used since tradeValueCollateral includes all necessary data
 };
 
 /**
