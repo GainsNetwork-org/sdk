@@ -141,6 +141,7 @@ export type TradeHistoryRecord = {
   collateralDelta: number | null;
   leverageDelta: number | null;
   marketPrice: number | null;
+  isCounterTrade: 0 | 1;
   meta:
     | OpenTradeHistoryMetaData
     | CloseTradeHistoryMetaData
