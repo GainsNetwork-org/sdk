@@ -233,7 +233,7 @@ const convertTradingPair = (pair: PairBackend, index: number): Pair => ({
   pairIndex: index,
   feeIndex: parseInt(pair.feeIndex),
   groupIndex: parseInt(pair.groupIndex),
-  spreadP: parseFloat(pair.spreadP) / 1e10 / 100,
+  spreadP: parseFloat(pair.spreadP) / 1e10,
 });
 
 export const convertTradesAndLimitOrders = (
