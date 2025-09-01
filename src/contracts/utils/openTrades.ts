@@ -6,8 +6,11 @@ import { Contracts, BlockTag } from "../../contracts/types";
 import {
   IBorrowingFees,
   IFundingFees,
+  IPairsStorage,
+  ITradingStorage,
 } from "../types/generated/GNSMultiCollatDiamond";
 import { Contract, Provider } from "ethcall";
+import { ethers } from "ethers";
 import {
   convertTradeFeesData,
   convertUiRealizedPnlData,
@@ -16,6 +19,7 @@ import {
 import { CollateralConfig } from "src/markets";
 
 export type FetchOpenPairTradesOverrides = {
+  traders?: string[];
   batchSize?: number;
   useMulticall?: boolean;
   includeLimits?: boolean;
@@ -48,7 +52,6 @@ export const fetchOpenPairTrades = async (
   );
 };
 
-// @todo rename
 export const fetchOpenPairTradesRaw = async (
   contracts: Contracts,
   overrides: FetchOpenPairTradesOverrides = {}
@@ -62,6 +65,7 @@ export const fetchOpenPairTradesRaw = async (
     includeLimits = true,
     useMulticall = false,
     includeUIRealizedPnlData = true,
+    traders = [],
   } = overrides;
 
   const { gnsMultiCollatDiamond: multiCollatDiamondContract } = contracts;
@@ -73,6 +77,8 @@ export const fetchOpenPairTradesRaw = async (
         ...multiCollatDiamondContract.interface.fragments,
       ]),
     };
+    const validatedAddresses = _validateAddresses(traders || []);
+    const forTraders = validatedAddresses.length > 0;
 
     if (useMulticall) {
       await multicallCtx.provider.init(multiCollatDiamondContract.provider);
@@ -83,14 +89,44 @@ export const fetchOpenPairTradesRaw = async (
     let offset = 0;
 
     while (running) {
-      const [trades, tradeInfos, tradeLiquidationParams] = await Promise.all([
-        multiCollatDiamondContract.getAllTrades(offset, offset + batchSize),
-        multiCollatDiamondContract.getAllTradeInfos(offset, offset + batchSize),
-        multiCollatDiamondContract.getAllTradesLiquidationParams(
-          offset,
-          offset + batchSize
-        ),
-      ]);
+      const [trades, tradeInfos, tradeLiquidationParams]: [
+        ITradingStorage.TradeStructOutput[],
+        ITradingStorage.TradeInfoStructOutput[],
+        IPairsStorage.GroupLiquidationParamsStructOutput[]
+      ] = await Promise.all(
+        forTraders
+          ? [
+              multiCollatDiamondContract.getAllTradesForTraders(
+                validatedAddresses,
+                offset,
+                offset + batchSize
+              ),
+              multiCollatDiamondContract.getAllTradeInfosForTraders(
+                validatedAddresses,
+                offset,
+                offset + batchSize
+              ),
+              multiCollatDiamondContract.getAllTradesLiquidationParamsForTraders(
+                validatedAddresses,
+                offset,
+                offset + batchSize
+              ),
+            ]
+          : [
+              multiCollatDiamondContract.getAllTrades(
+                offset,
+                offset + batchSize
+              ),
+              multiCollatDiamondContract.getAllTradeInfos(
+                offset,
+                offset + batchSize
+              ),
+              multiCollatDiamondContract.getAllTradesLiquidationParams(
+                offset,
+                offset + batchSize
+              ),
+            ]
+      );
 
       const fundingFeesCallParams: [string[], any[]] = [
         [], // traders
@@ -236,4 +272,14 @@ const _prepareTradeContainer = (
       ? convertUiRealizedPnlData(uiRealizedPnlData, collateralConfig)
       : undefined,
   };
+};
+
+/**
+ * Filters out duplicate addresses. Throws error if an invalid address is provided.
+ * @param addresses
+ */
+const _validateAddresses = (addresses: string[]): string[] => {
+  return [
+    ...new Set(addresses.map(address => ethers.utils.getAddress(address))),
+  ];
 };
