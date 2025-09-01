@@ -418,6 +418,7 @@ export const pairs = {
   "ERA/USD": CRYPTO,
   "BGSC/USD": CRYPTO,
   "TAG/USD": CRYPTO,
+  "WLFI/USD": CRYPTO,  
 };
 
 export const syntheticPairs = new Set([
