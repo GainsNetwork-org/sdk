@@ -791,4 +791,5 @@ export enum PairIndex {
   ERAUSD,
   BGSCUSD,
   TAGUSD,
+  WLFIUSD,
 }
