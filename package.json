@@ -1,6 +1,6 @@
 {
   "name": "@gainsnetwork/sdk",
-  "version": "1.0.5-rc2",
+  "version": "1.0.6-rc1",
   "description": "Gains Network SDK",
   "main": "./lib/index.js",
   "files": [
@@ -24,7 +24,7 @@
     "url": "git+git@github.com:GainsNetwork-org/sdk.git"
   },
   "engines": {
-    "node": ">=12.0"
+    "node": ">=14.0"
   },
   "devDependencies": {
     "@typechain/ethers-v5": "^10.1.1",
