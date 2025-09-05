@@ -98,6 +98,97 @@ export const fetchSignedLookbackPrices = async (
   );
 };
 
+// Retry logic for handling transient failures
+export interface RetryOptions {
+  maxRetries?: number;
+  retryDelayMs?: number;
+  backoffMultiplier?: number;
+}
+
+// Helper to determine if an error is likely transient
+const isTransientError = (error: unknown): boolean => {
+  const message =
+    (error instanceof Error ? error.message : String(error))?.toLowerCase() ||
+    "";
+  return (
+    message.includes("timeout") ||
+    message.includes("aborted") ||
+    message.includes("not enough valid signed prices") ||
+    message.includes("network") ||
+    message.includes("fetch failed")
+  );
+};
+
+// Fetch signed prices with retry logic for transient failures
+export const fetchSignedPricesWithRetry = async (
+  input: FetchSignedPricesInput,
+  retryOptions?: RetryOptions
+): Promise<SignedPricesResponse[] | null> => {
+  const {
+    maxRetries = 2,
+    retryDelayMs = 500,
+    backoffMultiplier = 1.5,
+  } = retryOptions || {};
+
+  let lastError: any;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fetchSignedPrices(input);
+    } catch (error: any) {
+      lastError = error;
+
+      // Don't retry non-transient errors or if we're out of retries
+      if (attempt === maxRetries || !isTransientError(error)) {
+        throw error;
+      }
+
+      // Wait with exponential backoff before retry
+      const delay = Math.floor(
+        retryDelayMs * Math.pow(backoffMultiplier, attempt)
+      );
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError;
+};
+
+// Fetch lookback prices with retry logic
+export const fetchSignedLookbackPricesWithRetry = async (
+  input: FetchSignedLookbackPricesInput,
+  retryOptions?: RetryOptions
+): Promise<SignedPricesResponse[] | null> => {
+  const {
+    maxRetries = 2,
+    retryDelayMs = 1000,
+    backoffMultiplier = 2,
+  } = retryOptions || {};
+
+  let lastError: any;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fetchSignedLookbackPrices(input);
+    } catch (error: any) {
+      lastError = error;
+
+      // Don't retry non-transient errors or if we're out of retries
+      if (attempt === maxRetries || !isTransientError(error)) {
+        throw error;
+      }
+
+      // Wait with exponential backoff before retry
+      const delay = Math.floor(
+        retryDelayMs * Math.pow(backoffMultiplier, attempt)
+      );
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError;
+};
+
 // @todo optional filtering to minAnswers best responses
 const initiateSignedPricesRequest = async (
   oracles: Oracle[],
