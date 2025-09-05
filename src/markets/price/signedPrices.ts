@@ -1,21 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { ChainId } from "../../contracts/types";
-import { SignedPricesResponse } from "./types";
+import { Oracle, SignedPricesResponse } from "./types";
 import { PendingOrderType } from "../../trade";
 
 // @dev Fetch market signed prices from oracles
 export interface FetchSignedPricesInput {
-  oracles: string[];
+  oracles: Oracle[];
   pairs: number[];
   chain: number;
-  authKey?: string;
   minAnswer?: number;
   timeoutMs?: number;
 }
 export const fetchSignedPrices = async (
   input: FetchSignedPricesInput
 ): Promise<SignedPricesResponse[] | null> => {
-  const { minAnswers, timeoutMs, oracles, chain, authKey } = {
+  const { minAnswers, timeoutMs, oracles, chain } = {
     minAnswers: input.chain === ChainId.ARBITRUM_SEPOLIA ? 2 : 3,
     timeoutMs: 1000,
     ...input,
@@ -32,14 +31,13 @@ export const fetchSignedPrices = async (
     "signPrices",
     JSON.stringify({ pairs, chain }),
     minAnswers,
-    authKey || "",
     timeoutMs
   );
 };
 
 // @dev Fetch lookback signed prices from oracles
 export interface FetchSignedLookbackPricesInput {
-  oracles: string[];
+  oracles: Oracle[];
   trader: string;
   tradeIndex: number;
   pair: number;
@@ -47,7 +45,6 @@ export interface FetchSignedLookbackPricesInput {
   currentBlock: number;
   fromBlock: number;
   chain: number;
-  authKey?: string;
   minAnswer?: number;
   timeoutMs?: number;
 }
@@ -65,7 +62,6 @@ export const fetchSignedLookbackPrices = async (
     currentBlock,
     fromBlock,
     chain,
-    authKey,
   } = {
     minAnswers: input.chain === ChainId.ARBITRUM_SEPOLIA ? 2 : 3,
     timeoutMs: 6000,
@@ -98,28 +94,27 @@ export const fetchSignedLookbackPrices = async (
       chain,
     }),
     minAnswers,
-    authKey || "",
     timeoutMs
   );
 };
 
+// @todo optional filtering to minAnswers best responses
 const initiateSignedPricesRequest = async (
-  oracles: string[],
+  oracles: Oracle[],
   request: string,
   requestBody: string,
   minAnswers: number,
-  authKey: string,
   timeoutMs: number
 ): Promise<SignedPricesResponse[] | null> => {
   try {
     // Fetch signed prices from all oracles in parallel
     const signedPrices: PromiseSettledResult<SignedPricesResponse | null>[] =
       await Promise.allSettled(
-        oracles.map(signerUrl =>
+        oracles.map(oracle =>
           _getSignedPricesFromSigner(
-            `${signerUrl}/${request}`,
+            `${oracle.url}/${request}`,
             requestBody,
-            authKey,
+            oracle?.key,
             timeoutMs
           )
         )

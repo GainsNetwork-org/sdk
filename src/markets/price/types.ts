@@ -54,3 +54,5 @@ export type Price = {
   current: string; // 1e10 precision
   ts: number; // in seconds
 };
+
+export type Oracle = { url: string; key?: string };
