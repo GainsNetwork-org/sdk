@@ -44,10 +44,100 @@ export const fetchPairs = async (
   }
 };
 
-export const fetchPairDepths = async (
+export const fetchPairDepthBands = async (
   contracts: Contracts,
   pairIxs: number[]
-): Promise<PairDepth[]> => {
+): Promise<any[]> => {
+  if (!contracts || pairIxs.length === 0) {
+    return [];
+  }
+
+  const { gnsMultiCollatDiamond: multiCollatContract } = contracts;
+
+  try {
+    // Returns array of PairDepthBands structs (encoded slots)
+    // Using quoted signature for overloaded function
+    const depthBands = await multiCollatContract[
+      "getPairDepthBands(uint256[])"
+    ](pairIxs);
+    return depthBands;
+  } catch (error) {
+    console.error(`Unexpected error while fetching pair depth bands!`);
+    throw error;
+  }
+};
+
+export const fetchPairDepthBandsDecoded = async (
+  contracts: Contracts,
+  pairIxs: number[]
+): Promise<{
+  totalDepthAboveUsd: number[];
+  totalDepthBelowUsd: number[];
+  bandsAbove: number[][];
+  bandsBelow: number[][];
+}> => {
+  if (!contracts || pairIxs.length === 0) {
+    return {
+      totalDepthAboveUsd: [],
+      totalDepthBelowUsd: [],
+      bandsAbove: [],
+      bandsBelow: [],
+    };
+  }
+
+  const { gnsMultiCollatDiamond: multiCollatContract } = contracts;
+
+  try {
+    // Returns decoded values
+    // Using quoted signature for overloaded function
+    const [totalDepthAboveUsd, totalDepthBelowUsd, bandsAbove, bandsBelow] =
+      await multiCollatContract["getPairDepthBandsDecoded(uint256[])"](pairIxs);
+
+    return {
+      totalDepthAboveUsd: totalDepthAboveUsd.map((v: any) =>
+        parseFloat(v.toString())
+      ),
+      totalDepthBelowUsd: totalDepthBelowUsd.map((v: any) =>
+        parseFloat(v.toString())
+      ),
+      bandsAbove: bandsAbove.map((bands: any[]) =>
+        bands.map((b: any) => parseInt(b.toString()))
+      ),
+      bandsBelow: bandsBelow.map((bands: any[]) =>
+        bands.map((b: any) => parseInt(b.toString()))
+      ),
+    };
+  } catch (error) {
+    console.error(`Unexpected error while fetching decoded pair depth bands!`);
+    throw error;
+  }
+};
+
+export const fetchDepthBandsMapping = async (
+  contracts: Contracts
+): Promise<{ slot1: string; slot2: string }> => {
+  if (!contracts) {
+    return { slot1: "0", slot2: "0" };
+  }
+
+  const { gnsMultiCollatDiamond: multiCollatContract } = contracts;
+
+  try {
+    // Returns two uint256 slots
+    const [slot1, slot2] = await multiCollatContract.getDepthBandsMapping();
+    return {
+      slot1: slot1.toString(),
+      slot2: slot2.toString(),
+    };
+  } catch (error) {
+    console.error(`Unexpected error while fetching depth bands mapping!`);
+    throw error;
+  }
+};
+
+export const fetchDepthBandsMappingDecoded = async (
+  contracts: Contracts
+): Promise<number[]> => {
   if (!contracts) {
     return [];
   }
@@ -55,21 +145,13 @@ export const fetchPairDepths = async (
   const { gnsMultiCollatDiamond: multiCollatContract } = contracts;
 
   try {
-    const pairParams = await multiCollatContract.getPairDepths(pairIxs);
-
-    return pairParams.map(pair => {
-      return {
-        onePercentDepthAboveUsd: parseFloat(
-          pair.onePercentDepthAboveUsd.toString()
-        ),
-        onePercentDepthBelowUsd: parseFloat(
-          pair.onePercentDepthBelowUsd.toString()
-        ),
-      } as PairDepth;
-    });
+    // Returns array of 30 uint16 values
+    const bands = await multiCollatContract.getDepthBandsMappingDecoded();
+    return bands.map((b: any) => parseInt(b.toString()));
   } catch (error) {
-    console.error(`Unexpected error while fetching pairs!`);
-
+    console.error(
+      `Unexpected error while fetching decoded depth bands mapping!`
+    );
     throw error;
   }
 };
