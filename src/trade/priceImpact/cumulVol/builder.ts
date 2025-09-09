@@ -33,7 +33,8 @@ export const buildCumulVolContext = (
   }
 
   // Get pair-specific data from global variables
-  const pairDepth = globalTradingVariables.pairDepths?.[pairIndex];
+  // TODO: Update to use pairDepthBands for v10.2
+  const pairDepth = undefined; // globalTradingVariables.pairDepths?.[pairIndex];
   const pairFactor = globalTradingVariables.pairFactors?.[pairIndex];
   const oiWindows = globalTradingVariables.oiWindows?.[pairIndex];
 

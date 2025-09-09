@@ -111,9 +111,16 @@ export interface GroupOpenInterestBackend {
   max: string;
 }
 
-export interface PairDepthBackend {
-  onePercentDepthAboveUsd: string;
-  onePercentDepthBelowUsd: string;
+export interface PairDepthBandsBackend {
+  aboveSlot1: string;
+  aboveSlot2: string;
+  belowSlot1: string;
+  belowSlot2: string;
+}
+
+export interface DepthBandsMappingBackend {
+  slot1: string;
+  slot2: string;
 }
 
 export interface PairBorrowingFeesBackendPairGroup {
@@ -182,6 +189,7 @@ export interface GlobalTradingVariablesBackend {
   groups: TradingGroupBackend[];
   fees: FeeBackend[];
   pairInfos: PairInfosBackend;
+  depthBandsMapping: DepthBandsMappingBackend;
   collaterals: CollateralBackend[];
   sssTokenBalance: string;
   sssLegacyTokenBalance: string;
@@ -259,7 +267,7 @@ export interface CollateralBackend {
 
 export interface PairInfosBackend {
   maxLeverages: string[];
-  pairDepths: PairDepthBackend[];
+  pairDepthBands: PairDepthBandsBackend[];
   pairFactors: PairFactorBackend[];
 }
 
