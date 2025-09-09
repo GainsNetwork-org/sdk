@@ -3,6 +3,7 @@
  * @dev Mirrors contract's getTradeCumulVolPriceImpactP functionality
  */
 
+import { PairDepthBands, DepthBandsMapping, DepthBands } from "./types";
 import {
   LiquidationParams,
   OiWindows,
@@ -17,21 +18,6 @@ import {
   DEFAULT_PROTECTION_CLOSE_FACTOR,
 } from "../../../constants";
 import { ContractsVersion } from "../../../contracts/types";
-
-// Temporary types for depth bands - will be moved to proper location later
-interface DecodedDepthBands {
-  totalDepthUsd: number; // Total depth in USD
-  bands: number[]; // 30 band percentages (0-1, where 1 = 100%)
-}
-
-interface PairDepthBands {
-  above: DecodedDepthBands | undefined;
-  below: DecodedDepthBands | undefined;
-}
-
-interface DepthBandsMapping {
-  bands: number[]; // 30 band offset values (0-1, where 0.01 = 1%)
-}
 
 export type CumulVolContext = {
   // Trade state
@@ -153,7 +139,7 @@ export const getLegacyFactor = (
 const _calculateDepthBandsPriceImpact = (
   tradeSizeUsd: number,
   depthBandParams: {
-    pairSlot1: DecodedDepthBands;
+    pairSlot1: DepthBands;
     mappingSlot1: DepthBandsMapping;
   }
 ): number => {
@@ -228,7 +214,7 @@ const _getDepthBandsPriceImpactP = (
   cumulativeVolumeUsd: number,
   tradeSizeUsd: number,
   depthBandParams: {
-    pairSlot1: DecodedDepthBands;
+    pairSlot1: DepthBands;
     mappingSlot1: DepthBandsMapping;
   },
   priceImpactFactor: number,
