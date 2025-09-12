@@ -22,9 +22,7 @@ export type GetTradeFeesContext = {
   fee: Fee;
   collateralPriceUsd: number;
   globalTradeFeeParams: GlobalTradeFeeParams;
-  counterTradeSettings?: {
-    [pairIndex: number]: CounterTradeSettings;
-  };
+  counterTradeSettings?: CounterTradeSettings[];
   traderFeeMultiplier?: number; // e.g., 0.8 = 80% of normal fee
 };
 
