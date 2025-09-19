@@ -19,7 +19,6 @@ import {
   OiWindowsSettings,
   OpenInterest,
   Pair,
-  PairDepth,
   PairOi,
   Trade,
   TradeContainer,
@@ -160,6 +159,8 @@ export const convertDepthBandsMapping = (
     BigInt(mapping.slot1),
     BigInt(mapping.slot2)
   );
+
+  console.log("bandsBps", bandsBps);
 
   // Convert from basis points to 0-1 range
   return {

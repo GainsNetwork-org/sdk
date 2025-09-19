@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import {
-  Pair,
-  Fee,
-  OpenInterest,
-  PairDepth,
-  PairIndex,
-} from "../../trade/types";
+import { Pair, Fee, OpenInterest, PairIndex } from "../../trade/types";
 import { Contracts } from "../../contracts/types";
 
 export const fetchPairs = async (

@@ -14,34 +14,79 @@ describe("Depth Bands Price Impact", () => {
           above: {
             totalDepthUsd: 1000000, // $1M total depth
             bands: [
-              0.1, 0.2, 0.3, 0.4, 0.5, // First 5 bands: cumulative to 50%
-              0.55, 0.6, 0.65, 0.7, 0.75, // Next 5: cumulative to 75%
-              0.8, 0.82, 0.84, 0.86, 0.88, // Getting tighter
-              0.9, 0.91, 0.92, 0.93, 0.94, // Even tighter
-              0.95, 0.96, 0.97, 0.98, 0.99, // Almost there
-              0.995, 0.997, 0.998, 0.999, 1.0, // Final bands to 100%
+              0.1,
+              0.2,
+              0.3,
+              0.4,
+              0.5, // First 5 bands: cumulative to 50%
+              0.55,
+              0.6,
+              0.65,
+              0.7,
+              0.75, // Next 5: cumulative to 75%
+              0.8,
+              0.82,
+              0.84,
+              0.86,
+              0.88, // Getting tighter
+              0.9,
+              0.91,
+              0.92,
+              0.93,
+              0.94, // Even tighter
+              0.95,
+              0.96,
+              0.97,
+              0.98,
+              0.99, // Almost there
+              0.995,
+              0.997,
+              0.998,
+              0.999,
+              1.0, // Final bands to 100%
             ],
           },
           below: {
             totalDepthUsd: 1000000,
             bands: [
-              0.1, 0.2, 0.3, 0.4, 0.5,
-              0.55, 0.6, 0.65, 0.7, 0.75,
-              0.8, 0.82, 0.84, 0.86, 0.88,
-              0.9, 0.91, 0.92, 0.93, 0.94,
-              0.95, 0.96, 0.97, 0.98, 0.99,
-              0.995, 0.997, 0.998, 0.999, 1.0,
+              0.1, 0.2, 0.3, 0.4, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.82,
+              0.84, 0.86, 0.88, 0.9, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97,
+              0.98, 0.99, 0.995, 0.997, 0.998, 0.999, 1.0,
             ],
           },
         },
         depthBandsMapping: {
           bands: [
-            0.0001, 0.0002, 0.0003, 0.0005, 0.0008, // First 5: 0.01% to 0.08%
-            0.0013, 0.002, 0.003, 0.0045, 0.0065, // Next 5: accelerating
-            0.009, 0.012, 0.0155, 0.0195, 0.024, // Mid bands
-            0.029, 0.0345, 0.0405, 0.047, 0.054, // Higher impact
-            0.0615, 0.0695, 0.078, 0.087, 0.0965, // Getting steep
-            0.1065, 0.117, 0.128, 0.1395, 0.15, // Max 15% impact
+            0.0001,
+            0.0002,
+            0.0003,
+            0.0005,
+            0.0008, // First 5: 0.01% to 0.08%
+            0.0013,
+            0.002,
+            0.003,
+            0.0045,
+            0.0065, // Next 5: accelerating
+            0.009,
+            0.012,
+            0.0155,
+            0.0195,
+            0.024, // Mid bands
+            0.029,
+            0.0345,
+            0.0405,
+            0.047,
+            0.054, // Higher impact
+            0.0615,
+            0.0695,
+            0.078,
+            0.087,
+            0.0965, // Getting steep
+            0.1065,
+            0.117,
+            0.128,
+            0.1395,
+            0.15, // Max 15% impact
           ],
         },
         // Add OI data for cumulative volume calculation
@@ -180,16 +225,14 @@ describe("Depth Bands Price Impact", () => {
 
       // Same trade size but different depths should give different impacts
       // Note: with signed calculation, short open returns negative impact
-      expect(Math.abs(shortOpenImpact)).toBeGreaterThan(Math.abs(longOpenImpact));
+      expect(Math.abs(shortOpenImpact)).toBeGreaterThan(
+        Math.abs(longOpenImpact)
+      );
     });
 
-    it("should fall back to legacy calculation when depth bands not provided", () => {
+    it("should return 0 when depth bands not provided", () => {
       const context: CumulVolContext = {
         isOpen: true,
-        pairDepth: {
-          onePercentDepthAboveUsd: 100000,
-          onePercentDepthBelowUsd: 100000,
-        },
         oiWindowsSettings: {
           windowsDuration: 3600,
           windowsCount: 10,
@@ -217,8 +260,8 @@ describe("Depth Bands Price Impact", () => {
         context
       );
 
-      // Should use legacy calculation
-      expect(impact).toBeGreaterThan(0);
+      // Should return 0 without depth bands (no fallback to legacy)
+      expect(impact).toBe(0);
     });
   });
 });

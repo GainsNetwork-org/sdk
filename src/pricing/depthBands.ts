@@ -71,11 +71,12 @@ export function encodeDepthBandsMapping(bands: number[]): {
   slot1: bigint;
   slot2: bigint;
 } {
-  // Pack slot1: bands 0-13 (14 * 16 bits)
+  // Pack slot1: bands 0-13 (starting at bit 32, first 32 bits unused)
   let slot1 = BigInt(0);
 
   for (let i = 0; i < DEPTH_BANDS_PER_SLOT1; i++) {
-    slot1 |= BigInt(bands[i]) << BigInt(i * 16);
+    const shift = 32 + i * 16; // Start at bit 32 to match contract
+    slot1 |= BigInt(bands[i]) << BigInt(shift);
   }
 
   // Pack slot2: bands 14-29 (16 * 16 bits)
@@ -91,7 +92,7 @@ export function encodeDepthBandsMapping(bands: number[]): {
 
 /**
  * Decode depth bands mapping from two uint256 slots
- * @param slot1 First slot containing bands 0-13
+ * @param slot1 First slot containing bands 0-13 (starting at bit 32, first 32 bits unused)
  * @param slot2 Second slot containing bands 14-29
  * @returns Array of band offset values in ppm
  */
@@ -101,9 +102,10 @@ export function decodeDepthBandsMapping(
 ): number[] {
   const bands: number[] = [];
 
-  // Extract bands 0-13 from slot1
+  // Extract bands 0-13 from slot1 (skip first 32 bits which are unused for mappings)
   for (let i = 0; i < DEPTH_BANDS_PER_SLOT1; i++) {
-    bands.push(Number((slot1 >> BigInt(i * 16)) & BigInt(0xffff)));
+    const shift = 32 + i * 16; // Start at bit 32, not bit 0
+    bands.push(Number((slot1 >> BigInt(shift)) & BigInt(0xffff)));
   }
 
   // Extract bands 14-29 from slot2

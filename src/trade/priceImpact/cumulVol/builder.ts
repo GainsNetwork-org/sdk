@@ -33,8 +33,8 @@ export const buildCumulVolContext = (
   }
 
   // Get pair-specific data from global variables
-  // TODO: Update to use pairDepthBands for v10.2
-  const pairDepth = undefined; // globalTradingVariables.pairDepths?.[pairIndex];
+  const pairDepthBands = globalTradingVariables.pairDepthBands?.[pairIndex];
+  const depthBandsMapping = globalTradingVariables.depthBandsMapping;
   const pairFactor = globalTradingVariables.pairFactors?.[pairIndex];
   const oiWindows = globalTradingVariables.oiWindows?.[pairIndex];
 
@@ -65,7 +65,8 @@ export const buildCumulVolContext = (
     protectionCloseFactorWhitelist,
 
     // Price impact data
-    pairDepth,
+    pairDepthBands,
+    depthBandsMapping,
     oiWindowsSettings,
     oiWindows,
 
