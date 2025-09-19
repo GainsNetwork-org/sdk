@@ -5,11 +5,6 @@
   "abi": [
     {
       "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "inputs": [],
       "name": "AboveMax",
       "type": "error"
     },
@@ -1142,6 +1137,31 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0x678b3fb0"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "_pairIndex",
+          "type": "uint16"
+        },
+        {
+          "internalType": "bool",
+          "name": "_isCounterTrade",
+          "type": "bool"
+        }
+      ],
+      "name": "getEffectiveTotalPositionSizeFeeP",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xace26965"
     },
     {
       "inputs": [],
@@ -6978,6 +6998,36 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
+        },
+        {
+          "internalType": "enum ITradingStorage.PendingOrderType",
+          "name": "_orderType",
+          "type": "uint8"
+        }
+      ],
+      "name": "getLookbackFromBlock",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x2b7d6e9d"
+    },
+    {
+      "inputs": [
+        {
           "components": [
             {
               "internalType": "address",
@@ -8643,6 +8693,102 @@
       "signature": "0xb78f4b36"
     },
     {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint16",
+              "name": "pairIndex",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint24",
+              "name": "leverage",
+              "type": "uint24"
+            },
+            {
+              "internalType": "bool",
+              "name": "long",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isOpen",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint8",
+              "name": "collateralIndex",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ITradingStorage.TradeType",
+              "name": "tradeType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint120",
+              "name": "collateralAmount",
+              "type": "uint120"
+            },
+            {
+              "internalType": "uint64",
+              "name": "openPrice",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "tp",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "sl",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bool",
+              "name": "isCounterTrade",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint160",
+              "name": "positionSizeToken",
+              "type": "uint160"
+            },
+            {
+              "internalType": "uint24",
+              "name": "__placeholder",
+              "type": "uint24"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Trade",
+          "name": "_trade",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum ITradingStorage.PendingOrderType",
+          "name": "_orderType",
+          "type": "uint8"
+        }
+      ],
+      "name": "validateOpenTradeOrder",
+      "outputs": [],
+      "stateMutability": "pure",
+      "type": "function",
+      "signature": "0x63f58b1a"
+    },
+    {
       "inputs": [],
       "name": "NoPendingTriggerRewards",
       "type": "error"
@@ -8920,6 +9066,11 @@
     {
       "inputs": [],
       "name": "WaitTimeout",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "WrongFromBlock",
       "type": "error"
     },
     {
@@ -10564,6 +10715,89 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "_packed",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "triggerOrderWithSignatures",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xc7e2b2a9"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address[]",
           "name": "_users",
           "type": "address[]"
@@ -12037,6 +12271,151 @@
           "internalType": "struct ITradingCallbacks.AggregatorAnswer",
           "name": "_a",
           "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint16",
+              "name": "pairIndex",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint24",
+              "name": "leverage",
+              "type": "uint24"
+            },
+            {
+              "internalType": "bool",
+              "name": "long",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isOpen",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint8",
+              "name": "collateralIndex",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ITradingStorage.TradeType",
+              "name": "tradeType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint120",
+              "name": "collateralAmount",
+              "type": "uint120"
+            },
+            {
+              "internalType": "uint64",
+              "name": "openPrice",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "tp",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "sl",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bool",
+              "name": "isCounterTrade",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint160",
+              "name": "positionSizeToken",
+              "type": "uint160"
+            },
+            {
+              "internalType": "uint24",
+              "name": "__placeholder",
+              "type": "uint24"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Trade",
+          "name": "_trade",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum ITradingStorage.PendingOrderType",
+          "name": "_orderType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "_initiator",
+          "type": "address"
+        }
+      ],
+      "name": "executeTriggerCloseOrderCallbackDirect",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x33575269"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "user",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "index",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct ITradingStorage.Id",
+              "name": "orderId",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint64",
+              "name": "open",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "high",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "low",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "current",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct ITradingCallbacks.AggregatorAnswer",
+          "name": "_a",
+          "type": "tuple"
         }
       ],
       "name": "executeTriggerOpenOrderCallback",
@@ -12044,6 +12423,151 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x5578478f"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "user",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "index",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct ITradingStorage.Id",
+              "name": "orderId",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint64",
+              "name": "open",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "high",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "low",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "current",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct ITradingCallbacks.AggregatorAnswer",
+          "name": "_a",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            },
+            {
+              "internalType": "uint32",
+              "name": "index",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint16",
+              "name": "pairIndex",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint24",
+              "name": "leverage",
+              "type": "uint24"
+            },
+            {
+              "internalType": "bool",
+              "name": "long",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "isOpen",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint8",
+              "name": "collateralIndex",
+              "type": "uint8"
+            },
+            {
+              "internalType": "enum ITradingStorage.TradeType",
+              "name": "tradeType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint120",
+              "name": "collateralAmount",
+              "type": "uint120"
+            },
+            {
+              "internalType": "uint64",
+              "name": "openPrice",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "tp",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "sl",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bool",
+              "name": "isCounterTrade",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint160",
+              "name": "positionSizeToken",
+              "type": "uint160"
+            },
+            {
+              "internalType": "uint24",
+              "name": "__placeholder",
+              "type": "uint24"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Trade",
+          "name": "_trade",
+          "type": "tuple"
+        },
+        {
+          "internalType": "enum ITradingStorage.PendingOrderType",
+          "name": "_orderType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "_initiator",
+          "type": "address"
+        }
+      ],
+      "name": "executeTriggerOpenOrderCallbackDirect",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x9d7ef759"
     },
     {
       "inputs": [
@@ -14576,45 +15100,6 @@
     {
       "inputs": [
         {
-          "internalType": "uint8",
-          "name": "_collateralIndex",
-          "type": "uint8"
-        },
-        {
-          "internalType": "address",
-          "name": "_trader",
-          "type": "address"
-        },
-        {
-          "internalType": "uint16",
-          "name": "_pairIndex",
-          "type": "uint16"
-        },
-        {
-          "internalType": "uint32",
-          "name": "_index",
-          "type": "uint32"
-        },
-        {
-          "internalType": "bool",
-          "name": "_long",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "_currentPairPrice",
-          "type": "uint256"
-        }
-      ],
-      "name": "resetTradeBorrowingFees",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0x2e47dc6a"
-    },
-    {
-      "inputs": [
-        {
           "components": [
             {
               "internalType": "uint32",
@@ -14794,13 +15279,82 @@
           "internalType": "struct IBorrowingFees.BorrowingPairParams",
           "name": "_value",
           "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
         }
       ],
       "name": "setBorrowingPairParams",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x33b516cf"
+      "signature": "0x3f85355a"
     },
     {
       "inputs": [
@@ -14840,13 +15394,82 @@
           "internalType": "struct IBorrowingFees.BorrowingPairParams[]",
           "name": "_values",
           "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
         }
       ],
       "name": "setBorrowingPairParamsArray",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xeb1802f8"
+      "signature": "0xd4b813f2"
     },
     {
       "inputs": [
@@ -14919,7 +15542,32 @@
     },
     {
       "inputs": [],
+      "name": "DuplicateOrUnsortedPairIndices",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ExpiryTooFar",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "FromBlockMismatch",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "InvalidCandle",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidCurrentPrice",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidExpiryTimestamp",
       "type": "error"
     },
     {
@@ -14929,7 +15577,37 @@
     },
     {
       "inputs": [],
+      "name": "InvalidSignature",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "LookbackMismatch",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MinAnswersNotReached",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "OracleAlreadyListed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "PairAndCurrentPriceLengthMismatch",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "PairIndexMismatchBetweenSigners",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "PairLengthMismatchBetweenSigners",
       "type": "error"
     },
     {
@@ -14950,6 +15628,16 @@
     {
       "inputs": [],
       "name": "WrongCollateralUsdDecimals",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "WrongSignaturesCount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "WrongSignerIdOrder",
       "type": "error"
     },
     {
@@ -15236,20 +15924,6 @@
       "name": "OracleReplaced",
       "type": "event",
       "signature": "0x36f00e7308d970ca7446a252b7a1dd9c9cb50ea4559b602e595fc53967ac9dd9"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "bytes32",
-          "name": "jobId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "ParamUpdateJobIdUpdated",
-      "type": "event",
-      "signature": "0x47b440e213065ce71d2660828d52a17e40915af406469be6b9af861a9465427b"
     },
     {
       "anonymous": false,
@@ -15571,6 +16245,104 @@
       "anonymous": false,
       "inputs": [
         {
+          "indexed": true,
+          "internalType": "uint16",
+          "name": "pairIndex",
+          "type": "uint16"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "isLookback",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "fromBlock",
+          "type": "uint32"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "minFilteredAnswersReached",
+          "type": "bool"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint56",
+              "name": "open",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint56",
+              "name": "high",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint56",
+              "name": "low",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint56",
+              "name": "current",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint32",
+              "name": "ts",
+              "type": "uint32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IPriceAggregator.OrderAnswer[]",
+          "name": "unfilteredAnswers",
+          "type": "tuple[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint56",
+              "name": "open",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint56",
+              "name": "high",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint56",
+              "name": "low",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint56",
+              "name": "current",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint32",
+              "name": "ts",
+              "type": "uint32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IPriceAggregator.OrderAnswer[]",
+          "name": "filteredAnswers",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "SignedPricesReceived",
+      "type": "event",
+      "signature": "0x86de8981b0d1c326788b6cf0a05a146dad3a99f57d2df4af213f32de34ce8bf4"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "components": [
             {
               "components": [
@@ -15661,6 +16433,14 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x6f37d263"
+    },
+    {
+      "inputs": [],
+      "name": "cleanUpSignedPairPrices",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x1c302ec1"
     },
     {
       "inputs": [
@@ -16049,18 +16829,110 @@
       "signature": "0x40884c52"
     },
     {
-      "inputs": [],
-      "name": "getParamUpdateJobId",
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "_pairIndex",
+          "type": "uint16"
+        }
+      ],
+      "name": "getPairSignedMedianTemporary",
       "outputs": [
         {
-          "internalType": "bytes32",
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "address",
+                  "name": "user",
+                  "type": "address"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "index",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct ITradingStorage.Id",
+              "name": "orderId",
+              "type": "tuple"
+            },
+            {
+              "internalType": "uint64",
+              "name": "open",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "high",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "low",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "current",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct ITradingCallbacks.AggregatorAnswer",
           "name": "",
-          "type": "bytes32"
+          "type": "tuple"
         }
       ],
       "stateMutability": "view",
       "type": "function",
-      "signature": "0xc4296c90"
+      "signature": "0xed5becb6"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint16",
+          "name": "_pairIndex",
+          "type": "uint16"
+        }
+      ],
+      "name": "getPairSignedOrderAnswersTemporary",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint56",
+              "name": "open",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint56",
+              "name": "high",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint56",
+              "name": "low",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint56",
+              "name": "current",
+              "type": "uint56"
+            },
+            {
+              "internalType": "uint32",
+              "name": "ts",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.OrderAnswer[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x4ed0ed84"
     },
     {
       "inputs": [
@@ -16387,6 +17259,20 @@
     },
     {
       "inputs": [],
+      "name": "getSignedPairIndicesTemporary",
+      "outputs": [
+        {
+          "internalType": "uint16[]",
+          "name": "",
+          "type": "uint16[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x988fcc05"
+    },
+    {
+      "inputs": [],
       "name": "getTwapInterval",
       "outputs": [
         {
@@ -16456,20 +17342,6 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x94db9ef7"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "_jobId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "initializeParamUpdateJobId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0x299e40a4"
     },
     {
       "inputs": [
@@ -16643,20 +17515,6 @@
     {
       "inputs": [
         {
-          "internalType": "bytes32",
-          "name": "_jobId",
-          "type": "bytes32"
-        }
-      ],
-      "name": "setParamUpdateJobId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0x989f7ceb"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "uint8",
           "name": "_collateralIndex",
           "type": "uint8"
@@ -16745,6 +17603,89 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0xb166a495"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "bool",
+          "name": "_isLookback",
+          "type": "bool"
+        }
+      ],
+      "name": "validateSignedPairPrices",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x73b0d136"
     },
     {
       "inputs": [],
@@ -18812,53 +19753,36 @@
         {
           "components": [
             {
-              "components": [
-                {
-                  "internalType": "address",
-                  "name": "user",
-                  "type": "address"
-                },
-                {
-                  "internalType": "uint32",
-                  "name": "index",
-                  "type": "uint32"
-                }
-              ],
-              "internalType": "struct ITradingStorage.Id",
-              "name": "orderId",
-              "type": "tuple"
+              "internalType": "uint8",
+              "name": "collateralIndex",
+              "type": "uint8"
             },
             {
-              "internalType": "uint64",
-              "name": "open",
-              "type": "uint64"
+              "internalType": "uint16",
+              "name": "pairIndex",
+              "type": "uint16"
             },
             {
-              "internalType": "uint64",
-              "name": "high",
-              "type": "uint64"
+              "internalType": "enum IFundingFees.ParamUpdateType",
+              "name": "updateType",
+              "type": "uint8"
             },
             {
-              "internalType": "uint64",
-              "name": "low",
-              "type": "uint64"
-            },
-            {
-              "internalType": "uint64",
-              "name": "current",
-              "type": "uint64"
+              "internalType": "uint224",
+              "name": "newValue",
+              "type": "uint224"
             }
           ],
-          "internalType": "struct ITradingCallbacks.AggregatorAnswer",
-          "name": "_answer",
+          "internalType": "struct IFundingFees.PendingParamUpdate",
+          "name": "_paramUpdate",
           "type": "tuple"
         }
       ],
-      "name": "pendingParamUpdateCallback",
+      "name": "paramUpdateCallbackWithSignedPrices",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x5246b961"
+      "signature": "0x002c68df"
     },
     {
       "inputs": [
@@ -18946,35 +19870,6 @@
     {
       "inputs": [
         {
-          "internalType": "uint8",
-          "name": "_collateralIndex",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint16",
-          "name": "_pairIndex",
-          "type": "uint16"
-        },
-        {
-          "internalType": "enum IFundingFees.ParamUpdateType",
-          "name": "_updateType",
-          "type": "uint8"
-        },
-        {
-          "internalType": "uint224",
-          "name": "_newValue",
-          "type": "uint224"
-        }
-      ],
-      "name": "requestParamUpdate",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function",
-      "signature": "0x41f84f2b"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "uint8[]",
           "name": "_collateralIndex",
           "type": "uint8[]"
@@ -18988,13 +19883,82 @@
           "internalType": "uint24[]",
           "name": "_absoluteRatePerSecondCap",
           "type": "uint24[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
         }
       ],
       "name": "setAbsoluteRatePerSecondCap",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x1cff93a8"
+      "signature": "0x48b5a760"
     },
     {
       "inputs": [
@@ -19012,13 +19976,82 @@
           "internalType": "uint24[]",
           "name": "_absoluteVelocityPerYearCap",
           "type": "uint24[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
         }
       ],
       "name": "setAbsoluteVelocityPerYearCap",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x96ebeace"
+      "signature": "0xfacfee17"
     },
     {
       "inputs": [
@@ -19036,13 +20069,82 @@
           "internalType": "bool[]",
           "name": "_aprMultiplierEnabled",
           "type": "bool[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
         }
       ],
       "name": "setAprMultiplierEnabled",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xe8cf0b70"
+      "signature": "0x6d00c93e"
     },
     {
       "inputs": [
@@ -19060,13 +20162,82 @@
           "internalType": "uint24[]",
           "name": "_borrowingRatePerSecondP",
           "type": "uint24[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
         }
       ],
       "name": "setBorrowingRatePerSecondP",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xdbb69ab4"
+      "signature": "0x559f5276"
     },
     {
       "inputs": [
@@ -19084,13 +20255,82 @@
           "internalType": "bool[]",
           "name": "_fundingFeesEnabled",
           "type": "bool[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
         }
       ],
       "name": "setFundingFeesEnabled",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x7b4ee84d"
+      "signature": "0x2fe09970"
     },
     {
       "inputs": [
@@ -19132,13 +20372,82 @@
           "internalType": "uint112[]",
           "name": "_skewCoefficientPerYear",
           "type": "uint112[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
         }
       ],
       "name": "setSkewCoefficientPerYear",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xb6fa94a3"
+      "signature": "0xaeaca82a"
     },
     {
       "inputs": [
@@ -19156,13 +20465,82 @@
           "internalType": "uint32[]",
           "name": "_thetaThresholdUsd",
           "type": "uint32[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint8",
+              "name": "signerId",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint32",
+              "name": "expiryTs",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bool",
+              "name": "isLookback",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint32",
+              "name": "fromBlock",
+              "type": "uint32"
+            },
+            {
+              "internalType": "bytes",
+              "name": "signature",
+              "type": "bytes"
+            },
+            {
+              "internalType": "uint16[]",
+              "name": "pairIndices",
+              "type": "uint16[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint56",
+                  "name": "open",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "high",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "low",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint56",
+                  "name": "current",
+                  "type": "uint56"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "ts",
+                  "type": "uint32"
+                }
+              ],
+              "internalType": "struct IPriceAggregator.OrderAnswer[]",
+              "name": "prices",
+              "type": "tuple[]"
+            }
+          ],
+          "internalType": "struct IPriceAggregator.SignedPairPrices[]",
+          "name": "_signedPairPrices",
+          "type": "tuple[]"
         }
       ],
       "name": "setThetaThresholdUsd",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x3adcbe28"
+      "signature": "0x6916451e"
     },
     {
       "inputs": [
@@ -19298,6 +20676,30 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x2e4f2b16"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32",
+          "name": "_index",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_deltaCollateral",
+          "type": "uint256"
+        }
+      ],
+      "name": "storeUiRealizedTradingFeesCollateral",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x24f84e39"
     },
     {
       "inputs": [
