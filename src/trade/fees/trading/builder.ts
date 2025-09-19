@@ -3,7 +3,7 @@
  * @dev Provides builder functions for creating trading fee contexts
  */
 
-import { Fee, GlobalTradeFeeParams } from "../../types";
+import { Fee, GlobalTradeFeeParams, CounterTradeSettings } from "../../types";
 import { GlobalTradingVariablesType } from "src/backend/tradingVariables/types";
 
 /**
@@ -12,6 +12,7 @@ import { GlobalTradingVariablesType } from "src/backend/tradingVariables/types";
 export type TradingFeesSubContext = {
   fee: Fee;
   globalTradeFeeParams: GlobalTradeFeeParams;
+  counterTradeSettings?: CounterTradeSettings[];
   traderFeeMultiplier?: number;
 };
 
@@ -23,12 +24,13 @@ export const buildTradingFeesContext = (
   pairIndex: number,
   traderFeeMultiplier?: number
 ): TradingFeesSubContext => {
-  const { fees, pairs, globalTradeFeeParams } = globalTradingVariables;
+  const { fees, pairs, globalTradeFeeParams, counterTradeSettings } = globalTradingVariables;
   const feeIndex = pairs![pairIndex].feeIndex;
 
   return {
     fee: fees![feeIndex],
     globalTradeFeeParams: globalTradeFeeParams!,
+    counterTradeSettings,
     traderFeeMultiplier,
   };
 };
