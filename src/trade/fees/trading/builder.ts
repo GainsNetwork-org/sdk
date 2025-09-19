@@ -24,7 +24,8 @@ export const buildTradingFeesContext = (
   pairIndex: number,
   traderFeeMultiplier?: number
 ): TradingFeesSubContext => {
-  const { fees, pairs, globalTradeFeeParams, counterTradeSettings } = globalTradingVariables;
+  const { fees, pairs, globalTradeFeeParams, counterTradeSettings } =
+    globalTradingVariables;
   const feeIndex = pairs![pairIndex].feeIndex;
 
   return {

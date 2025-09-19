@@ -12,11 +12,14 @@ import {
   OiWindows,
   OiWindowsSettings,
   Pair,
-  PairDepth,
   PairFactor,
   PairIndexes,
   TradingGroup,
 } from "../../trade";
+import {
+  PairDepthBands,
+  DepthBandsMapping,
+} from "../../trade/priceImpact/cumulVol/types";
 import { UnifiedPairOi } from "src/markets";
 
 export type TransformedGlobalTradingVariables = {
@@ -82,7 +85,8 @@ export type GlobalTradingVariablesType = {
   commodities?: string[];
   commoditiesClosed?: boolean;
   blockConfirmations?: number;
-  pairDepths?: PairDepth[];
+  pairDepthBands?: PairDepthBands[];
+  depthBandsMapping?: DepthBandsMapping;
   pairMaxLeverages?: number[];
   maxNegativePnlOnOpenP?: number;
   oiWindowsSettings?: OiWindowsSettings;
