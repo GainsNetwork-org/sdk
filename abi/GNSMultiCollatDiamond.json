@@ -5,11 +5,6 @@
   "abi": [
     {
       "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "inputs": [],
       "name": "AboveMax",
       "type": "error"
     },
