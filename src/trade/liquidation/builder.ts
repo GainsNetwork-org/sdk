@@ -71,15 +71,11 @@ export const buildLiquidationPriceContext = (
       trade.pairIndex,
       additionalParams.currentTimestamp
     ),
-    trading: {
-      ...buildTradingFeesContext(
-        globalTradingVariables,
-        trade.pairIndex,
-        additionalParams.traderFeeMultiplier
-      ),
-      counterTradeSettings: globalTradingVariables.counterTradeSettings,
-      userPriceImpact: additionalParams.userPriceImpact,
-    },
+    trading: buildTradingFeesContext(
+      globalTradingVariables,
+      trade.pairIndex,
+      additionalParams.traderFeeMultiplier
+    ),
 
     // Trade-specific data
     tradeData: {

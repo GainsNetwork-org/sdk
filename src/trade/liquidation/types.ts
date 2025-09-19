@@ -31,13 +31,8 @@ export type GetLiquidationPriceContext = {
   borrowingV2?: GetPairBorrowingFeeV2Context;
   funding?: GetPairFundingFeeContext;
 
-  // Trading fees context - extended with all fields needed for getTotalTradeFeesCollateral
-  trading: TradingFeesSubContext & {
-    userPriceImpact?: UserPriceImpact;
-    counterTradeSettings?: {
-      [pairIndex: number]: CounterTradeSettings;
-    };
-  };
+  // Trading fees context
+  trading: TradingFeesSubContext;
 
   // Trade-specific data
   tradeData: {

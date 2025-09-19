@@ -160,6 +160,7 @@ export const getComprehensivePnl = (
       fee: context.trading.fee,
       globalTradeFeeParams: context.trading.globalTradeFeeParams,
       collateralPriceUsd: context.core.collateralPriceUsd,
+      counterTradeSettings: context.trading.counterTradeSettings,
       traderFeeMultiplier: context.trading.traderFeeMultiplier,
     }
   );
@@ -426,6 +427,7 @@ export const getPriceForTargetPnlPercentage = (
         globalTradeFeeParams: context.trading.globalTradeFeeParams,
         collateralPriceUsd: context.core.collateralPriceUsd,
         traderFeeMultiplier: context.trading.traderFeeMultiplier,
+        counterTradeSettings: context.trading.counterTradeSettings,
       }
     );
     targetPnlGross += closingFee;
