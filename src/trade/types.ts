@@ -793,4 +793,8 @@ export enum PairIndex {
   BGSCUSD,
   TAGUSD,
   WLFIUSD,
+  ASTERUSD,
+  OKBUSD,
+  CROUSD,
+  SKYUSD,
 }

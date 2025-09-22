@@ -632,4 +632,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.BGSCUSD]: "BugsCoin to US Dollar",
   [PairIndex.TAGUSD]: "TAGGER to US Dollar",
   [PairIndex.WLFIUSD]: "World Liberty Financial to US Dollar",
+  [PairIndex.ASTERUSD]: "Aster to US Dollar",
+  [PairIndex.OKBUSD]: "OKB to US Dollar",
+  [PairIndex.CROUSD]: "Cronos to US Dollar",
+  [PairIndex.SKYUSD]: "SKy to US Dollar",
 };
