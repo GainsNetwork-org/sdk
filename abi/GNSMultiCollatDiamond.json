@@ -4465,6 +4465,48 @@
     {
       "inputs": [
         {
+          "internalType": "uint256[]",
+          "name": "_indices",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getPairDepthBands",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "aboveSlot1",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "aboveSlot2",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "belowSlot1",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "belowSlot2",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IPriceImpact.PairDepthBands[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x42105561"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_pairIndex",
           "type": "uint256"
@@ -4503,48 +4545,6 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0xc693e1be"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "_indices",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "getPairDepthBandsArray",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "aboveSlot1",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "aboveSlot2",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "belowSlot1",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "belowSlot2",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct IPriceImpact.PairDepthBands[]",
-          "name": "",
-          "type": "tuple[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function",
-      "signature": "0x35bf34e8"
     },
     {
       "inputs": [
@@ -4589,7 +4589,7 @@
           "type": "uint256[]"
         }
       ],
-      "name": "getPairDepthBandsDecodedArray",
+      "name": "getPairDepthBandsDecoded",
       "outputs": [
         {
           "internalType": "uint256[]",
@@ -4614,7 +4614,7 @@
       ],
       "stateMutability": "view",
       "type": "function",
-      "signature": "0x299f621d"
+      "signature": "0x8c6a54d8"
     },
     {
       "inputs": [
@@ -16872,6 +16872,31 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0xa91fa361"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_gnsPriceCollateral",
+          "type": "uint256"
+        }
+      ],
+      "name": "getGnsPriceUsd",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x6e27030b"
     },
     {
       "inputs": [
