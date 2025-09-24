@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Pair, Fee, OpenInterest, PairIndex } from "../../trade/types";
+import { Fee, OpenInterest, Pair, PairIndex } from "../../trade/types";
 import { Contracts } from "../../contracts/types";
 
 export const fetchPairs = async (
@@ -50,11 +50,7 @@ export const fetchPairDepthBands = async (
 
   try {
     // Returns array of PairDepthBands structs (encoded slots)
-    // Using quoted signature for overloaded function
-    const depthBands = await multiCollatContract[
-      "getPairDepthBands(uint256[])"
-    ](pairIxs);
-    return depthBands;
+    return await multiCollatContract.getPairDepthBandsArray(pairIxs);
   } catch (error) {
     console.error(`Unexpected error while fetching pair depth bands!`);
     throw error;
@@ -85,7 +81,7 @@ export const fetchPairDepthBandsDecoded = async (
     // Returns decoded values
     // Using quoted signature for overloaded function
     const [totalDepthAboveUsd, totalDepthBelowUsd, bandsAbove, bandsBelow] =
-      await multiCollatContract["getPairDepthBandsDecoded(uint256[])"](pairIxs);
+      await multiCollatContract.getPairDepthBandsDecodedArray(pairIxs);
 
     return {
       totalDepthAboveUsd: totalDepthAboveUsd.map((v: any) =>
