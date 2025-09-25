@@ -796,4 +796,5 @@ export enum PairIndex {
   OKBUSD,
   CROUSD,
   SKYUSD,
+  XPLUSD,
 }
