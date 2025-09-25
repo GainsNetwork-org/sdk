@@ -559,5 +559,6 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.ASTERUSD]: "Aster to US Dollar",
   [PairIndex.OKBUSD]: "OKB to US Dollar",
   [PairIndex.CROUSD]: "Cronos to US Dollar",
-  [PairIndex.SKYUSD]: "SKy to US Dollar",
+  [PairIndex.SKYUSD]: "Sky to US Dollar",
+  [PairIndex.XPLUSD]: "Plasma to US Dollar",  
 };
