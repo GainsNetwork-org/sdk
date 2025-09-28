@@ -560,5 +560,11 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.OKBUSD]: "OKB to US Dollar",
   [PairIndex.CROUSD]: "Cronos to US Dollar",
   [PairIndex.SKYUSD]: "Sky to US Dollar",
-  [PairIndex.XPLUSD]: "Plasma to US Dollar",  
+  [PairIndex.XPLUSD]: "Plasma to US Dollar",
+  [PairIndex.AVNTUSD]: "Avantis to US Dollar",
+  [PairIndex.APEXUSD]: "ApeX Protocol to US Dollar",
+  [PairIndex.ORDERUSD]: "Orderly to US Dollar",
+  [PairIndex.DRIFTUSD]: "Drift to US Dollar",    
+  [PairIndex.MYXUSD]: "MYX Finance to US Dollar",
+  [PairIndex.NOMUSD]: "Nomina to US Dollar",
 };
