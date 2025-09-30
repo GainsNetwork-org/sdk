@@ -27,3 +27,32 @@ export type MarketPriceContext = {
     oiShortToken: number;
   };
 };
+
+/**
+ * @dev Types for signed prices data structure
+ */
+
+export type SignedPricesResponse = {
+  signedData: SignedPrices;
+  missingPrices: number[]; // pair indices that were requested but not included
+};
+
+export type SignedPrices = {
+  signerId: number;
+  expiryTs: number; // in seconds
+  fromBlock: number;
+  isLookback: boolean;
+  pairIndices: number[]; // in ascending order
+  prices: Price[];
+  signature: string;
+};
+
+export type Price = {
+  open: string; // 1e10 precision
+  high: string; // 1e10 precision
+  low: string; // 1e10 precision
+  current: string; // 1e10 precision
+  ts: number; // in seconds
+};
+
+export type Oracle = { url: string; key?: string };

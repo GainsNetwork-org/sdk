@@ -5,3 +5,4 @@
 export * from "./types";
 export * from "./marketPrice";
 export * from "./builder";
+export * from "./signedPrices";

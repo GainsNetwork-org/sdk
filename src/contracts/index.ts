@@ -106,4 +106,4 @@ export const COLLATERAL_TO_COLLATERAL_INDEX: Record<CollateralTypes, number> = {
 
 export * from "./utils";
 export * from "./addresses";
-export { CollateralTypes } from "./types";
+export { CollateralTypes, ChainId } from "./types";
