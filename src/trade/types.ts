@@ -797,4 +797,11 @@ export enum PairIndex {
   OKBUSD,
   CROUSD,
   SKYUSD,
+  XPLUSD,
+  AVNTUSD,
+  APEXUSD,
+  ORDERUSD,
+  DRIFTUSD,
+  MYXUSD,
+  NOMUSD,
 }
