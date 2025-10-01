@@ -6,7 +6,8 @@ import {
   convertMaxLeverages,
   convertOiWindows,
   convertOiWindowsSettings,
-  convertPairDepths,
+  convertPairDepthBands,
+  convertDepthBandsMapping,
   convertPairFactor,
   convertTradingGroups,
   convertTradingPairs,
@@ -42,10 +43,14 @@ export const transformGlobalTradingVariables = (
     stocksClosed: !rawData.isStocksOpen,
     indicesClosed: !rawData.isIndicesOpen,
     commoditiesClosed: !rawData.isCommoditiesOpen,
-    pairDepths:
-      rawData.pairInfos?.pairDepths !== undefined
-        ? convertPairDepths(rawData.pairInfos.pairDepths)
+    pairDepthBands:
+      rawData.pairInfos?.pairDepthBands !== undefined
+        ? convertPairDepthBands(rawData.pairInfos.pairDepthBands)
         : [],
+    depthBandsMapping:
+      rawData.depthBandsMapping !== undefined
+        ? convertDepthBandsMapping(rawData.depthBandsMapping)
+        : { bands: [] },
     pairMaxLeverages:
       rawData.pairInfos?.maxLeverages !== undefined
         ? convertMaxLeverages(rawData.pairInfos.maxLeverages)

@@ -42,8 +42,11 @@ export const getTradeOpeningPriceImpact = (
     true // opening
   );
 
+  console.log("spreadP", spreadP);
+
   // Calculate position size in USD
   const positionSizeUsd = positionSizeCollateral * context.collateralPriceUsd;
+  console.log("positionSizeUsd", positionSizeUsd);
 
   // Calculate cumulative volume price impact
   const cumulVolPriceImpactP = getTradeCumulVolPriceImpactP(
@@ -56,6 +59,8 @@ export const getTradeOpeningPriceImpact = (
     0, // lastPosIncreaseBlock - not relevant for opening
     context.cumulVolContext
   );
+
+  console.log("cumulVolPriceImpactP", cumulVolPriceImpactP);
 
   // Calculate price after spread and cumulative volume impact (before skew)
   const priceAfterSpreadAndCumulVolPriceImpact = getPriceAfterImpact(

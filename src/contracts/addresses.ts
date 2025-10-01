@@ -7,25 +7,28 @@ import addresses from "./addresses.json";
 
 export const getContractAddressesForChain = (
   chainId: number,
-  collateral: CollateralTypes = CollateralTypes.DAI
+  collateral: CollateralTypes = CollateralTypes.DAI,
+  stable = true
 ): ContractAddresses => {
   const _addresses: ContractAddressList = addresses;
+  const chainIdMapping =
+    !stable && chainId === 421614 ? "421614-release" : chainId;
 
-  if (!_addresses[chainId]) {
+  if (!_addresses[chainIdMapping]) {
     throw new Error(
       `Unknown chain id (${chainId}). No known contracts have been deployed on this chain.`
     );
   }
 
-  if (!_addresses[chainId][collateral]) {
+  if (!_addresses[chainIdMapping][collateral]) {
     throw new Error(
       `Unknown collateral (${collateral}) for chain id (${chainId}). No known contracts have been deployed for this collateral.`
     );
   }
 
   return {
-    ..._addresses[chainId]["global"],
-    ..._addresses[chainId][collateral],
+    ..._addresses[chainIdMapping]["global"],
+    ..._addresses[chainIdMapping][collateral],
   } as ContractAddresses;
 };
 
