@@ -426,7 +426,7 @@ export const pairs = {
   "XPL/USD": CRYPTO,  
   "AVNT/USD": CRYPTO,
   "APEX/USD": CRYPTO,
-  "ORDER/USD": CRYPTO,  
+  "ORDER/USD": CRYPTO,
   "DRIFT/USD": CRYPTO,  
   "MYX/USD": CRYPTO,
   "NOM/USD": CRYPTO,
