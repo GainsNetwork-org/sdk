@@ -426,10 +426,17 @@ export const pairs = {
   "XPL/USD": CRYPTO,  
   "AVNT/USD": CRYPTO,
   "APEX/USD": CRYPTO,
-  "ORDER/USD": CRYPTO,
+  "ORDER/USD": CRYPTO,  
   "DRIFT/USD": CRYPTO,  
   "MYX/USD": CRYPTO,
-  "NOM/USD": CRYPTO,  
+  "NOM/USD": CRYPTO,
+  "FLUID/USD": CRYPTO,
+  "LQTY/USD": CRYPTO,
+  "L3/USD": CRYPTO,
+  "CAMP/USD": CRYPTO,
+  "SOMI/USD": CRYPTO,
+  "HEMI/USD": CRYPTO,
+  "FF/USD": CRYPTO,
 };
 
 export const syntheticPairs = new Set([
@@ -487,9 +494,9 @@ export const delistedPairIxs = new Set([
   61, 63, 66, 67, 68, 69, 70, 71, 72, 73, 75, 76, 77, 78, 79, 95, 96, 97, 98,
   99, 101, 106, 111, 113, 114, 116, 118, 120, 122, 123, 125, 127, 130, 147, 152,
   160, 163, 170, 179, 182, 183, 188, 189, 190, 208, 209, 225, 229, 230, 231,
-  238, 239, 241, 250, 253, 254, 258, 270, 275, 276, 278, 279, 282, 285, 290,
-  294, 296, 305, 311, 330, 349, 352, 353, 354, 355, 357, 365, 366, 395, 396,
-  424,
+  238, 239, 241, 250, 253, 254, 258, 270, 275, 276, 278, 279, 285, 290, 294, 
+  296, 305, 311, 330, 349, 352, 353, 354, 355, 357, 365, 366, 395, 396, 424,
+  425, 426, 427, 428, 429, 430, 431,
 ]);
 
 export const delistedGroupsIxs = new Set([]);
