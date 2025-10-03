@@ -803,4 +803,11 @@ export enum PairIndex {
   DRIFTUSD,
   MYXUSD,
   NOMUSD,
+  FLUIDUSD,
+  LQTYUSD,
+  L3USD,
+  CAMPUSD,
+  SOMIUSD,
+  HEMIUSD,
+  FFUSD,
 }
