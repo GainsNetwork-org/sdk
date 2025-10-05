@@ -141,8 +141,6 @@ const _calculateDepthBandsPriceImpact = (
     depthBandsMapping: DepthBandsMapping;
   }
 ): number => {
-  console.log("tradeSizeUsd", tradeSizeUsd);
-  console.log("depthBandParams", depthBandParams);
   const totalDepthUsd = depthBandParams.depthBands.totalDepthUsd;
 
   if (totalDepthUsd === 0 || tradeSizeUsd === 0) return 0;
@@ -157,11 +155,8 @@ const _calculateDepthBandsPriceImpact = (
     const topOfBandOffsetPpm = depthBandParams.depthBandsMapping.bands[i]; // Already in 0-1 format
     const bandDepthUsd = bandLiquidityPercentageBps * totalDepthUsd;
 
-    console.log("bandDepthUsd", bandDepthUsd);
-
     // Skip if band has same depth as previous (would cause division by zero)
     if (bandDepthUsd <= prevBandDepthUsd) {
-      console.log("Skipping band");
       prevBandDepthUsd = bandDepthUsd;
       topOfPrevBandOffsetPpm = topOfBandOffsetPpm;
       continue;
@@ -169,7 +164,6 @@ const _calculateDepthBandsPriceImpact = (
 
     // Since bandDepthUsd represents liquidity from mid price to top of band, we need to subtract previous band depth
     const bandAvailableDepthUsd = bandDepthUsd - prevBandDepthUsd;
-    console.log("bandAvailableDepthUsd", bandAvailableDepthUsd);
     let depthConsumedUsd;
 
     // At 100% band always consume all remaining size, even if more than band available depth
@@ -179,39 +173,28 @@ const _calculateDepthBandsPriceImpact = (
     ) {
       depthConsumedUsd = remainingSizeUsd;
       remainingSizeUsd = 0;
-      console.log("Consumed all remaining size");
     } else {
       // Normal case: consume entire band and continue to next
       depthConsumedUsd = bandAvailableDepthUsd;
       remainingSizeUsd -= bandAvailableDepthUsd;
-      console.log("Consumed entire band");
     }
 
     // Calculate impact contribution from this band using trapezoidal rule
     // Low = previous band's price offset, High = current band's price offset
     const lowOffsetP = topOfPrevBandOffsetPpm;
     const offsetRangeP = topOfBandOffsetPpm - topOfPrevBandOffsetPpm;
-    console.log("lowOffsetP", lowOffsetP);
-    console.log("offsetRangeP", offsetRangeP);
-    console.log("depthConsumedUsd", depthConsumedUsd);
-    console.log("bandAvailableDepthUsd", bandAvailableDepthUsd);
 
     // Calculate average impact using trapezoidal rule: low + (range * fraction / 2)
     const avgImpactP =
       lowOffsetP +
       (offsetRangeP * depthConsumedUsd) / bandAvailableDepthUsd / 2;
-    console.log("avgImpactP", avgImpactP);
 
     totalWeightedPriceImpactP += avgImpactP * depthConsumedUsd;
-    console.log("totalWeightedPriceImpactP", totalWeightedPriceImpactP);
 
     // Update previous values for next iteration
     topOfPrevBandOffsetPpm = topOfBandOffsetPpm;
     prevBandDepthUsd = bandDepthUsd;
   }
-
-  console.log("totalWeightedPriceImpactP", totalWeightedPriceImpactP);
-  console.log("tradeSizeUsd", tradeSizeUsd);
 
   return totalWeightedPriceImpactP / tradeSizeUsd;
 };
@@ -257,12 +240,6 @@ const _getDepthBandsPriceImpactP = (
     ? -totalSizeLookupUsd
     : totalSizeLookupUsd;
 
-  console.log(
-    "effectiveCumulativeVolumeUsdUint",
-    effectiveCumulativeVolumeUsdUint
-  );
-  console.log("totalSizeLookupUsdUint", totalSizeLookupUsdUint);
-
   const cumulativeVolPriceImpactP = _calculateDepthBandsPriceImpact(
     effectiveCumulativeVolumeUsdUint,
     depthBandParams
@@ -271,9 +248,6 @@ const _getDepthBandsPriceImpactP = (
     totalSizeLookupUsdUint,
     depthBandParams
   );
-
-  console.log("cumulativeVolPriceImpactP", cumulativeVolPriceImpactP);
-  console.log("totalSizePriceImpactP", totalSizePriceImpactP);
 
   const unscaledPriceImpactP =
     cumulativeVolPriceImpactP +
@@ -326,17 +300,13 @@ export const getTradeCumulVolPriceImpactP = (
       context?.exemptAfterProtectionCloseFactor === true &&
       isProtectionCloseFactorActive(updatedContext) !== true)
   ) {
-    console.log("No price impact, protection close factor");
     return 0;
   }
 
   const tradePositiveSkew = (long && open) || (!long && !open);
   const tradeSkewMultiplier = tradePositiveSkew ? 1 : -1;
 
-  console.log("bands", context.pairDepthBands);
-  console.log("mapping", context.depthBandsMapping);
   if (!context.pairDepthBands || !context.depthBandsMapping) {
-    console.log("No price impact, bands");
     return 0;
   }
 
@@ -347,7 +317,6 @@ export const getTradeCumulVolPriceImpactP = (
 
   // Return 0 if no depth bands configured (matching contract lines 588-590)
   if (!depthBands || depthBands.totalDepthUsd === 0) {
-    console.log("No price impact, depth bands");
     return 0;
   }
 
@@ -363,13 +332,8 @@ export const getTradeCumulVolPriceImpactP = (
       ) || 0;
   }
 
-  console.log("activeOi", activeOi);
-
   const signedActiveOi = activeOi * tradeSkewMultiplier;
   const signedTradeOi = tradeOpenInterestUsd * tradeSkewMultiplier;
-
-  console.log("signedActiveOi", signedActiveOi);
-  console.log("signedTradeOi", signedTradeOi);
 
   // Calculate price impact using depth bands
   const priceImpactP = _getDepthBandsPriceImpactP(
