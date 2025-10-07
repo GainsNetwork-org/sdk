@@ -160,8 +160,6 @@ export const convertDepthBandsMapping = (
     BigInt(mapping.slot2)
   );
 
-  console.log("bandsBps", bandsBps);
-
   // Convert from basis points to 0-1 range
   return {
     bands: bandsBps.map(bps => bps / 10000),
