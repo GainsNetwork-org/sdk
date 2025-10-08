@@ -5,7 +5,12 @@ import {
   IFundingFees,
 } from "../contracts/types/generated/GNSMultiCollatDiamond";
 import { BorrowingFee } from "./fees/borrowing";
-import { FeeTier, TraderEnrollment, TraderInfo } from "./fees/tiers/types";
+import {
+  FeeTier,
+  TraderEnrollment,
+  TraderInfo,
+  StakingInfo,
+} from "./fees/tiers/types";
 
 export type PairIndexes = {
   [key: string]: PairIndex;
@@ -314,11 +319,15 @@ export type FeeTiers = {
   tiers: FeeTier[];
   multipliers: number[];
   currentDay: number;
+  stakingTiers: FeeTier[];
+  gnsVaultAddress?: string;
+  useGnsVaultBalance?: boolean;
 };
 
 export type TraderFeeTiers = {
   traderEnrollment: TraderEnrollment;
   traderInfo: TraderInfo;
+  stakingInfo: StakingInfo;
   inboundPoints: number;
   outboundPoints: number;
   lastDayUpdatedPoints: number;

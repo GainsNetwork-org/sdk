@@ -276,6 +276,14 @@ export type TraderInfoBackend = {
   trailingPoints: string;
 };
 
+export type StakingInfoBackend = {
+  stakedGns: string;
+  stakedVaultGns: string;
+  bonusAmount: string;
+  stakeTimestamp: number;
+  feeMultiplierCache: string;
+};
+
 export type TraderEnrollmentBackend = {
   status: number;
 };
@@ -283,6 +291,7 @@ export type TraderEnrollmentBackend = {
 export type TraderFeeTiersBackend = {
   traderEnrollment: TraderEnrollmentBackend;
   traderInfo: TraderInfoBackend;
+  stakingInfo: StakingInfoBackend;
   lastDayUpdatedPoints: string;
   inboundPoints: string;
   outboundPoints: string;
@@ -332,10 +341,15 @@ export type CollateralConfigBackend = {
   decimals: number;
 };
 
+export type FeeTierBackend = { feeMultiplier: string; pointsThreshold: string };
+
 export type FeeTiersBackend = {
-  tiers: Array<{ feeMultiplier: string; pointsThreshold: string }>; // 1e3, 1
+  tiers: FeeTierBackend[]; // Volume Fee Tiers; Precision: 1e3, 1
   multipliers: string[]; // 1e3
   currentDay: number;
+  stakingTiers: FeeTierBackend[]; // GNS Staking Fee Tiers; Precision: 1e3, 1
+  gnsVaultAddress: string;
+  useGnsVaultBalance: boolean;
 };
 
 export type GlobalTradeFeeParamsBackend = {
