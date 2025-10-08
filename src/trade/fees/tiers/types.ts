@@ -16,3 +16,11 @@ export enum TraderEnrollmentStatus {
 export type TraderEnrollment = {
   status: TraderEnrollmentStatus;
 };
+
+export type StakingInfo = {
+  stakedGns: number;
+  stakedVaultGns: number;
+  bonusAmount: number;
+  stakeTimestamp: number;
+  feeMultiplierCache: number;
+};

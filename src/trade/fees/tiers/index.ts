@@ -10,6 +10,8 @@ export const FEE_MULTIPLIER_SCALE = 1;
 
 export const MAX_FEE_TIERS = 8;
 
+export const GNS_STAKING_COOLDOWN_SECONDS = 86400; // 1 day in seconds
+
 export const getCurrentDay = (): number =>
   Math.floor(Date.now() / 1000 / 60 / 60 / 24);
 
@@ -43,10 +45,20 @@ export const getFeeMultiplier = (
 export const computeFeeMultiplier = (
   feeTiers: FeeTiers,
   traderFeeTiers: TraderFeeTiers
-): { feeMultiplier: number; trailingPoints: number } => {
+): {
+  feeMultiplier: number; // volume * staking multipliers
+  volumeFeeMultiplier: number; // from volume tiers
+  trailingPoints: number; // trailing points from volume tiers
+  stakingFeeMultiplier: number; // from staking tiers
+} => {
   const { currentDay, tiers } = feeTiers;
-  const { traderInfo, expiredPoints, lastDayUpdatedPoints, traderEnrollment } =
-    traderFeeTiers;
+  const {
+    traderInfo,
+    expiredPoints,
+    lastDayUpdatedPoints,
+    traderEnrollment,
+    stakingInfo,
+  } = traderFeeTiers;
   const { lastDayUpdated, trailingPoints } = traderInfo;
 
   let curTrailingPoints = trailingPoints;
@@ -67,14 +79,28 @@ export const computeFeeMultiplier = (
     }
   }
 
-  const feeMultiplier =
-    traderEnrollment.status === TraderEnrollmentStatus.EXCLUDED
+  const isTraderExcluded =
+    traderEnrollment.status === TraderEnrollmentStatus.EXCLUDED;
+
+  // Fee multiplier from volume tiers
+  const volumeFeeMultiplier = isTraderExcluded
+    ? FEE_MULTIPLIER_SCALE
+    : getFeeMultiplier(curTrailingPoints, tiers);
+
+  // Fee multiplier from staking tiers
+  const stakingFeeMultiplier =
+    isTraderExcluded || stakingInfo.feeMultiplierCache === 0
       ? FEE_MULTIPLIER_SCALE
-      : getFeeMultiplier(curTrailingPoints, tiers);
+      : stakingInfo.feeMultiplierCache;
+
+  // Total fee multiplier is the product of both multipliers
+  const totalFeeMultiplier = volumeFeeMultiplier * stakingFeeMultiplier;
 
   return {
-    feeMultiplier,
+    feeMultiplier: totalFeeMultiplier,
+    volumeFeeMultiplier: volumeFeeMultiplier,
     trailingPoints: curTrailingPoints,
+    stakingFeeMultiplier: stakingFeeMultiplier,
   };
 };
 
@@ -101,7 +127,7 @@ export const calculateFeeAmount = (
 };
 
 /**
- * @dev Helper function to get trader's fee multiplier from fee tiers data
+ * @dev Helper function to get trader's fee multiplier from volume and staking fee tiers data
  * @param feeTiers System fee tiers configuration
  * @param traderFeeTiers Trader's fee tier data
  * @returns Fee multiplier (1e3 precision)
@@ -112,4 +138,14 @@ export const getTraderFeeMultiplier = (
 ): number => {
   const { feeMultiplier } = computeFeeMultiplier(feeTiers, traderFeeTiers);
   return feeMultiplier;
+};
+
+export const isGnsStakingCooldownActive = (
+  traderFeeTiers: TraderFeeTiers
+): { isActive: boolean; expiryTs: number } => {
+  const now = Math.floor(Date.now() / 1000);
+  const expiryTs =
+    traderFeeTiers.stakingInfo.stakeTimestamp + GNS_STAKING_COOLDOWN_SECONDS;
+
+  return { isActive: now < expiryTs, expiryTs };
 };
