@@ -639,4 +639,11 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.DRIFTUSD]: "Drift to US Dollar",    
   [PairIndex.MYXUSD]: "MYX Finance to US Dollar",
   [PairIndex.NOMUSD]: "Nomina to US Dollar",
+  [PairIndex.FLUIDUSD]: "Fluid to US Dollar",
+  [PairIndex.LQTYUSD]: "Liquity to US Dollar",
+  [PairIndex.L3USD]: "Layer3 to US Dollar",
+  [PairIndex.CAMPUSD]: "Camp Network to US Dollar",
+  [PairIndex.SOMIUSD]: "Somnia to US Dollar",
+  [PairIndex.HEMIUSD]: "Hemi to US Dollar",
+  [PairIndex.FFUSD]: "Falcon Finance to US Dollar",  
 };
