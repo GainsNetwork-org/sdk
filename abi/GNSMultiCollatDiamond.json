@@ -66,6 +66,11 @@
     },
     {
       "inputs": [],
+      "name": "InvalidAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "InvalidCollateralIndex",
       "type": "error"
     },
@@ -3049,6 +3054,11 @@
     },
     {
       "inputs": [],
+      "name": "StakingCooldownActive",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "WrongFeeTier",
       "type": "error"
     },
@@ -3083,6 +3093,130 @@
       "name": "FeeTiersUpdated",
       "type": "event",
       "signature": "0xa6ec87cc1a516d9ebb5c03260f77d2bd8c22dc8d28d71e740b320fbd4d704131"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "trader",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint88",
+          "name": "amountGns",
+          "type": "uint88"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint88",
+          "name": "amountVaultGns",
+          "type": "uint88"
+        }
+      ],
+      "name": "GnsStaked",
+      "type": "event",
+      "signature": "0x1572ab8bd4939834be841ad61814e46728c8626304444e4fe13785ec0d316e80"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address[]",
+          "name": "traders",
+          "type": "address[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint24[]",
+          "name": "bonusAmounts",
+          "type": "uint24[]"
+        }
+      ],
+      "name": "GnsStakingBonusUpdated",
+      "type": "event",
+      "signature": "0xfa08bbe7335087f9f4d2c27dca8b1312c8a8195db34979a83bb2d463a97279be"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "trader",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint32",
+          "name": "feeMultiplier",
+          "type": "uint32"
+        }
+      ],
+      "name": "GnsStakingFeeMultiplierCached",
+      "type": "event",
+      "signature": "0xa9fbb96ba38987da4f58bd420ebbdc55816bc5e540af63d12405534a196ad864"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256[]",
+          "name": "indices",
+          "type": "uint256[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "feeMultiplier",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "pointsThreshold",
+              "type": "uint32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IFeeTiers.FeeTier[]",
+          "name": "tiers",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "GnsStakingTiersUpdated",
+      "type": "event",
+      "signature": "0x40afc8b8f728c4a695936b6bfe036bb178dbd8a6dd6e3d63e5e4d412c81d0456"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "trader",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint88",
+          "name": "amountGns",
+          "type": "uint88"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint88",
+          "name": "amountVaultGns",
+          "type": "uint88"
+        }
+      ],
+      "name": "GnsUnstaked",
+      "type": "event",
+      "signature": "0x763947071ca0263b300ff705128fd0dce3e2c0760f6c39d599db3bca2b6ba676"
     },
     {
       "anonymous": false,
@@ -3331,6 +3465,20 @@
       "signature": "0x8b1dd1669c243ea81885b90c31d292a58996045d48bd261b3aea98a09cd66f1e"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "newValue",
+          "type": "bool"
+        }
+      ],
+      "name": "UseGnsVaultBalanceUpdated",
+      "type": "event",
+      "signature": "0x3282cd4f9f91a1fc19b31cc01b7134108206936b80c54493edc3b75ab7ac68ae"
+    },
+    {
       "inputs": [
         {
           "internalType": "address[]",
@@ -3410,6 +3558,32 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0xeccea3e2"
+    },
+    {
+      "inputs": [],
+      "name": "getFeeTiers",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "feeMultiplier",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "pointsThreshold",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IFeeTiers.FeeTier[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xe9a4d24f"
     },
     {
       "inputs": [],
@@ -3497,6 +3671,186 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        }
+      ],
+      "name": "getGnsStakingInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint88",
+              "name": "stakedGns",
+              "type": "uint88"
+            },
+            {
+              "internalType": "uint88",
+              "name": "stakedVaultGns",
+              "type": "uint88"
+            },
+            {
+              "internalType": "uint24",
+              "name": "bonusAmount",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint32",
+              "name": "stakeTimestamp",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "feeMultiplierCache",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IFeeTiers.GnsStakingInfo",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xe7546b44"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_traders",
+          "type": "address[]"
+        }
+      ],
+      "name": "getGnsStakingInfos",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint88",
+              "name": "stakedGns",
+              "type": "uint88"
+            },
+            {
+              "internalType": "uint88",
+              "name": "stakedVaultGns",
+              "type": "uint88"
+            },
+            {
+              "internalType": "uint24",
+              "name": "bonusAmount",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint32",
+              "name": "stakeTimestamp",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "feeMultiplierCache",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IFeeTiers.GnsStakingInfo[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x84d2ba26"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tierIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getGnsStakingTier",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "feeMultiplier",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "pointsThreshold",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IFeeTiers.FeeTier",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x5d839b43"
+    },
+    {
+      "inputs": [],
+      "name": "getGnsStakingTiers",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "feeMultiplier",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "pointsThreshold",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IFeeTiers.FeeTier[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x394a0319"
+    },
+    {
+      "inputs": [],
+      "name": "getGnsStakingTiersCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xdb9f024c"
+    },
+    {
+      "inputs": [],
+      "name": "getGnsVaultAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x65e1672a"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_groupIndex",
           "type": "uint256"
@@ -3513,6 +3867,46 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0x31ca4887"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_groupIndices",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getGroupVolumeMultipliers",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x1c1fd1c9"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint88",
+          "name": "_stakedVaultGns",
+          "type": "uint88"
+        }
+      ],
+      "name": "getStakedVaultGnsValue",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x49e06735"
     },
     {
       "inputs": [
@@ -3567,6 +3961,20 @@
       "signature": "0x84e3ebe2"
     },
     {
+      "inputs": [],
+      "name": "getUseGnsVaultBalance",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x0e6d35df"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256[]",
@@ -3611,6 +4019,47 @@
       "inputs": [
         {
           "internalType": "uint256[]",
+          "name": "_tierIndices",
+          "type": "uint256[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "feeMultiplier",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "pointsThreshold",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IFeeTiers.FeeTier[]",
+          "name": "_tiers",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "address",
+          "name": "_gnsVaultAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "_useGnsVaultBalance",
+          "type": "bool"
+        }
+      ],
+      "name": "initializeGnsStakingTiers",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x46947b62"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
           "name": "_feeTiersIndices",
           "type": "uint256[]"
         },
@@ -3637,6 +4086,56 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0xeced5249"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_traders",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint24[]",
+          "name": "_bonusAmounts",
+          "type": "uint24[]"
+        }
+      ],
+      "name": "setGnsStakingBonusAmounts",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x6d221a5e"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_tierIndices",
+          "type": "uint256[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "feeMultiplier",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "pointsThreshold",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IFeeTiers.FeeTier[]",
+          "name": "_tiers",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "setGnsStakingTiers",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xdf877dc3"
     },
     {
       "inputs": [
@@ -3687,6 +4186,72 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x88f16bd1"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "_useGnsVaultBalance",
+          "type": "bool"
+        }
+      ],
+      "name": "setUseGnsVaultBalance",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x0c80b352"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint88",
+          "name": "_amountGns",
+          "type": "uint88"
+        },
+        {
+          "internalType": "uint88",
+          "name": "_amountVaultGns",
+          "type": "uint88"
+        }
+      ],
+      "name": "stakeGns",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x0470a632"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_traders",
+          "type": "address[]"
+        }
+      ],
+      "name": "syncGnsStakingTiers",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x6c2c263c"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint88",
+          "name": "_amountGns",
+          "type": "uint88"
+        },
+        {
+          "internalType": "uint88",
+          "name": "_amountVaultGns",
+          "type": "uint88"
+        }
+      ],
+      "name": "unstakeGns",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xb7f46fe6"
     },
     {
       "inputs": [
