@@ -149,3 +149,34 @@ export const isGnsStakingCooldownActive = (
 
   return { isActive: now < expiryTs, expiryTs };
 };
+
+/**
+ * @dev Helper function to get the fee multiplier based on GNS and gGNS amounts. Useful to estimate fee multiplier after staking/unstaking.
+ * @param amountGns Amount of GNS staked
+ * @param amountGGns Amount of gGNS staked
+ * @param bonusAmount GNS bonus amount
+ * @param stakingTiers Array of staking fee tiers
+ * @param gGnsPrice Conversion ratio from gGNS to GNS (e.g., 0.8 means 1 gGNS = 0.8 GNS, 1.1 means 1 gGNS = 1.1 GNS); Defaults to 1 (e.g., 1 gGNS = 1 GNS)
+ */
+export const getStakingFeeMultiplier = (
+  amountGns: number,
+  amountGGns: number,
+  bonusAmount: number,
+  stakingTiers: FeeTier[],
+  gGnsPrice = 1
+): number => {
+  let feeMultiplier = FEE_MULTIPLIER_SCALE;
+  for (let i = getFeeTiersCount(stakingTiers); i > 0; --i) {
+    const stakingTier = stakingTiers[i - 1];
+
+    if (
+      amountGns + amountGGns * gGnsPrice + bonusAmount >=
+      stakingTier.pointsThreshold
+    ) {
+      feeMultiplier = stakingTier.feeMultiplier;
+      break;
+    }
+  }
+
+  return feeMultiplier;
+};
