@@ -810,4 +810,8 @@ export enum PairIndex {
   SOMIUSD,
   HEMIUSD,
   FFUSD,
+  USELESSUSD,
+  MONUSD,
+  METUSD,
+  TURTLEUSD,
 }
