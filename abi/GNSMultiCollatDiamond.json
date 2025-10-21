@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "sourceName": "contracts/core/diamonds/GNSMergedDiamond.sol",
-  "contractName": "GNSMergedDiamond",
+  "sourceName": "contracts/core/diamonds/GNSDiamond.sol",
+  "contractName": "GNSDiamond",
   "abi": [
     {
       "inputs": [],
@@ -3714,6 +3714,21 @@
     },
     {
       "inputs": [],
+      "name": "DepthBandsAboveMax",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "DepthBandsIncomplete",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "WrongDepthBandsOrder",
+      "type": "error"
+    },
+    {
+      "inputs": [],
       "name": "WrongWindowsCount",
       "type": "error"
     },
@@ -3741,6 +3756,26 @@
       "name": "CumulativeFactorUpdated",
       "type": "event",
       "signature": "0x2742ec28d0252b4477106a77a10b04e1c1ecd2b568c7168d56c3a3154d3a3122"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "slot1",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "slot2",
+          "type": "uint256"
+        }
+      ],
+      "name": "DepthBandsMappingUpdated",
+      "type": "event",
+      "signature": "0x22391293f5705268ac47df15d88a7704e1267eff228801ac480dbe5ecf5ea3ef"
     },
     {
       "anonymous": false,
@@ -3867,6 +3902,44 @@
       "name": "OnePercentSkewDepthUpdated",
       "type": "event",
       "signature": "0xbe433d32d9112c2fcf91407f28314200753b05ef3e9c85b8a0e9d135e77a6c29"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "pairIndex",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "aboveSlot1",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "aboveSlot2",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "belowSlot1",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "belowSlot2",
+          "type": "uint256"
+        }
+      ],
+      "name": "PairDepthBandsUpdated",
+      "type": "event",
+      "signature": "0x7a9ee81b0015d0b7824d14757416905ea9ace5b9ad54dc08cb426cd0ae3dff9f"
     },
     {
       "anonymous": false,
@@ -4229,6 +4302,39 @@
     },
     {
       "inputs": [],
+      "name": "getDepthBandsMapping",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "slot1",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slot2",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xd40e0d20"
+    },
+    {
+      "inputs": [],
+      "name": "getDepthBandsMappingDecoded",
+      "outputs": [
+        {
+          "internalType": "uint16[]",
+          "name": "bands",
+          "type": "uint16[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x9615d82a"
+    },
+    {
+      "inputs": [],
       "name": "getNegPnlCumulVolMultiplier",
       "outputs": [
         {
@@ -4364,29 +4470,39 @@
           "type": "uint256"
         }
       ],
-      "name": "getPairDepth",
+      "name": "getPairDepthBands",
       "outputs": [
         {
           "components": [
             {
-              "internalType": "uint128",
-              "name": "onePercentDepthAboveUsd",
-              "type": "uint128"
+              "internalType": "uint256",
+              "name": "aboveSlot1",
+              "type": "uint256"
             },
             {
-              "internalType": "uint128",
-              "name": "onePercentDepthBelowUsd",
-              "type": "uint128"
+              "internalType": "uint256",
+              "name": "aboveSlot2",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "belowSlot1",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "belowSlot2",
+              "type": "uint256"
             }
           ],
-          "internalType": "struct IPriceImpact.PairDepth",
+          "internalType": "struct IPriceImpact.PairDepthBands",
           "name": "",
           "type": "tuple"
         }
       ],
       "stateMutability": "view",
       "type": "function",
-      "signature": "0x375bb2bb"
+      "signature": "0xc693e1be"
     },
     {
       "inputs": [
@@ -4396,29 +4512,109 @@
           "type": "uint256[]"
         }
       ],
-      "name": "getPairDepths",
+      "name": "getPairDepthBandsArray",
       "outputs": [
         {
           "components": [
             {
-              "internalType": "uint128",
-              "name": "onePercentDepthAboveUsd",
-              "type": "uint128"
+              "internalType": "uint256",
+              "name": "aboveSlot1",
+              "type": "uint256"
             },
             {
-              "internalType": "uint128",
-              "name": "onePercentDepthBelowUsd",
-              "type": "uint128"
+              "internalType": "uint256",
+              "name": "aboveSlot2",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "belowSlot1",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "belowSlot2",
+              "type": "uint256"
             }
           ],
-          "internalType": "struct IPriceImpact.PairDepth[]",
+          "internalType": "struct IPriceImpact.PairDepthBands[]",
           "name": "",
           "type": "tuple[]"
         }
       ],
       "stateMutability": "view",
       "type": "function",
-      "signature": "0x0d569f27"
+      "signature": "0x35bf34e8"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_pairIndex",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPairDepthBandsDecoded",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "totalDepthAboveUsd",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalDepthBelowUsd",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "bandsAbove",
+          "type": "uint16[]"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "bandsBelow",
+          "type": "uint16[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x2b363e71"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "_indices",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getPairDepthBandsDecodedArray",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "totalDepthAboveUsd",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "totalDepthBelowUsd",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint16[][]",
+          "name": "bandsAbove",
+          "type": "uint16[][]"
+        },
+        {
+          "internalType": "uint16[][]",
+          "name": "bandsBelow",
+          "type": "uint16[][]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x299f621d"
     },
     {
       "inputs": [
@@ -4850,6 +5046,25 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "_slot1",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_slot2",
+          "type": "uint256"
+        }
+      ],
+      "name": "initializeDepthBandsMapping",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xbb8f07af"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint40",
           "name": "_negPnlCumulVolMultiplier",
           "type": "uint40"
@@ -4931,6 +5146,25 @@
     {
       "inputs": [
         {
+          "internalType": "uint256",
+          "name": "_slot1",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_slot2",
+          "type": "uint256"
+        }
+      ],
+      "name": "setDepthBandsMapping",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x7e8462f7"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint16[]",
           "name": "_pairIndices",
           "type": "uint16[]"
@@ -4988,21 +5222,38 @@
           "type": "uint256[]"
         },
         {
-          "internalType": "uint128[]",
-          "name": "_depthsAboveUsd",
-          "type": "uint128[]"
-        },
-        {
-          "internalType": "uint128[]",
-          "name": "_depthsBelowUsd",
-          "type": "uint128[]"
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "aboveSlot1",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "aboveSlot2",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "belowSlot1",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "belowSlot2",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IPriceImpact.PairDepthBands[]",
+          "name": "_depthBands",
+          "type": "tuple[]"
         }
       ],
-      "name": "setPairDepths",
+      "name": "setPairDepthBands",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x6474b399"
+      "signature": "0x88be5e4f"
     },
     {
       "inputs": [

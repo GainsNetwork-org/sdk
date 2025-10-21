@@ -102,6 +102,7 @@ export type GlobalTradeFeeParams = {
   gTokenFeeP: number;
 };
 
+// @deprecated
 export type PairDepth = {
   onePercentDepthAboveUsd: number;
   onePercentDepthBelowUsd: number;

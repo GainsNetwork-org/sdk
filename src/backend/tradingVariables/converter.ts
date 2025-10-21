@@ -19,7 +19,6 @@ import {
   OiWindowsSettings,
   OpenInterest,
   Pair,
-  PairDepth,
   PairOi,
   Trade,
   TradeContainer,
@@ -33,6 +32,8 @@ import {
   convertUiRealizedPnlData,
 } from "../../";
 import { convertPairSkewDepths as convertSkewDepths } from "../../trade/priceImpact/skew/converter";
+import { convertPairDepthBandsFromSlots } from "../../trade/priceImpact/cumulVol/converter";
+import { decodeDepthBandsMapping } from "../../pricing/depthBands";
 import {
   BorrowingFeePerBlockCapBackend,
   CollateralBackend,
@@ -46,7 +47,8 @@ import {
   PairBorrowingFeesBackendGroup,
   PairBorrowingFeesBackendPair,
   PairBorrowingFeesBackendPairGroup,
-  PairDepthBackend,
+  PairDepthBandsBackend,
+  DepthBandsMappingBackend,
   PairFactorBackend,
   PairOiBackend,
   PairParamsBorrowingFeesBackend,
@@ -137,14 +139,32 @@ const convertOpenInterest = (interest: OpenInterestBackend): OpenInterest => ({
   max: parseFloat(interest.beforeV10.max) / 1e10,
 });
 
-export const convertPairDepths = (
-  pairDepths: PairDepthBackend[]
-): PairDepth[] => pairDepths?.map(pairDepth => convertPairDepth(pairDepth));
+export const convertPairDepthBands = (
+  pairDepthBands: PairDepthBandsBackend[]
+): ReturnType<typeof convertPairDepthBandsFromSlots>[] =>
+  pairDepthBands?.map(bands =>
+    convertPairDepthBandsFromSlots(
+      BigInt(bands.aboveSlot1),
+      BigInt(bands.aboveSlot2),
+      BigInt(bands.belowSlot1),
+      BigInt(bands.belowSlot2)
+    )
+  ) || [];
 
-const convertPairDepth = (pairDepth: PairDepthBackend): PairDepth => ({
-  onePercentDepthAboveUsd: parseInt(pairDepth.onePercentDepthAboveUsd),
-  onePercentDepthBelowUsd: parseInt(pairDepth.onePercentDepthBelowUsd),
-});
+export const convertDepthBandsMapping = (
+  mapping: DepthBandsMappingBackend
+): { bands: number[] } => {
+  // First decode the raw slots to get bands in basis points
+  const bandsBps = decodeDepthBandsMapping(
+    BigInt(mapping.slot1),
+    BigInt(mapping.slot2)
+  );
+
+  // Convert from basis points to 0-1 range
+  return {
+    bands: bandsBps.map(bps => bps / 10000),
+  };
+};
 
 export const convertPairSkewDepths = (
   pairSkewDepths: string[] | undefined

@@ -3,11 +3,11 @@
  * @dev Mirrors contract's getTradeCumulVolPriceImpactP functionality
  */
 
+import { PairDepthBands, DepthBandsMapping, DepthBands } from "./types";
 import {
   LiquidationParams,
   OiWindows,
   OiWindowsSettings,
-  PairDepth,
   PairFactor,
   UserPriceImpact,
 } from "../../types";
@@ -31,9 +31,12 @@ export type CumulVolContext = {
   protectionCloseFactorWhitelist?: boolean;
 
   // Price impact data
-  pairDepth?: PairDepth | undefined;
   oiWindowsSettings?: OiWindowsSettings | undefined;
   oiWindows?: OiWindows | undefined;
+
+  // Depth bands data (v10.2+)
+  pairDepthBands?: PairDepthBands | undefined;
+  depthBandsMapping?: DepthBandsMapping | undefined;
 
   // User/collateral specific
   userPriceImpact?: UserPriceImpact | undefined;
@@ -126,6 +129,136 @@ export const getLegacyFactor = (
 };
 
 /**
+ * @dev Mirrors contract's _calculateDepthBandsPriceImpact function
+ * @param tradeSizeUsd Trade size in USD (always positive here)
+ * @param depthBandParams Depth band parameters
+ * @returns Price impact percentage
+ */
+const _calculateDepthBandsPriceImpact = (
+  tradeSizeUsd: number,
+  depthBandParams: {
+    depthBands: DepthBands;
+    depthBandsMapping: DepthBandsMapping;
+  }
+): number => {
+  const totalDepthUsd = depthBandParams.depthBands.totalDepthUsd;
+
+  if (totalDepthUsd === 0 || tradeSizeUsd === 0) return 0;
+
+  let remainingSizeUsd = tradeSizeUsd;
+  let totalWeightedPriceImpactP = 0;
+  let prevBandDepthUsd = 0;
+  let topOfPrevBandOffsetPpm = 0;
+
+  for (let i = 0; i < 30 && remainingSizeUsd !== 0; i++) {
+    const bandLiquidityPercentageBps = depthBandParams.depthBands.bands[i]; // Already in 0-1 format
+    const topOfBandOffsetPpm = depthBandParams.depthBandsMapping.bands[i]; // Already in 0-1 format
+    const bandDepthUsd = bandLiquidityPercentageBps * totalDepthUsd;
+
+    // Skip if band has same depth as previous (would cause division by zero)
+    if (bandDepthUsd <= prevBandDepthUsd) {
+      prevBandDepthUsd = bandDepthUsd;
+      topOfPrevBandOffsetPpm = topOfBandOffsetPpm;
+      continue;
+    }
+
+    // Since bandDepthUsd represents liquidity from mid price to top of band, we need to subtract previous band depth
+    const bandAvailableDepthUsd = bandDepthUsd - prevBandDepthUsd;
+    let depthConsumedUsd;
+
+    // At 100% band always consume all remaining size, even if more than band available depth
+    if (
+      bandLiquidityPercentageBps === 1 ||
+      remainingSizeUsd <= bandAvailableDepthUsd
+    ) {
+      depthConsumedUsd = remainingSizeUsd;
+      remainingSizeUsd = 0;
+    } else {
+      // Normal case: consume entire band and continue to next
+      depthConsumedUsd = bandAvailableDepthUsd;
+      remainingSizeUsd -= bandAvailableDepthUsd;
+    }
+
+    // Calculate impact contribution from this band using trapezoidal rule
+    // Low = previous band's price offset, High = current band's price offset
+    const lowOffsetP = topOfPrevBandOffsetPpm;
+    const offsetRangeP = topOfBandOffsetPpm - topOfPrevBandOffsetPpm;
+
+    // Calculate average impact using trapezoidal rule: low + (range * fraction / 2)
+    const avgImpactP =
+      lowOffsetP +
+      (offsetRangeP * depthConsumedUsd) / bandAvailableDepthUsd / 2;
+
+    totalWeightedPriceImpactP += avgImpactP * depthConsumedUsd;
+
+    // Update previous values for next iteration
+    topOfPrevBandOffsetPpm = topOfBandOffsetPpm;
+    prevBandDepthUsd = bandDepthUsd;
+  }
+
+  return totalWeightedPriceImpactP / tradeSizeUsd;
+};
+
+/**
+ * @dev Mirrors contract's _getDepthBandsPriceImpactP function
+ * @param cumulativeVolumeUsd Cumulative volume in USD (can be negative)
+ * @param tradeSizeUsd Trade size in USD (can be negative)
+ * @param depthBandParams Depth band parameters (contains both pair bands and global mapping)
+ * @param priceImpactFactor Price impact factor (protection close factor)
+ * @param cumulativeFactor Cumulative factor for volume impact
+ * @returns Price impact percentage (can be negative)
+ */
+const _getDepthBandsPriceImpactP = (
+  cumulativeVolumeUsd: number,
+  tradeSizeUsd: number,
+  depthBandParams: {
+    depthBands: DepthBands;
+    depthBandsMapping: DepthBandsMapping;
+  },
+  priceImpactFactor: number,
+  cumulativeFactor: number
+): number => {
+  // Check for opposite signs
+  if (
+    (cumulativeVolumeUsd > 0 && tradeSizeUsd < 0) ||
+    (cumulativeVolumeUsd < 0 && tradeSizeUsd > 0)
+  ) {
+    throw new Error(
+      "Wrong params: cumulative volume and trade size have opposite signs"
+    );
+  }
+
+  const effectiveCumulativeVolumeUsd = cumulativeVolumeUsd * cumulativeFactor;
+  const totalSizeLookupUsd = effectiveCumulativeVolumeUsd + tradeSizeUsd;
+
+  const isNegative = totalSizeLookupUsd < 0;
+
+  const effectiveCumulativeVolumeUsdUint = isNegative
+    ? -effectiveCumulativeVolumeUsd
+    : effectiveCumulativeVolumeUsd;
+  const totalSizeLookupUsdUint = isNegative
+    ? -totalSizeLookupUsd
+    : totalSizeLookupUsd;
+
+  const cumulativeVolPriceImpactP = _calculateDepthBandsPriceImpact(
+    effectiveCumulativeVolumeUsdUint,
+    depthBandParams
+  );
+  const totalSizePriceImpactP = _calculateDepthBandsPriceImpact(
+    totalSizeLookupUsdUint,
+    depthBandParams
+  );
+
+  const unscaledPriceImpactP =
+    cumulativeVolPriceImpactP +
+    (totalSizePriceImpactP - cumulativeVolPriceImpactP) / 2;
+
+  const scaledPriceImpactP = unscaledPriceImpactP * priceImpactFactor;
+
+  return isNegative ? -scaledPriceImpactP : scaledPriceImpactP;
+};
+
+/**
  * @dev Calculates cumulative volume price impact percentage
  * @dev Mirrors contract's getTradeCumulVolPriceImpactP function
  * @param trader Trader address
@@ -139,8 +272,8 @@ export const getLegacyFactor = (
  * @returns Cumulative volume price impact percentage (not including spread)
  */
 export const getTradeCumulVolPriceImpactP = (
-  trader: string,
-  pairIndex: number,
+  _trader: string, // Unused - kept for compatibility
+  _pairIndex: number, // Unused - kept for compatibility
   long: boolean,
   tradeOpenInterestUsd: number,
   isPnlPositive: boolean,
@@ -170,45 +303,51 @@ export const getTradeCumulVolPriceImpactP = (
     return 0;
   }
 
-  // Calculate trade skew direction (matches Solidity logic)
   const tradePositiveSkew = (long && open) || (!long && !open);
   const tradeSkewMultiplier = tradePositiveSkew ? 1 : -1;
 
-  // Select depth based on trade direction
-  // For positive skew (long open or short close), use depth above
-  // For negative skew (short open or long close), use depth below
-  const onePercentDepth = tradePositiveSkew
-    ? context.pairDepth?.onePercentDepthAboveUsd
-    : context.pairDepth?.onePercentDepthBelowUsd;
-
-  let activeOi = undefined;
-
-  if (context.oiWindowsSettings !== undefined) {
-    activeOi = getActiveOi(
-      getCurrentOiWindowId(context.oiWindowsSettings),
-      context.oiWindowsSettings.windowsCount,
-      context.oiWindows,
-      open ? long : !long
-    );
-  }
-
-  if (!onePercentDepth || activeOi === undefined) {
+  if (!context.pairDepthBands || !context.depthBandsMapping) {
     return 0;
   }
 
-  // Apply trade skew multiplier to match Solidity's signed calculation
+  // Select depth bands based on trade direction
+  const depthBands = tradePositiveSkew
+    ? context.pairDepthBands.above
+    : context.pairDepthBands.below;
+
+  // Return 0 if no depth bands configured (matching contract lines 588-590)
+  if (!depthBands || depthBands.totalDepthUsd === 0) {
+    return 0;
+  }
+
+  // Get active OI for cumulative volume calculation
+  let activeOi = 0;
+  if (context.oiWindowsSettings !== undefined) {
+    activeOi =
+      getActiveOi(
+        getCurrentOiWindowId(context.oiWindowsSettings),
+        context.oiWindowsSettings.windowsCount,
+        context.oiWindows,
+        open ? long : !long
+      ) || 0;
+  }
+
   const signedActiveOi = activeOi * tradeSkewMultiplier;
   const signedTradeOi = tradeOpenInterestUsd * tradeSkewMultiplier;
 
-  // Calculate impact with proper signs (matching Solidity's _getTradePriceImpactP)
-  const finalPriceImpactP =
-    ((signedActiveOi * getCumulativeFactor(updatedContext) +
-      signedTradeOi / 2) /
-      onePercentDepth /
-      getLegacyFactor(updatedContext)) *
-    getProtectionCloseFactor(updatedContext);
+  // Calculate price impact using depth bands
+  const priceImpactP = _getDepthBandsPriceImpactP(
+    signedActiveOi,
+    signedTradeOi,
+    {
+      depthBands: depthBands,
+      depthBandsMapping: context.depthBandsMapping,
+    },
+    getProtectionCloseFactor(updatedContext),
+    getCumulativeFactor(updatedContext)
+  );
 
-  return finalPriceImpactP;
+  return priceImpactP;
 };
 
 /**
@@ -273,7 +412,6 @@ export const getSpreadP = (
  * @param buy True for long, false for short
  * @param collateral Collateral amount
  * @param leverage Position leverage
- * @param pairDepth 1% depth values for the pair
  * @param oiWindowsSettings OI windows configuration
  * @param oiWindows Current OI windows data
  * @param context Additional context for the calculation
@@ -284,10 +422,7 @@ export const getSpreadWithCumulVolPriceImpactP = (
   buy: boolean,
   collateral: number,
   leverage: number,
-  pairDepth: PairDepth | undefined,
-  oiWindowsSettings?: OiWindowsSettings | undefined,
-  oiWindows?: OiWindows | undefined,
-  context?: CumulVolContext | undefined
+  context: CumulVolContext
 ): number => {
   if (pairSpreadP === undefined) {
     return 0;
@@ -312,18 +447,8 @@ export const getSpreadWithCumulVolPriceImpactP = (
     context?.isPnlPositive || false,
     context?.isOpen !== false,
     context?.createdBlock || 0,
-    {
-      ...context,
-      pairDepth,
-      oiWindowsSettings,
-      oiWindows,
-    }
+    context
   );
-
-  // If no depth or OI data, return just half spread
-  if (cumulVolImpact === 0 && (!pairDepth || !oiWindowsSettings)) {
-    return pairSpreadP / 2;
-  }
 
   return baseSpread + cumulVolImpact;
 };
