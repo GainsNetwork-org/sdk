@@ -645,5 +645,9 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.CAMPUSD]: "Camp Network to US Dollar",
   [PairIndex.SOMIUSD]: "Somnia to US Dollar",
   [PairIndex.HEMIUSD]: "Hemi to US Dollar",
-  [PairIndex.FFUSD]: "Falcon Finance to US Dollar",  
+  [PairIndex.FFUSD]: "Falcon Finance to US Dollar",
+  [PairIndex.USELESSUSD]: "Useless Coin to US Dollar",
+  [PairIndex.MONUSD]: "Monad to US Dollar",
+  [PairIndex.METUSD]: "Meteora to US Dollar",
+  [PairIndex.TURTLEUSD]: "Turtle to US Dollar",    
 };

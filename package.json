@@ -1,6 +1,6 @@
 {
   "name": "@gainsnetwork/sdk",
-  "version": "1.5.0-rc7",
+  "version": "1.5.1-rc1",
   "description": "Gains Network SDK",
   "main": "./lib/index.js",
   "files": [
