@@ -823,5 +823,8 @@ export enum PairIndex {
   USELESSUSD,
   MONUSD,
   METUSD,
-  TURTLEUSD,  
+  TURTLEUSD,
+  SPX500USD,
+  NAS100USD,
+  USA30USD,
 }

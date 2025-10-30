@@ -636,7 +636,7 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.AVNTUSD]: "Avantis to US Dollar",
   [PairIndex.APEXUSD]: "ApeX Protocol to US Dollar",
   [PairIndex.ORDERUSD]: "Orderly to US Dollar",
-  [PairIndex.DRIFTUSD]: "Drift to US Dollar",    
+  [PairIndex.DRIFTUSD]: "Drift to US Dollar",
   [PairIndex.MYXUSD]: "MYX Finance to US Dollar",
   [PairIndex.NOMUSD]: "Nomina to US Dollar",
   [PairIndex.FLUIDUSD]: "Fluid to US Dollar",
@@ -649,5 +649,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.USELESSUSD]: "Useless Coin to US Dollar",
   [PairIndex.MONUSD]: "Monad to US Dollar",
   [PairIndex.METUSD]: "Meteora to US Dollar",
-  [PairIndex.TURTLEUSD]: "Turtle to US Dollar",    
+  [PairIndex.TURTLEUSD]: "Turtle to US Dollar",
+  [PairIndex.SPX500USD]: "S&P500 to US Dollar",
+  [PairIndex.NAS100USD]: "NASDAQ 100 to US Dollar",
+  [PairIndex.USA30USD]: "Down Jones 30 to US Dollar",
 };
