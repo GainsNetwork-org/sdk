@@ -485,6 +485,15 @@ export const convertFeeTiers = (
   multipliers:
     feeTiersBackend?.multipliers?.map(mult => parseFloat(mult) / 1e3) || [],
   currentDay: feeTiersBackend?.currentDay || 0,
+  stakingTiers:
+    feeTiersBackend?.stakingTiers.map(tier => ({
+      feeMultiplier: Number(tier.feeMultiplier) / 1e3,
+      pointsThreshold: parseFloat(tier.pointsThreshold),
+    })) || [],
+  gnsVaultAddress:
+    feeTiersBackend?.gnsVaultAddress ||
+    "0x0000000000000000000000000000000000000000",
+  useGnsVaultBalance: feeTiersBackend?.useGnsVaultBalance || false,
 });
 
 export const convertTraderFeeTiers = (
@@ -496,6 +505,15 @@ export const convertTraderFeeTiers = (
   traderInfo: {
     lastDayUpdated: traderFeeTiers.traderInfo.lastDayUpdated,
     trailingPoints: parseFloat(traderFeeTiers.traderInfo.trailingPoints) / 1e18,
+  },
+  stakingInfo: {
+    stakedGns: parseFloat(traderFeeTiers.stakingInfo.stakedGns) / 1e18,
+    stakedVaultGns:
+      parseFloat(traderFeeTiers.stakingInfo.stakedVaultGns) / 1e18,
+    bonusAmount: Number(traderFeeTiers.stakingInfo.bonusAmount),
+    stakeTimestamp: traderFeeTiers.stakingInfo.stakeTimestamp,
+    feeMultiplierCache:
+      parseFloat(traderFeeTiers.stakingInfo.feeMultiplierCache) / 1e3,
   },
   inboundPoints: parseFloat(traderFeeTiers.inboundPoints) / 1e18,
   outboundPoints: parseFloat(traderFeeTiers.outboundPoints) / 1e18,
