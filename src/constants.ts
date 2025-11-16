@@ -444,6 +444,7 @@ export const pairs = {
   "SPX500/USD": INDICES,
   "NAS100/USD": INDICES,
   "USA30/USD": INDICES,
+  "NFLX_1/USD": STOCKS,
 };
 
 export const syntheticPairs = new Set([
@@ -494,6 +495,7 @@ export const stockSplits = {
   "GOOGL_1/USD": { date: "7/18/2022", split: 20 },
   "GME_1/USD": { date: "7/22/2022", split: 4 },
   "TSLA_1/USD": { date: "8/25/2022", split: 3 },
+  "NFLX_1/USD": { date: "11/17/2025", split: 10 },
 };
 
 export const delistedPairIxs = new Set([
@@ -504,7 +506,8 @@ export const delistedPairIxs = new Set([
   227, 229, 230, 231, 234, 238, 239, 241, 247, 250, 253, 254, 258, 261, 270,
   272, 275, 276, 278, 279, 280, 285, 290, 291, 292, 294, 296, 303, 305, 306,
   311, 322, 330, 333, 336, 337, 342, 343, 344, 347, 349, 350, 352, 354, 355,
-  357, 365, 366, 395, 396, 400, 401, 408, 423, 427, 433, 436, 437, 438,
+  357, 365, 366, 379, 395, 396, 400, 401, 408, 423, 427, 433, 436, 437, 438,
+  439,
 ]);
 
 export const delistedGroupsIxs = new Set([]);

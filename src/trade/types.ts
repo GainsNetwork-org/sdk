@@ -827,4 +827,5 @@ export enum PairIndex {
   SPX500USD,
   NAS100USD,
   USA30USD,
+  NFLXUSD2,
 }
