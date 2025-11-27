@@ -28,14 +28,12 @@ export const isOpenAt = (
   const mm = dt.hour * 60 + dt.minute;
 
   // Holiday override: if this ET date has a holiday entry, use its openWindows
-  const h = schedule.holidays?.find(
-    x => x.month === dt.month && x.day === dt.day
-  );
-  if (h) {
-    return inInAnyWindow(mm, h.openWindows);
+  const holiday = schedule.holidays?.find(x => x.month === dt.month && x.day === dt.day);
+  if (holiday) {
+    return inInAnyWindow(mm, holiday.openWindows);
   }
 
-  return inInAnyWindow(mm, (schedule.open as any)[dayKey]);
+  return inInAnyWindow(mm, (schedule.open)[dayKey]);
 };
 
 export const isLowLiquidityAt = (
@@ -47,5 +45,5 @@ export const isLowLiquidityAt = (
   const schedule = getWeeklySchedule(market, date, opts);
   const dayKey = weekdayKey(dt.weekday);
   const mm = dt.hour * 60 + dt.minute;
-  return inInAnyWindow(mm, (schedule.lowLiq as any)[dayKey]);
+  return inInAnyWindow(mm, (schedule.lowLiq)[dayKey]);
 };
