@@ -1,4 +1,4 @@
-import { isStocksOpen } from "./stocks";
+import { isOpenAt } from "./schedules";
 
 export const isIndicesOpen = (dateToCheck: Date): boolean =>
-  isStocksOpen(dateToCheck);
+  isOpenAt('indices', dateToCheck);

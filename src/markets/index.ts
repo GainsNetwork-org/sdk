@@ -3,6 +3,7 @@ export * from "./forex";
 export * from "./stocks";
 export * from "./indices";
 export * from "./commodities";
+export * from "./schedules";
 export * from "./oi";
 export * from "./collateral";
 export * from "./price";
