@@ -445,7 +445,7 @@ export const pairs = {
   "NAS100/USD": INDICES,
   "USA30/USD": INDICES,
   "NFLX_1/USD": STOCKS,
-  "STABLE/USD": STOCKS,  
+  "STABLE/USD": CRYPTO,  
 };
 
 export const syntheticPairs = new Set([
