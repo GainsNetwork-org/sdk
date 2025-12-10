@@ -445,7 +445,7 @@ export const pairs = {
   "NAS100/USD": INDICES,
   "USA30/USD": INDICES,
   "NFLX_1/USD": STOCKS,
-  "STABLE/USD": STOCKS,  
+  "STABLE/USD": CRYPTO,  
 };
 
 export const syntheticPairs = new Set([
@@ -508,7 +508,7 @@ export const delistedPairIxs = new Set([
   272, 273, 275, 276, 278, 279, 280, 281, 284, 285, 290, 291, 292, 294, 296, 303,
   305, 306, 311, 312, 322, 323, 330, 333, 335, 336, 337, 342, 343, 344, 346, 347,
   349, 350, 351, 352, 353, 354, 355, 357, 362, 365, 366, 372, 379, 380, 387, 395,
-  396, 400, 401, 408, 423, 427, 428, 430, 435, 436, 437, 438, 440,
+  396, 400, 401, 408, 423, 427, 428, 430, 435, 436, 437, 438,
 ]);
 
 export const delistedGroupsIxs = new Set([]);
