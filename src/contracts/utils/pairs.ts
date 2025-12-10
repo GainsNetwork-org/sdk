@@ -654,4 +654,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.NAS100USD]: "NASDAQ 100 to US Dollar",
   [PairIndex.USA30USD]: "Down Jones 30 to US Dollar",
   [PairIndex.NFLXUSD2]: "Netflix to US Dollar",
+  [PairIndex.STABLEUSD]: "Stable to US Dollar",  
 };
