@@ -1,46 +1,89 @@
 import { DateTime, IANAZone } from "luxon";
-import { Holiday, Window } from "./types";
+import { Holiday } from "./types";
+import { TradFiMarket } from "./index";
 
 const ET = IANAZone.create("America/New_York");
 
-// Holiday definitions per year (ET calendar). For full-day closure, openWindows: []
-const stocksFullDay = (month: number, day: number, name: string): Holiday => ({ month, day, name, openWindows: [] });
-const addWindows = (startH: number, startM: number, endH: number, endM: number): Window => ({ start: { hour: startH, minute: startM }, end: { hour: endH, minute: endM } });
+const full = (year: number, month: number, day: number, name: string): Holiday =>
+  ({ year, month, day, name, openWindows: [] });
 
-const HOLIDAYS_2025: Holiday[] = [
-  stocksFullDay(5, 26, "Memorial Day"),
-  stocksFullDay(6, 19, "Juneteenth"),
-  stocksFullDay(7, 4, "Independence Day"),
-  stocksFullDay(9, 1, "Labor Day"),
-  stocksFullDay(11, 27, "Thanksgiving Day"),
-  stocksFullDay(12, 25, "Christmas Day"),
-  { month: 7, day: 3, name: "Day Before Independence Day", openWindows: [addWindows(9, 30, 13, 0)] },
-  { month: 11, day: 28, name: "Black Friday", openWindows: [addWindows(9, 30, 13, 0)] },
-  { month: 12, day: 24, name: "Christmas Eve", openWindows: [addWindows(9, 30, 13, 0)] },
+const partial = (year: number, month: number, day: number, name: string, startH: number, startM: number, endH: number, endM: number): Holiday =>
+  ({ year, month, day, name, openWindows: [{ start: { hour: startH, minute: startM }, end: { hour: endH, minute: endM } }] });
+
+// Shared holidays
+const HOLIDAYS: Holiday[] = [
+  // 2025
+  full(2025, 5, 26, "Memorial Day"),
+  full(2025, 6, 19, "Juneteenth"),
+  partial(2025, 7, 3, "Day Before Independence Day", 9, 30, 13, 0),
+  full(2025, 7, 4, "Independence Day"),
+  full(2025, 9, 1, "Labor Day"),
+  full(2025, 11, 27, "Thanksgiving Day"),
+  partial(2025, 11, 28, "Black Friday", 9, 30, 13, 0),
+  full(2025, 12, 25, "Christmas Day"),
+
+  // 2026
+  full(2026, 1, 1, "New Year's Day"),
+  full(2026, 1, 19, "Martin Luther King Jr. Day"),
+  full(2026, 2, 16, "Presidents' Day"),
+  full(2026, 4, 3, "Good Friday"),
 ];
 
-const HOLIDAYS_2026: Holiday[] = [
-  stocksFullDay(1, 1, "New Year's Day"),
-  stocksFullDay(1, 19, "Martin Luther King Jr. Day"),
-  stocksFullDay(2, 16, "Presidents' Day"),
-  stocksFullDay(4, 3, "Good Friday"),
-];
+// Market-specific holiday overrides
+const HOLIDAYS_OVERRIDES: Record<TradFiMarket, Holiday[]> = {
+  stocks: [
+    partial(2025, 12, 24, "Christmas Eve", 9, 30, 13, 0),
+  ],
+  indices: [
+    partial(2025, 12, 24, "Christmas Eve", 9, 30, 13, 0),
+  ],
+  commodities: [
+    partial(2025, 12, 24, "Christmas Eve", 0, 0, 12, 0),
+  ],
+  forex: [
+    partial(2025, 12, 24, "Christmas Eve", 0, 0, 12, 45),
+  ],
+};
 
-function getStocksHolidaysForYear(year: number): Holiday[] {
-  if (year === 2025) return HOLIDAYS_2025;
-  if (year === 2026) return HOLIDAYS_2026;
-  return [];
+const getHolidaysForYear = (market: TradFiMarket, year: number): Holiday[] => {
+  const holidayOverrides = HOLIDAYS_OVERRIDES[market]?.filter(h => h.year === year) || [];
+  const overridden = new Set(holidayOverrides.map(h => h.name));
+  const filteredHolidays = HOLIDAYS.filter(h => h.year === year && !overridden.has(h.name));
+
+  return [...filteredHolidays, ...holidayOverrides].sort((a, b) =>
+    a.month === b.month ? a.day - b.day : a.month - b.month
+  );
 }
 
-export function getStocksHolidaysInWeek(currentDate: Date): Holiday[] {
-  const dt = DateTime.fromJSDate(currentDate).setZone(ET);
-  const weekStart = dt.startOf("week"); // Sunday 00:00 ET
-  const weekEnd = weekStart.plus({ days: 7 }); // exclusive end
-  const year = dt.year;
-  const list = getStocksHolidaysForYear(year);
+export const getHolidays = (
+  market: TradFiMarket,
+  startDate: Date,
+  days: number
+): Holiday[] => {
+  const start = DateTime.fromJSDate(startDate).setZone(ET).startOf('day');
+  const end = start.plus({ days });
 
-  return list.filter(h => {
-    const d = DateTime.fromObject({ year, month: h.month, day: h.day }, { zone: ET });
-    return d >= weekStart && d < weekEnd;
-  });
+  const years = [];
+  for (let year = start.year; year <= end.year; year++) {
+    years.push(year);
+  }
+
+  return years.flatMap(year =>
+    getHolidaysForYear(market, year).filter(h => {
+      const d = DateTime.fromObject(
+        { year: h.year, month: h.month, day: h.day },
+        { zone: ET }
+      );
+      return d >= start && d < end;
+    })
+  );
 }
+
+export const getHolidaysInCurrentWeek = (
+  market: TradFiMarket,
+  currentDate: Date
+): Holiday[] => {
+  const weekStart = DateTime.fromJSDate(currentDate).setZone(ET).startOf("week");
+  return getHolidays(market, weekStart.toJSDate(), 7);
+}
+

@@ -28,7 +28,7 @@ export const isOpenAt = (
   const mm = dt.hour * 60 + dt.minute;
 
   // Holiday override: if this ET date has a holiday entry, use its openWindows
-  const holiday = schedule.holidays?.find(x => x.month === dt.month && x.day === dt.day);
+  const holiday = schedule.holidays?.find(x => x.year === dt.year && x.month === dt.month && x.day === dt.day);
   if (holiday) {
     return inInAnyWindow(mm, holiday.openWindows);
   }

@@ -1,6 +1,6 @@
 import { DateTime, IANAZone } from 'luxon';
 import { Schedule, WeeklySchedule, Window, WeekDay, weekDayToKey } from './types';
-import { getStocksHolidaysInWeek } from './holidays';
+import { getHolidaysInCurrentWeek } from './holidays';
 
 const ET = IANAZone.create('America/New_York');
 
@@ -45,11 +45,12 @@ export const buildForexWeeklySchedule = (currentDate: Date = new Date(), opts?: 
     add(lowLiq, d, { start: { hour: llStartHour, minute: llStartMinute }, end: { hour: llEndHour, minute: llEndMinute } });
   }
 
-  const summary = isInDST 
+  const holidays = getHolidaysInCurrentWeek('forex', currentDate);
+  const summary = isInDST
     ? 'Monday 4:00 pm - Friday 4:00 pm ET (Closed weekends & holidays)'
     : 'Monday 5:00 pm - Friday 5:00 pm ET (Closed weekends & holidays)';
 
-  return { open, lowLiq, summary };
+  return { open, lowLiq, holidays, summary };
 };
 
 export const buildStocksWeeklySchedule = (currentDate: Date = new Date()): Schedule => {
@@ -58,7 +59,7 @@ export const buildStocksWeeklySchedule = (currentDate: Date = new Date()): Sched
   for (const d of [WeekDay.Monday, WeekDay.Tuesday, WeekDay.Wednesday, WeekDay.Thursday, WeekDay.Friday] as const) {
     add(open, d, { start: { hour: 9, minute: 30 }, end: { hour: 16, minute: 0 } });
   }
-  const holidays = getStocksHolidaysInWeek(currentDate);
+  const holidays = getHolidaysInCurrentWeek('stocks', currentDate);
   const summary = 'Monday - Friday: 9:30 am - 4:00 pm ET (Closed weekends & holidays)';
   return { open, lowLiq, holidays, summary };
 };
@@ -69,17 +70,18 @@ export const buildCommoditiesWeeklySchedule = (currentDate: Date = new Date()): 
   const open = emptyWeekly();
   const lowLiq = emptyWeekly();
 
-  // Sunday: 19:30 -> 24:00
-  add(open, WeekDay.Sunday, { start: { hour: 19, minute: 30 }, end: { hour: 24, minute: 0 } });
-  // Mon-Thu: 0:00 -> 16:30 and 18:30 -> 24:00 (break represented by the gap)
+  // Sunday: 18:00 -> 24:00
+  add(open, WeekDay.Sunday, { start: { hour: 18, minute: 0 }, end: { hour: 24, minute: 0 } });
+  // Mon-Thu: 0:00 -> 17:00 and 18:00 -> 24:00 (break represented by the gap)
   for (const d of [WeekDay.Monday, WeekDay.Tuesday, WeekDay.Wednesday, WeekDay.Thursday]) {
-    add(open, d, { start: { hour: 0, minute: 0 }, end: { hour: 16, minute: 30 } });
-    add(open, d, { start: { hour: 18, minute: 30 }, end: { hour: 24, minute: 0 } });
+    add(open, d, { start: { hour: 0, minute: 0 }, end: { hour: 17, minute: 0 } });
+    add(open, d, { start: { hour: 18, minute: 0 }, end: { hour: 24, minute: 0 } });
   }
-  // Friday: 0:00 -> 16:30
-  add(open, WeekDay.Friday, { start: { hour: 0, minute: 0 }, end: { hour: 16, minute: 30 } });
+  // Friday: 0:00 -> 17:00
+  add(open, WeekDay.Friday, { start: { hour: 0, minute: 0 }, end: { hour: 17, minute: 0 } });
   // Saturday: closed (no windows)
 
-  const summary = 'Sunday 7:30 pm - Friday 4:30 pm ET (Daily break: 4:30 pm - 6:30 pm ET)';
-  return { open, lowLiq, summary };
+  const holidays = getHolidaysInCurrentWeek('commodities', currentDate);
+  const summary = `Sunday 6:00 pm - Friday 5:00 pm ET (Daily break: 5:00 pm - 6:00 pm ET)`;
+  return { open, lowLiq, holidays, summary };
 };
