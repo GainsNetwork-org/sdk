@@ -27,8 +27,9 @@ export const buildForexWeeklySchedule = (currentDate: Date = new Date(), opts?: 
   const openHour = isInDST ? 16 : 17; // Monday open
   const closeHour = isInDST ? 16 : 17; // Friday close
 
-  // Open windows (ET): Mon 16/17:00 -> 24:00, Tue-Thu 0-24, Fri 0 -> 16/17:00
-  add(open, WeekDay.Monday, { start: { hour: openHour, minute: 0 }, end: { hour: 24, minute: 0 } });
+  // Open windows (ET): Sun 16/17:00 -> 24:00, Mon-Thu 0-24, Fri 0 -> 16/17:00
+  add(open, WeekDay.Sunday, { start: { hour: openHour, minute: 0 }, end: { hour: 24, minute: 0 } });
+  add(open, WeekDay.Monday, { start: { hour: 0, minute: 0 }, end: { hour: 24, minute: 0 } });
   add(open, WeekDay.Tuesday, { start: { hour: 0, minute: 0 }, end: { hour: 24, minute: 0 } });
   add(open, WeekDay.Wednesday, { start: { hour: 0, minute: 0 }, end: { hour: 24, minute: 0 } });
   add(open, WeekDay.Thursday, { start: { hour: 0, minute: 0 }, end: { hour: 24, minute: 0 } });
@@ -41,14 +42,14 @@ export const buildForexWeeklySchedule = (currentDate: Date = new Date(), opts?: 
   const llStartMinute = 45;
   const llEndHour = isInDST ? (useExtended ? 21 : 19) : (useExtended ? 22 : 20);
   const llEndMinute = 0;
-  for (const d of [WeekDay.Monday, WeekDay.Tuesday, WeekDay.Wednesday, WeekDay.Thursday, WeekDay.Friday]) {
+  for (const d of [WeekDay.Sunday,WeekDay.Monday, WeekDay.Tuesday, WeekDay.Wednesday, WeekDay.Thursday, WeekDay.Friday]) {
     add(lowLiq, d, { start: { hour: llStartHour, minute: llStartMinute }, end: { hour: llEndHour, minute: llEndMinute } });
   }
 
   const holidays = getHolidaysInCurrentWeek('forex', currentDate);
   const summary = isInDST
-    ? 'Monday 4:00 pm - Friday 4:00 pm ET (Closed weekends & holidays)'
-    : 'Monday 5:00 pm - Friday 5:00 pm ET (Closed weekends & holidays)';
+    ? 'Sunday 4:00 pm - Friday 4:00 pm ET (Closed weekends & holidays)'
+    : 'Sunday 5:00 pm - Friday 5:00 pm ET (Closed weekends & holidays)';
 
   return { open, lowLiq, holidays, summary };
 };
