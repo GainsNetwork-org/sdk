@@ -36,12 +36,15 @@ const HOLIDAYS_OVERRIDES: Record<TradFiMarket, Holiday[]> = {
   ],
   indices: [
     partial(2025, 12, 24, "Christmas Eve", 9, 30, 12, 15),
+    partial(2025, 12, 31, "New Year's Eve", 0, 0, 16, 0),    
   ],
   commodities: [
     partial(2025, 12, 24, "Christmas Eve", 0, 0, 12, 45),
+    partial(2025, 12, 31, "New Year's Eve", 0, 0, 16, 0),
   ],
   forex: [
     partial(2025, 12, 24, "Christmas Eve", 0, 0, 12, 45),
+    partial(2025, 12, 31, "New Year's Eve", 0, 0, 16, 0),
   ],
 };
 
