@@ -829,5 +829,6 @@ export enum PairIndex {
   USA30USD,
   NFLXUSD2,
   STABLEUSD,
-  VOOIUSD,  
+  VOOIUSD,
+  LITUSD,  
 }
