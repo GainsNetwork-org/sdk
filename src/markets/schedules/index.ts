@@ -6,6 +6,7 @@ export {
   buildCommoditiesWeeklySchedule,
 } from "./builders";
 export { isOpenAt, isLowLiquidityAt } from "./checkers";
+export { getHolidays, getHolidaysInCurrentWeek } from "./holidays";
 
 import { Schedule } from "./types";
 import {

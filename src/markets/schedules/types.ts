@@ -52,6 +52,7 @@ export const weekDayToKey = (d: WeekDay): WeekDayKey => {
 };
 
 export type Holiday = {
+  year: number; // Year (ET calendar)
   month: number; // 1-12 (ET calendar)
   day: number; // 1-31 (ET calendar)
   name: string; // Holiday name
