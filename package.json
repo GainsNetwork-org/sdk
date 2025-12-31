@@ -1,6 +1,6 @@
 {
   "name": "@gainsnetwork/sdk",
-  "version": "1.7.0-rc3",
+  "version": "1.7.0",
   "description": "Gains Network SDK",
   "main": "./lib/index.js",
   "files": [
@@ -99,6 +99,7 @@
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
     "@gainsnetwork/contests": "^0.0.1",
+    "@gainsnetwork/sdk": "^1.7.0",
     "ethcall": "^4.8.13",
     "ethers": "^5.7.2",
     "luxon": "^3.2.0"
