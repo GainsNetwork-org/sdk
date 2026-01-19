@@ -39,6 +39,17 @@ const HOLIDAYS_OVERRIDES: Record<TradFiMarket, Holiday[]> = {
     partial(2025, 12, 31, "New Year's Eve", 0, 0, 16, 0),    
   ],
   commodities: [
+    // MLK Jr. Day: Open until 1 PM ET, closed from 1-6 PM ET, then reopens at 6 PM ET
+    { 
+      year: 2026, 
+      month: 1, 
+      day: 19, 
+      name: "Martin Luther King Jr. Day", 
+      openWindows: [
+        { start: { hour: 0, minute: 0 }, end: { hour: 13, minute: 0 } },
+        { start: { hour: 18, minute: 0 }, end: { hour: 24, minute: 0 } }
+      ] 
+    },
     partial(2025, 12, 24, "Christmas Eve", 0, 0, 12, 45),
     partial(2025, 12, 31, "New Year's Eve", 0, 0, 16, 0),
   ],
