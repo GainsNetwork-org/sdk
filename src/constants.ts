@@ -448,7 +448,7 @@ export const pairs = {
   "STABLE/USD": CRYPTO,
   "VOOI/USD": CRYPTO,
   "LIT/USD": CRYPTO,
-  "DUSK /USD": CRYPTO,
+  "DUSK/USD": CRYPTO,
   "SCRT/USD": CRYPTO,
   "DCR/USD": CRYPTO,
 };
