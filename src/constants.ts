@@ -451,6 +451,9 @@ export const pairs = {
   "DUSK/USD": CRYPTO,
   "SCRT/USD": CRYPTO,
   "DCR/USD": CRYPTO,
+  "GDX/USD": INDICES,
+  "URA/USD": INDICES,
+  "WPM/USD": STOCKS,
 };
 
 export const syntheticPairs = new Set([

@@ -659,5 +659,8 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.LITUSD]: "Lighter to US Dollar",
   [PairIndex.DUSKUSD]: "DUSK to US Dollar",
   [PairIndex.SCRTUSD]: "Secret to US Dollar",
-  [PairIndex.DCRUSD]: "Decred to US Dollar",     
+  [PairIndex.DCRUSD]: "Decred to US Dollar",
+  [PairIndex.GDXUSD]: "VanEck Gold Miners ETF to US Dollar",
+  [PairIndex.URAUSD]: "Global X Uranium ETF to US Dollar",
+  [PairIndex.WPMUSD]: "Wheaton Precious Metals Corp to US Dollar",
 };

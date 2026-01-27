@@ -833,5 +833,8 @@ export enum PairIndex {
   LITUSD,
   DUSKUSD,
   SCRTUSD,
-  DCRUSD,  
+  DCRUSD,
+  GDXUSD,
+  URAUSD,
+  WPMUSD,
 }
