@@ -18,7 +18,9 @@ export const getPriceAfterImpact = (
   const priceAfterImpact = oraclePrice * (1 + totalPriceImpactP / 100);
 
   if (priceAfterImpact <= 0) {
-    throw new Error("Price after impact must be positive");
+    // Cap at 1% of oracle price (-99% impact max) to prevent negative prices
+    // while still showing an extreme worst-case to the user
+    return oraclePrice * 0.01;
   }
 
   return priceAfterImpact;
