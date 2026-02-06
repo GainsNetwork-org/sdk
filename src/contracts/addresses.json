@@ -232,7 +232,7 @@
   },
   "4326": {
     "global": {
-      "gnsMultiCollatDiamond": "0x0000000000000000000000000000000000000000"
+      "gnsMultiCollatDiamond": "0x2D5B1ba6E2093a5b927Fe5bF8C049B107de31eaF"
     },
     "DAI": {
       "gTokenOpenPnlFeed": "0x0000000000000000000000000000000000000000",
@@ -259,8 +259,8 @@
       "gToken": "0x0000000000000000000000000000000000000000"
     },
     "USDM": {
-      "gTokenOpenPnlFeed": "0x0000000000000000000000000000000000000000",
-      "gToken": "0x0000000000000000000000000000000000000000"
+      "gTokenOpenPnlFeed": "0x637025a9F5e2380E3BBe744Ed4Ffb3191cf5EF4D",
+      "gToken": "0x46344456f130e9dcdeA7F98cDb0E02fB9F4ab72D"
     }
   }
 }
