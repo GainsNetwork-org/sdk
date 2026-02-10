@@ -91,6 +91,12 @@ export const COLLATERAL_TO_CHAIN_COLLATERAL_INDEX: Record<
   [ChainId.APECHAIN]: {
     [CollateralTypes.APE]: 1,
   },
+  [ChainId.MEGAETH]: {
+    [CollateralTypes.USDM]: 1,
+  },
+  [ChainId.MEGAETH_TESTNET]: {
+    [CollateralTypes.USDM]: 1,
+  },
 };
 
 // @deprecated use `COLLATERAL_TO_CHAIN_COLLATERAL_INDEX` instead
@@ -102,6 +108,7 @@ export const COLLATERAL_TO_COLLATERAL_INDEX: Record<CollateralTypes, number> = {
   [CollateralTypes.APE]: 0, // not in use
   [CollateralTypes.GNS]: 0, // not in use
   [CollateralTypes.BTCUSD]: 0,
+  [CollateralTypes.USDM]: 0,
 };
 
 export * from "./utils";

@@ -126,3 +126,4 @@ test/local-test.ts
 # claude
 .claude/*
 CLAUDE.md
+scripts/*
