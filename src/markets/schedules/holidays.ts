@@ -53,7 +53,17 @@ const HOLIDAYS_OVERRIDES: Record<TradFiMarket, Holiday[]> = {
     },
     partial(2025, 12, 24, "Christmas Eve", 0, 0, 12, 45),
     partial(2025, 12, 31, "New Year's Eve", 0, 0, 16, 0),
-    partial(2026, 2, 16, "Presidents' Day", 0, 0, 14, 30) // Presidents day, early close 2:30 ET
+    // Presidents' Day: Open until 2:30 ET, closed from 2:30-6 PM ET, then reopens at 6 PM ET
+    { 
+      year: 2026, 
+      month: 2, 
+      day: 16, 
+      name: "Presidents' Day", 
+      openWindows: [
+        { start: { hour: 0, minute: 0 }, end: { hour: 14, minute: 30 } },
+        { start: { hour: 18, minute: 0 }, end: { hour: 24, minute: 0 } }
+      ] 
+    },
   ],
   forex: [
     partial(2025, 12, 24, "Christmas Eve", 0, 0, 12, 45),
