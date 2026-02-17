@@ -292,6 +292,8 @@ export const isValidSignedPricesChain = (chainId: number): boolean => {
       ChainId.ARBITRUM,
       ChainId.ARBITRUM_SEPOLIA,
       ChainId.APECHAIN,
+      ChainId.MEGAETH,
+      ChainId.MEGAETH_TESTNET,
     ].includes(chainId)
   );
 };
