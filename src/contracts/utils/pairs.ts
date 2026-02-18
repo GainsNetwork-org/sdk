@@ -663,4 +663,7 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.GDXUSD]: "VanEck Gold Miners ETF to US Dollar",
   [PairIndex.URAUSD]: "Global X Uranium ETF to US Dollar",
   [PairIndex.WPMUSD]: "Wheaton Precious Metals Corp to US Dollar",
+  [PairIndex.NATGASUSD]: "Natural Gas to US Dollar",
+  [PairIndex.BRENTUSD]: "Brent Crude Oil to US Dollar",
+  [PairIndex.URNMUSD]: "Sprott Uranium Miners ETF to US Dollar",
 };

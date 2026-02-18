@@ -22,6 +22,7 @@ export enum CollateralTypes {
   APE = "APE",
   GNS = "GNS",
   BTCUSD = "BTCUSD",
+  USDM = "USDM",
 }
 
 export enum ContractsVersion {
@@ -41,4 +42,6 @@ export enum ChainId {
   ARBITRUM_SEPOLIA = 421614,
   BASE = 8453,
   APECHAIN = 33139,
+  MEGAETH = 4326,
+  MEGAETH_TESTNET = 6343,
 }

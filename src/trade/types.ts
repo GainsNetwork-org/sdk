@@ -837,4 +837,7 @@ export enum PairIndex {
   GDXUSD,
   URAUSD,
   WPMUSD,
+  NATGASUSD,
+  BRENTUSD,
+  URNMUSD,
 }

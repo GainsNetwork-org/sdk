@@ -454,6 +454,9 @@ export const pairs = {
   "GDX/USD": INDICES,
   "URA/USD": INDICES,
   "WPM/USD": STOCKS,
+  "NATGAS/USD": COMMODITIES,
+  "BRENT/USD": COMMODITIES,
+  "URNM/USD": INDICES,
 };
 
 export const syntheticPairs = new Set([
