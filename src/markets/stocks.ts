@@ -6,7 +6,8 @@ import { isOpenAt } from "./schedules";
 
 const STOCKS_MARKETS_TIME_ZONE_IANA = IANAZone.create("America/New_York");
 
-export const isStocksOpen = (dateToCheck: Date): boolean => isOpenAt('stocks', dateToCheck);
+export const isStocksOpen = (dateToCheck: Date): boolean =>
+  isOpenAt("stocks", dateToCheck);
 
 export const getUSMarketsNow = () => {
   return DateTime.now().setZone(STOCKS_MARKETS_TIME_ZONE_IANA);
