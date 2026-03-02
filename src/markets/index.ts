@@ -9,3 +9,4 @@ export * from "./collateral";
 export * from "./price";
 export * from "./holdingFees";
 export * from "./leverage";
+export * from "./classification";
