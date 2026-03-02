@@ -25,7 +25,6 @@ const HOLIDAYS: Holiday[] = [
   // 2026
   full(2026, 1, 1, "New Year's Day"),
   full(2026, 1, 19, "Martin Luther King Jr. Day"),
-  full(2026, 2, 16, "Presidents' Day"),
   full(2026, 4, 3, "Good Friday"),
 ];
 
@@ -33,10 +32,12 @@ const HOLIDAYS: Holiday[] = [
 const HOLIDAYS_OVERRIDES: Record<TradFiMarket, Holiday[]> = {
   stocks: [
     partial(2025, 12, 24, "Christmas Eve", 9, 30, 13, 0),
+    full(2026, 2, 16, "Presidents' Day"),
   ],
   indices: [
     partial(2025, 12, 24, "Christmas Eve", 9, 30, 12, 15),
     partial(2025, 12, 31, "New Year's Eve", 0, 0, 16, 0),    
+    full(2026, 2, 16, "Presidents' Day"),
   ],
   commodities: [
     // MLK Jr. Day: Open until 1 PM ET, closed from 1-6 PM ET, then reopens at 6 PM ET
@@ -52,6 +53,17 @@ const HOLIDAYS_OVERRIDES: Record<TradFiMarket, Holiday[]> = {
     },
     partial(2025, 12, 24, "Christmas Eve", 0, 0, 12, 45),
     partial(2025, 12, 31, "New Year's Eve", 0, 0, 16, 0),
+    // Presidents' Day: Open until 2:30 ET, closed from 2:30-6 PM ET, then reopens at 6 PM ET
+    { 
+      year: 2026, 
+      month: 2, 
+      day: 16, 
+      name: "Presidents' Day", 
+      openWindows: [
+        { start: { hour: 0, minute: 0 }, end: { hour: 14, minute: 30 } },
+        { start: { hour: 18, minute: 0 }, end: { hour: 24, minute: 0 } }
+      ] 
+    },
   ],
   forex: [
     partial(2025, 12, 24, "Christmas Eve", 0, 0, 12, 45),
