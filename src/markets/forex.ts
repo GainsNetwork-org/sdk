@@ -5,9 +5,13 @@ import { Pair } from "src/trade";
 import { isOpenAt, isLowLiquidityAt } from "./schedules";
 
 export const isForexOpen = (dateToCheck: Date): boolean =>
-  isOpenAt('forex', dateToCheck);
+  isOpenAt("forex", dateToCheck);
 
 export const isForexLowLiquidity = (timestampToCheck: number, pair?: Pair) =>
-  isLowLiquidityAt('forex', new Date(timestampToCheck),
-    pair?.groupIndex !== undefined ? { pairGroupIndex: +pair!.groupIndex } : undefined
+  isLowLiquidityAt(
+    "forex",
+    new Date(timestampToCheck),
+    pair?.groupIndex !== undefined
+      ? { pairGroupIndex: +pair.groupIndex }
+      : undefined
   );
