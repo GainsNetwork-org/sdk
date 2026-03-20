@@ -309,7 +309,7 @@ export interface UserTradingVariablesBackend {
     cumulVolPriceImpactMultiplier: string;
     fixedSpreadP: string;
   }>;
-  referrer?: string;
+  referrer: string;
 }
 
 export type OpenTradeInfo = {
