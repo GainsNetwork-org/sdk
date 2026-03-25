@@ -411,8 +411,12 @@ export const getPriceForTargetPnlPercentage = (
     fees.borrowingFeeCollateral +
     fees.borrowingFeeCollateral_old;
 
+  const { totalRealizedPnlCollateral } = context.tradeData?.tradeFeesData
+    ? getTradeRealizedPnlCollateral(context.tradeData.tradeFeesData)
+    : { totalRealizedPnlCollateral: 0 };
+
   const targetPnlInCollateral = (collateralAmount * targetPnlPercent) / 100;
-  let targetPnlGross = targetPnlInCollateral + totalHoldingFees;
+  let targetPnlGross = targetPnlInCollateral + totalHoldingFees - totalRealizedPnlCollateral;
 
   if (netPnl) {
     // Include closing fees
