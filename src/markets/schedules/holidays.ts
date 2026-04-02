@@ -76,6 +76,7 @@ const HOLIDAYS_OVERRIDES: Record<TradFiMarket, Holiday[]> = {
   ],
   commodities: [
     // 2026
+    partial(2026, 4, 2, "Maundy Thursday", 0, 0, 13, 0),
     partial(2026, 12, 24, "Christmas Eve", 0, 0, 12, 45),
     partial(2026, 12, 31, "New Year's Eve", 0, 0, 16, 0),
     // 2027
