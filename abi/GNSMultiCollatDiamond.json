@@ -767,9 +767,14 @@
               "type": "uint24"
             },
             {
-              "internalType": "uint136",
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
               "name": "__placeholder",
-              "type": "uint136"
+              "type": "uint112"
             }
           ],
           "indexed": false,
@@ -780,7 +785,7 @@
       ],
       "name": "GlobalTradeFeeParamsUpdated",
       "type": "event",
-      "signature": "0xbbd4d37e525bc0d0bf80d0c56879b81ebcccbe7bfd22e484e19eb0f369c011a4"
+      "signature": "0x7b3cf2773dd9e6cf057b72882aab946884c4484cdeb633c090559206a431cd73"
     },
     {
       "anonymous": false,
@@ -908,6 +913,117 @@
       "name": "PairCustomMaxLeverageUpdated",
       "type": "event",
       "signature": "0x5d6c9d6dd6c84fa315e799a455ccb71230e5b88e171c48c4853425ce044e9bce"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint16",
+          "name": "pairIndex",
+          "type": "uint16"
+        },
+        {
+          "components": [
+            {
+              "internalType": "bool",
+              "name": "skipBurn",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "skipFeeTierMultiplier",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "skipFeeTierMultiplierCounterTrade",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint232",
+              "name": "__placeholder",
+              "type": "uint232"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IPairsStorage.PairFlags",
+          "name": "pairFlags",
+          "type": "tuple"
+        }
+      ],
+      "name": "PairFlagsUpdated",
+      "type": "event",
+      "signature": "0xe3cae6531a8bcc4c06fb2e1204c964ccb0e4f26239cf343c31ce4b13acb6e19b"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint16",
+          "name": "pairIndex",
+          "type": "uint16"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint24",
+              "name": "referralFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "govFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "triggerOrderFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gnsOtcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
+              "name": "__placeholder",
+              "type": "uint112"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IPairsStorage.GlobalTradeFeeParams",
+          "name": "feeParams",
+          "type": "tuple"
+        }
+      ],
+      "name": "PairGlobalTradeFeeParamsOverridesUpdated",
+      "type": "event",
+      "signature": "0xa1d910a0305cf995dd5bf8cfb277be5bacf228eff65d2b36c564b9590ee63065"
     },
     {
       "anonymous": false,
@@ -1200,9 +1316,14 @@
               "type": "uint24"
             },
             {
-              "internalType": "uint136",
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
               "name": "__placeholder",
-              "type": "uint136"
+              "type": "uint112"
             }
           ],
           "internalType": "struct IPairsStorage.GlobalTradeFeeParams",
@@ -1344,6 +1465,224 @@
     {
       "inputs": [
         {
+          "internalType": "uint8",
+          "name": "_collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint16",
+          "name": "_pairIndex",
+          "type": "uint16"
+        }
+      ],
+      "name": "getPairFlags",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bool",
+              "name": "skipBurn",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "skipFeeTierMultiplier",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "skipFeeTierMultiplierCounterTrade",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint232",
+              "name": "__placeholder",
+              "type": "uint232"
+            }
+          ],
+          "internalType": "struct IPairsStorage.PairFlags",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xdd395b53"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "_pairIndices",
+          "type": "uint16[]"
+        }
+      ],
+      "name": "getPairFlagsArray",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bool",
+              "name": "skipBurn",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "skipFeeTierMultiplier",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "skipFeeTierMultiplierCounterTrade",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint232",
+              "name": "__placeholder",
+              "type": "uint232"
+            }
+          ],
+          "internalType": "struct IPairsStorage.PairFlags[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x7388c684"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint16",
+          "name": "_pairIndex",
+          "type": "uint16"
+        }
+      ],
+      "name": "getPairGlobalTradeFeeParamsOverride",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint24",
+              "name": "referralFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "govFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "triggerOrderFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gnsOtcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
+              "name": "__placeholder",
+              "type": "uint112"
+            }
+          ],
+          "internalType": "struct IPairsStorage.GlobalTradeFeeParams",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xdf7c637b"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "_pairIndices",
+          "type": "uint16[]"
+        }
+      ],
+      "name": "getPairGlobalTradeFeeParamsOverrideArray",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint24",
+              "name": "referralFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "govFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "triggerOrderFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gnsOtcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
+              "name": "__placeholder",
+              "type": "uint112"
+            }
+          ],
+          "internalType": "struct IPairsStorage.GlobalTradeFeeParams[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x417c25d1"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_pairIndex",
           "type": "uint256"
@@ -1387,6 +1726,130 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0x6633ced6"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint16",
+          "name": "_pairIndex",
+          "type": "uint16"
+        }
+      ],
+      "name": "getTradeFeeParams",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint24",
+              "name": "referralFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "govFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "triggerOrderFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gnsOtcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
+              "name": "__placeholder",
+              "type": "uint112"
+            }
+          ],
+          "internalType": "struct IPairsStorage.GlobalTradeFeeParams",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x31b501e9"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "_collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "_pairIndices",
+          "type": "uint16[]"
+        }
+      ],
+      "name": "getTradeFeeParamsArray",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint24",
+              "name": "referralFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "govFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "triggerOrderFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gnsOtcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
+              "name": "__placeholder",
+              "type": "uint112"
+            }
+          ],
+          "internalType": "struct IPairsStorage.GlobalTradeFeeParams[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0xa2a46b16"
     },
     {
       "inputs": [
@@ -1515,9 +1978,14 @@
               "type": "uint24"
             },
             {
-              "internalType": "uint136",
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
               "name": "__placeholder",
-              "type": "uint136"
+              "type": "uint112"
             }
           ],
           "internalType": "struct IPairsStorage.GlobalTradeFeeParams",
@@ -1529,7 +1997,7 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0xc85ac748"
+      "signature": "0x079dc7e3"
     },
     {
       "inputs": [],
@@ -1937,9 +2405,14 @@
               "type": "uint24"
             },
             {
-              "internalType": "uint136",
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
               "name": "__placeholder",
-              "type": "uint136"
+              "type": "uint112"
             }
           ],
           "internalType": "struct IPairsStorage.GlobalTradeFeeParams",
@@ -1951,7 +2424,7 @@
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function",
-      "signature": "0x5f57a073"
+      "signature": "0x46956138"
     },
     {
       "inputs": [
@@ -2055,6 +2528,113 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0xd79261fd"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8[]",
+          "name": "_collateralIndices",
+          "type": "uint8[]"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "_pairIndices",
+          "type": "uint16[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "bool",
+              "name": "skipBurn",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "skipFeeTierMultiplier",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "skipFeeTierMultiplierCounterTrade",
+              "type": "bool"
+            },
+            {
+              "internalType": "uint232",
+              "name": "__placeholder",
+              "type": "uint232"
+            }
+          ],
+          "internalType": "struct IPairsStorage.PairFlags[]",
+          "name": "_pairFlags",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "setPairFlags",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xff55ed80"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8[]",
+          "name": "_collateralIndices",
+          "type": "uint8[]"
+        },
+        {
+          "internalType": "uint16[]",
+          "name": "_pairIndices",
+          "type": "uint16[]"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint24",
+              "name": "referralFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "govFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "triggerOrderFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gnsOtcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "gTokenOcFeeP",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint112",
+              "name": "__placeholder",
+              "type": "uint112"
+            }
+          ],
+          "internalType": "struct IPairsStorage.GlobalTradeFeeParams[]",
+          "name": "_feeParams",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "setPairGlobalTradeFeeParamsOverrides",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xbe2091dc"
     },
     {
       "inputs": [
@@ -2473,6 +3053,26 @@
       "name": "ReferrerWhitelisted",
       "type": "event",
       "signature": "0x15ad1d28b052a6cc2dd1d34d9e06a1847055d520e2163017e6e8aad6431b7f6a"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "trader",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousReferrer",
+          "type": "address"
+        }
+      ],
+      "name": "TraderReferrerUnset",
+      "type": "event",
+      "signature": "0xb9088653d74fb25a9972c5c18a8a319f7b8b468a8ccf49be5aa93a9317e3025f"
     },
     {
       "anonymous": false,
@@ -2943,6 +3543,20 @@
       "stateMutability": "nonpayable",
       "type": "function",
       "signature": "0x9b8ab684"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address[]",
+          "name": "_traders",
+          "type": "address[]"
+        }
+      ],
+      "name": "unsetTradersReferrers",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xe85647ba"
     },
     {
       "inputs": [
@@ -3635,6 +4249,43 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0x794d8520"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "_days",
+          "type": "uint32[]"
+        }
+      ],
+      "name": "getFeeTiersTraderDailyInfoArray",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint32",
+              "name": "feeMultiplierCache",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint224",
+              "name": "points",
+              "type": "uint224"
+            }
+          ],
+          "internalType": "struct IFeeTiers.TraderDailyInfo[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x94575b4f"
     },
     {
       "inputs": [
@@ -5607,6 +6258,48 @@
       "stateMutability": "view",
       "type": "function",
       "signature": "0x5a1449ab"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_trader",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "_pairIndices",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "getUserPriceImpactArray",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint16",
+              "name": "cumulVolPriceImpactMultiplier",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "fixedSpreadP",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint224",
+              "name": "__placeholder",
+              "type": "uint224"
+            }
+          ],
+          "internalType": "struct IPriceImpact.UserPriceImpact[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x0a0aa478"
     },
     {
       "inputs": [
@@ -11904,6 +12597,32 @@
       "name": "GTokenFeeCharged",
       "type": "event",
       "signature": "0xfe4ab97508a97bb85ad1e2680662e58549e51982d965eed4ef6d7fcd4cc4295f"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "trader",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "collateralIndex",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountCollateral",
+          "type": "uint256"
+        }
+      ],
+      "name": "GTokenOcFeeCharged",
+      "type": "event",
+      "signature": "0xdb02f3c92523bd1f249e41a2176f1bb5777f03f7cd5209e1a1aa35434b590542"
     },
     {
       "anonymous": false,
