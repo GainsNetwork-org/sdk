@@ -666,4 +666,6 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.NATGASUSD]: "Natural Gas to US Dollar",
   [PairIndex.BRENTUSD]: "Brent Crude Oil to US Dollar",
   [PairIndex.URNMUSD]: "Sprott Uranium Miners ETF to US Dollar",
+  [PairIndex.HYPEDEGEN]: "Hyperliquid to US Dollar",
+  [PairIndex.MEGA]: "MegaETH to US Dollar",
 };
