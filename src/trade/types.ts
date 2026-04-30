@@ -840,4 +840,6 @@ export enum PairIndex {
   NATGASUSD,
   BRENTUSD,
   URNMUSD,
+  HYPEDEGEN,
+  MEGA,
 }

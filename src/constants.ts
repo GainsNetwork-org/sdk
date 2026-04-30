@@ -457,6 +457,8 @@ export const pairs = {
   "NATGAS/USD": COMMODITIES,
   "BRENT/USD": COMMODITIES,
   "URNM/USD": INDICES,
+  "HYPEDEGEN/USD": CRYPTO,
+  "MEGA/USD": CRYPTO,
 };
 
 export const syntheticPairs = new Set([
@@ -465,6 +467,7 @@ export const syntheticPairs = new Set([
   "SOLDEGEN/USD",
   "XRPDEGEN/USD",
   "BNBDEGEN/USD",
+  "HYPEDEGEN/USD",
 ]);
 export const parentToSyntheticPairMap = new Map([
   ["BTC/USD", "BTCDEGEN/USD"],
@@ -472,6 +475,7 @@ export const parentToSyntheticPairMap = new Map([
   ["SOL/USD", "SOLDEGEN/USD"],
   ["XRP/USD", "XRPDEGEN/USD"],
   ["BNB/USD", "BNBDEGEN/USD"],
+  ["HYPE/USD", "HYPEDEGEN/USD"],
 ]);
 
 export const getAssetClassFromGroupIndex = (
