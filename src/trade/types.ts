@@ -842,4 +842,5 @@ export enum PairIndex {
   URNMUSD,
   HYPEDEGEN,
   MEGA,
+  SPCXUSD,
 }
