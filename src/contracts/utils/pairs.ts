@@ -668,4 +668,5 @@ const PAIR_INDEX_TO_DESCRIPTION: { [key in PairIndex]: string } = {
   [PairIndex.URNMUSD]: "Sprott Uranium Miners ETF to US Dollar",
   [PairIndex.HYPEDEGEN]: "Hyperliquid to US Dollar",
   [PairIndex.MEGA]: "MegaETH to US Dollar",
+  [PairIndex.SPCXUSD]: "Space Exploration Technologies Corp to US Dollar",
 };

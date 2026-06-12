@@ -459,6 +459,7 @@ export const pairs = {
   "URNM/USD": INDICES,
   "HYPEDEGEN/USD": CRYPTO,
   "MEGA/USD": CRYPTO,
+  "SPCX/USD": STOCKS,
 };
 
 export const syntheticPairs = new Set([
